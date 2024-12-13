@@ -12,7 +12,7 @@ const compat = new FlatCompat({
 });
 
 export default [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
   // FIXME
   {
     files: ["app/page.tsx", "app/layout.tsx"],

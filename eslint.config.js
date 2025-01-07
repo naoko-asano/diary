@@ -15,7 +15,6 @@ export default [
   ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
   // FIXME
   {
-    files: ["app/page.tsx", "app/layout.tsx"],
     rules: {
       "@typescript-eslint/no-unused-expressions": "off",
     },

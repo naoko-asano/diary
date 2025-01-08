@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "@/testing/utils";
 import { Button } from "./index";
 
 test("Button", () => {

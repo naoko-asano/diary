@@ -14,7 +14,8 @@
     "test:db:seed": "tsx --env-file .env.test.local prisma/seed.ts",
     "lint": "next lint",
     "format": "prettier --check .",
-    "test": "vitest"
+    "test": "vitest",
+    "e2e": "NODE_ENV=test playwright test"
   },
   "dependencies": {
     "@mantine/core": "^8.1.3",

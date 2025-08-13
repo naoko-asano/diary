@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import prisma from "@/lib/database";
 
-export default async function Home() {
+export default async function Page() {
   const articles = await prisma.article.findMany();
   return (
     <div>

@@ -11,6 +11,7 @@
     "build": "next build",
     "start": "next start",
     "db:migrate": "dotenv -e .env.development.local -- prisma migrate dev",
+    "test:db:seed": "tsx --env-file .env.test.local prisma/seed.ts",
     "lint": "next lint",
     "format": "prettier --check .",
     "test": "vitest"
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.31.0",
+    "@playwright/test": "^1.54.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -43,7 +45,7 @@
     "postcss-simple-vars": "^7.0.1",
     "prettier": "3.6.2",
     "prisma": "^6.12.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.20.4",
     "typescript": "^5.8.3",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"

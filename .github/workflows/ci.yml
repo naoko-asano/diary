@@ -28,3 +28,7 @@ jobs:
         run: |
           pnpm exec playwright install --with-deps
           pnpm e2e
+        env:
+          NEON_API_TOKEN: ${{ secrets.NEON_API_TOKEN }}
+          NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }}
+          NEON_TEST_BASE_BRANCH_ID: ${{ secrets.NEON_TEST_BASE_BRANCH_ID }}

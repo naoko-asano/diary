@@ -19,7 +19,7 @@ export async function createDbBranch() {
           },
         ],
       }),
-    }
+    },
   );
   if (!response.ok) {
     throw new Error(`Failed to create branch: ${response.statusText}`);
@@ -37,7 +37,7 @@ export async function deleteDbBranch(branchId: string) {
           Authorization: `Bearer ${process.env.NEON_API_TOKEN}`,
           accept: "application/json",
         },
-      }
+      },
     );
     if (!response.ok) {
       throw new Error(`Failed to delete branch: ${response.statusText}`);

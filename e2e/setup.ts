@@ -11,7 +11,7 @@ export default async function setupDb() {
   await execCommand(
     "pnpm",
     ["prisma", "migrate", "deploy"],
-    "Running Migrations"
+    "Running Migrations",
   );
   await execCommand("tsx", ["prisma/seed.ts"], "Creating Seed Data");
 

@@ -4,9 +4,10 @@ import { defineConfig, devices } from "@playwright/test";
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({ path: path.join(path.resolve(), ".env.test.local") });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -32,6 +33,9 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
   },
+
+  globalSetup: "./e2e/setup",
+  globalTeardown: "./e2e/teardown",
 
   /* Configure projects for major browsers */
   projects: [
@@ -70,11 +74,4 @@ export default defineConfig({
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
   ],
-
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    command: "pnpm dev",
-    url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
-  },
 });

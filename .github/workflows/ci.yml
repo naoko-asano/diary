@@ -24,8 +24,6 @@ jobs:
         run: pnpm lint
       - name: Validate Format
         run: pnpm format
-      - name: DB And ORM Setup
-        run: pnpm prisma generate && pnpm db:migrate && pnpm prisma db seed
       - name: Run E2E Tests
         run: |
           pnpm exec playwright install --with-deps

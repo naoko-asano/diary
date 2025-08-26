@@ -1,0 +1,38 @@
+import { createDbBranch } from "./utils/dbBranch";
+import { execCommand } from "@/utils/execCommand";
+import { spawn } from "child_process";
+
+export default async function setupDb() {
+  const dbBranch = await createDbBranch();
+  process.env.DATABASE_URL = dbBranch.connection_uris[0].connection_uri;
+  process.env.DATABASE_ID = dbBranch.branch.id;
+
+  await execCommand("pnpm", ["prisma", "generate"], "Generating Prisma Client");
+  await execCommand(
+    "pnpm",
+    ["prisma", "migrate", "deploy"],
+    "Running Migrations"
+  );
+  await execCommand("tsx", ["prisma/seed.ts"], "Creating Seed Data");
+
+  process.env.NEXTJS_PROCESS_ID = spawn("pnpm", ["dev"], {
+    stdio: "inherit",
+  }).pid?.toString();
+
+  await waitForServer("http://localhost:3000");
+}
+
+async function waitForServer(url: string): Promise<void> {
+  for (let i = 0; i < 30; i++) {
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        return;
+      }
+    } catch (_error) {
+      // ignore
+    }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  throw new Error("Server failed to start");
+}

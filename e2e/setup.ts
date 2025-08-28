@@ -29,7 +29,7 @@ async function waitForServer(url: string): Promise<void> {
       if (response.ok) {
         return;
       }
-    } catch (_error) {
+    } catch {
       // ignore
     }
     await new Promise((resolve) => setTimeout(resolve, 1000));

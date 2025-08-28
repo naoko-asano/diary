@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["@mantine/core", "@mantine/hooks"],
   },
+  eslint: {
+    dirs: ["src", "e2e"],
+  },
 };
 
 export default nextConfig;

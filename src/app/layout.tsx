@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+
 import {
   ColorSchemeScript,
-  MantineProvider,
-  mantineHtmlProps,
   createTheme,
+  mantineHtmlProps,
+  MantineProvider,
 } from "@mantine/core";
-import "./globals.css";
 import "@mantine/core/styles.css";
+import localFont from "next/font/local";
+
+import "./globals.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

@@ -5,7 +5,7 @@ const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
 });
 
-export default [
+const eslintConfig = [
   ...compat.config({
     extends: ["next/core-web-vitals", "next/typescript"],
   }),
@@ -18,7 +18,32 @@ export default [
           allowShortCircuit: true,
         },
       ],
+      "import/order": [
+        "error",
+        {
+          groups: [
+            "type",
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+          ],
+          "newlines-between": "always",
+          "newlines-between-types": "ignore",
+          sortTypesGroup: true,
+          alphabetize: {
+            order: "asc",
+            caseInsensitive: true,
+          },
+          named: true,
+          warnOnUnassignedImports: true,
+        },
+      ],
     },
   },
   { ignores: ["src/generated/**/*"] },
 ];
+
+export default eslintConfig;

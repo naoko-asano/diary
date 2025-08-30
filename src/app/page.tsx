@@ -11,12 +11,16 @@ export default async function Page() {
       my={{ base: "sm", xs: "sm", sm: "md", lg: "lg" }}
     >
       <Center mb={{ base: "sm", xs: "sm", sm: "md", lg: "lg" }}>
-        <Title order={1}>Diary</Title>
+        <Title order={1} size={"xl"}>
+          Diary
+        </Title>
       </Center>
       <Grid>
         {articles.map((article) => (
           <GridCol key={article.id} span={{ base: 12, xs: 6, sm: 4, lg: 3 }}>
-            <h2>{article.title}</h2>
+            <Title order={2} size={"sm"}>
+              {article.title}
+            </Title>
           </GridCol>
         ))}
       </Grid>

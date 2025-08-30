@@ -43,10 +43,19 @@ const theme = createTheme({
     ],
   },
   primaryColor: "purple",
-  headings: {
-    sizes: {
-      h1: { fontSize: "72px", fontWeight: "700" },
-    },
+  breakpoints: {
+    xs: "30em", // 480px
+    sm: "48em", // 768px
+    md: "64em", // 1024px
+    lg: "80em", // 1280px
+    xl: "96em", // 1536px
+  },
+  fontSizes: {
+    xs: "16px",
+    sm: "24px",
+    md: "32px",
+    lg: "48px",
+    xl: "60px",
   },
   spacing: {
     xs: "8px",

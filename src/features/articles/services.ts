@@ -2,16 +2,17 @@
 
 import prisma from "@/lib/database";
 
+import { validateArticle } from "./model";
+
 export async function createArticle(params: { title: string; body: string }) {
-  const { title, body } = params;
   try {
+    validateArticle(params);
     return await prisma.article.create({
       data: {
-        title,
-        body,
+        ...params,
       },
     });
   } catch (error) {
-    throw new Error("Failed to create article: " + error);
+    throw new Error("Failed to create article\n" + error);
   }
 }

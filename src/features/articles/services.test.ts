@@ -8,12 +8,13 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
+const articleParams = {
+  title: "Test Article",
+  body: "This is a test article.",
+};
+
 describe("createArticle", () => {
   it("DBに記事レコードが作成される", async () => {
-    const articleParams = {
-      title: "Test Article",
-      body: "This is a test article.",
-    };
     prisma.article.create.mockResolvedValue({
       id: 1,
       ...articleParams,
@@ -30,23 +31,17 @@ describe("createArticle", () => {
     expect(article.title).toBe("Test Article");
     expect(article.body).toBe("This is a test article.");
   });
-});
-it("パラメータが不正な場合、エラーがスローされる", async () => {
-  const articleParams = {
-    title: "",
-    body: "This is a test article.",
-  };
-  await expect(createArticle(articleParams)).rejects.toThrow();
-  expect(prisma.article.create).not.toHaveBeenCalled();
-});
-it("DBにレコードが生成されない場合、エラーがスローされる", async () => {
-  const articleParams = {
-    title: "Test Article",
-    body: "This is a test article.",
-  };
-  prisma.article.create.mockRejectedValue(new Error("DB error"));
+  it("パラメータが不正な場合、エラーがスローされる", async () => {
+    await expect(
+      createArticle({ ...articleParams, title: "" }),
+    ).rejects.toThrow();
+    expect(prisma.article.create).not.toHaveBeenCalled();
+  });
+  it("DBにレコードが生成されない場合、エラーがスローされる", async () => {
+    prisma.article.create.mockRejectedValue(new Error("DB error"));
 
-  await expect(createArticle(articleParams)).rejects.toThrow(
-    "Failed to create article\nError: DB error",
-  );
+    await expect(createArticle(articleParams)).rejects.toThrow(
+      "Failed to create article\nError: DB error",
+    );
+  });
 });

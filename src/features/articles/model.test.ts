@@ -27,11 +27,7 @@ describe("articleScheme", () => {
     });
 
     it("空文字の場合、エラーがスローされる", () => {
-      const article = {
-        title: "",
-        body: "This is a test article.",
-      };
-      expect(() => articleScheme.parse(article)).toThrow();
+      expect(() => articleScheme.parse({ ...article, title: "" })).toThrow();
     });
 
     it("255文字の場合、バリデーションが通る", () => {

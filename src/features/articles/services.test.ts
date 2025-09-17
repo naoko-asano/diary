@@ -17,6 +17,8 @@ describe("createArticle", () => {
     prisma.article.create.mockResolvedValue({
       id: 1,
       ...articleParams,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
     const article = await createArticle(articleParams);
 

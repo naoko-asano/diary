@@ -9,7 +9,6 @@ export default async function setupDb() {
   process.env.DATABASE_URL = dbBranch.connection_uris[0].connection_uri;
   process.env.DATABASE_ID = dbBranch.branch.id;
 
-  await execCommand("pnpm", ["prisma", "generate"], "Generating Prisma Client");
   await execCommand(
     "pnpm",
     ["prisma", "migrate", "deploy"],

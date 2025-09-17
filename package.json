@@ -14,6 +14,7 @@
     "build": "next build",
     "start": "next start",
     "db:migrate": "dotenv -e .env.development.local -- prisma migrate dev",
+    "check:type": "tsc --noEmit",
     "lint": "next lint",
     "format": "prettier --check .",
     "test": "vitest",

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { Article, validateArticle } from "./model";
+import { validateArticle } from "./model";
 
 describe("validateArticle", () => {
   const article = {

@@ -20,6 +20,8 @@ jobs:
           cache: "pnpm"
       - name: Install Dependencies
         run: pnpm install
+      - name: ORM Setup
+        run: pnpm prisma generate
       - name: Type Check
         run: pnpm check:type
       - name: Run Lint

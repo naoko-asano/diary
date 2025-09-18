@@ -27,8 +27,12 @@ describe("articleScheme", () => {
     });
 
     it("空文字やスペースのみの場合、エラーがスローされる", () => {
-      expect(() => articleScheme.parse({ ...article, title: "" })).toThrow();
-      expect(() => articleScheme.parse({ ...article, title: " " })).toThrow();
+      expect(() => articleScheme.parse({ ...article, title: "" })).toThrow(
+        "1文字以上入力してください",
+      );
+      expect(() => articleScheme.parse({ ...article, title: " " })).toThrow(
+        "1文字以上入力してください",
+      );
     });
 
     it("255文字の場合、バリデーションが通る", () => {
@@ -40,7 +44,7 @@ describe("articleScheme", () => {
     it("255文字を超える場合、エラーがスローされる", () => {
       expect(() =>
         articleScheme.parse({ ...article, title: "a".repeat(256) }),
-      ).toThrow();
+      ).toThrow("255文字以内で入力してください");
     });
   });
 
@@ -59,8 +63,12 @@ describe("articleScheme", () => {
     });
 
     it("空文字やスペースのみ場合、エラーがスローされる", () => {
-      expect(() => articleScheme.parse({ ...article, body: "" })).toThrow();
-      expect(() => articleScheme.parse({ ...article, body: " " })).toThrow();
+      expect(() => articleScheme.parse({ ...article, body: "" })).toThrow(
+        "1文字以上入力してください",
+      );
+      expect(() => articleScheme.parse({ ...article, body: " " })).toThrow(
+        "1文字以上入力してください",
+      );
     });
   });
 });

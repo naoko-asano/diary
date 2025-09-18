@@ -26,8 +26,9 @@ describe("articleScheme", () => {
       ).toThrow();
     });
 
-    it("空文字の場合、エラーがスローされる", () => {
+    it("空文字やスペースのみの場合、エラーがスローされる", () => {
       expect(() => articleScheme.parse({ ...article, title: "" })).toThrow();
+      expect(() => articleScheme.parse({ ...article, title: " " })).toThrow();
     });
 
     it("255文字の場合、バリデーションが通る", () => {
@@ -51,14 +52,15 @@ describe("articleScheme", () => {
       ["boolean", true],
       ["object", {}],
       ["array", []],
-    ])("%s型の場合、エラーがスローされる", (_typeName, invalidBody) => {
+    ])("%s型の場合、エラーがスローされる", (typeName, invalidBody) => {
       expect(() =>
         articleScheme.parse({ ...article, body: invalidBody }),
       ).toThrow();
     });
 
-    it("空文字の場合、エラーがスローされる", () => {
+    it("空文字やスペースのみ場合、エラーがスローされる", () => {
       expect(() => articleScheme.parse({ ...article, body: "" })).toThrow();
+      expect(() => articleScheme.parse({ ...article, body: " " })).toThrow();
     });
   });
 });

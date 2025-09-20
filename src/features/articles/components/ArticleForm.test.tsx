@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createArticle } from "@/features/articles/services";
-import { cleanup, render, screen, userEvent } from "@/testing/utils";
+import { render, screen, userEvent } from "@/testing/utils";
 
 import { ArticleForm } from "./ArticleForm";
 
@@ -12,10 +12,6 @@ const mockedCreateArticle = vi.mocked(createArticle);
 
 beforeEach(() => {
   vi.clearAllMocks();
-});
-
-afterEach(() => {
-  cleanup();
 });
 
 describe("ArticleForm", () => {

@@ -40,3 +40,17 @@ a {
     color-scheme: dark;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .w-md-editor .wmde-markdown,
+  .w-md-editor .wmde-markdown-var {
+    --color-canvas-default: #2e2e2e;
+  }
+}
+
+[data-theme="custom-dark"] .wmde-markdown,
+[data-theme="custom-dark"] .wmde-markdown-var {
+  --color-canvas-default: #2e2e2e;
+  --color-fg-default: #ffffff;
+  --color-border-default: #424242;
+}

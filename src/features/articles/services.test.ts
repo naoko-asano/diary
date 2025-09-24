@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createArticle } from "@/features/articles/services";
+import { Article } from "@/generated/prisma";
 import prisma from "@/lib/__mocks__/database";
 
 vi.mock("@/lib/database");
@@ -43,5 +44,39 @@ describe("createArticle", () => {
     await expect(createArticle(articleParams)).rejects.toThrow(
       "Failed to create article\nError: DB error",
     );
+  });
+});
+
+describe("deleteArticle", () => {
+  it("指定IDの記事を削除し、削除した記事を返す", async () => {
+    const article: Article = {
+      id: 1,
+      ...articleParams,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    prisma.article.delete.mockResolvedValue(article);
+
+    const deletedArticle = await prisma.article.delete({
+      where: { id: article.id },
+    });
+
+    expect(prisma.article.delete).toHaveBeenCalledTimes(1);
+    expect(prisma.article.delete).toHaveBeenCalledWith({
+      where: { id: article.id },
+    });
+    expect(deletedArticle).toEqual(article);
+  });
+
+  it("削除に失敗する場合、エラーがスローされる", async () => {
+    prisma.article.delete.mockRejectedValue(new Error("Record not found"));
+
+    await expect(prisma.article.delete({ where: { id: 999 } })).rejects.toThrow(
+      "Record not found",
+    );
+    expect(prisma.article.delete).toHaveBeenCalledTimes(1);
+    expect(prisma.article.delete).toHaveBeenCalledWith({
+      where: { id: 999 },
+    });
   });
 });

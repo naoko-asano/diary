@@ -7,8 +7,8 @@ async function main() {
       update: {},
       create: {
         id: 1,
-        title: "foo",
-        body: "bar",
+        title: "title1",
+        body: "body1",
       },
     },
     {
@@ -16,8 +16,8 @@ async function main() {
       update: {},
       create: {
         id: 2,
-        title: "baz",
-        body: "qux",
+        title: "title2",
+        body: "body2",
       },
     },
   ];

@@ -16,11 +16,11 @@ export default async function setupDb() {
   );
   await execCommand("tsx", ["prisma/seed.ts"], "Creating Seed Data");
 
-  process.env.NEXTJS_PROCESS_ID = spawn("pnpm", ["dev"], {
+  process.env.NEXTJS_PROCESS_ID = spawn("pnpm", ["dev", "-p", "3100"], {
     stdio: "inherit",
   }).pid?.toString();
 
-  await waitForServer("http://localhost:3000");
+  await waitForServer("http://localhost:3100");
 }
 
 async function waitForServer(url: string): Promise<void> {

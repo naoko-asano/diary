@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { render, screen, userEvent, waitFor } from "@/testing/utils";
 
-import { ArticleTable } from "./ArticleTable";
+import { ArticleTable } from ".";
 
 const articles = [
   {

@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createArticle } from "@/features/articles/services";
 import { render, screen, userEvent } from "@/testing/utils";
 
-import { ArticleForm } from "./ArticleForm";
+import { ArticleForm } from ".";
 
 vi.mock("@/features/articles/services", () => ({
   createArticle: vi.fn(),

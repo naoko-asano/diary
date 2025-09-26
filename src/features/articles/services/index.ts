@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/database";
 
-import { validateArticle } from "./model";
+import { validateArticle } from "../model";
 
 export async function createArticle(params: { title: string; body: string }) {
   try {

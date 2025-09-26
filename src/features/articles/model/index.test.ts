@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { articleScheme, validateArticle } from "./model";
+import { articleScheme, validateArticle } from ".";
 
 const article = {
   title: "Test Article",

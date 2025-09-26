@@ -17,4 +17,4 @@ export function validateArticle(params: { title: string; body: string }) {
   }
 }
 
-export type Article = z.infer<typeof articleScheme>;
+// export type Article = z.infer<typeof articleScheme>;

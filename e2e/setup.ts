@@ -14,7 +14,6 @@ export default async function setupDb() {
     ["prisma", "migrate", "deploy"],
     "Running Migrations",
   );
-  await execCommand("tsx", ["prisma/seed.ts"], "Creating Seed Data");
 
   process.env.NEXTJS_PROCESS_ID = spawn("pnpm", ["dev", "-p", "3100"], {
     stdio: "inherit",

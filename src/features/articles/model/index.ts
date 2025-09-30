@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { Article as OriginalArticle } from "@/generated/prisma";
+
 export const articleScheme = z.object({
   title: z
     .string()
@@ -17,4 +19,5 @@ export function validateArticle(params: { title: string; body: string }) {
   }
 }
 
-// export type Article = z.infer<typeof articleScheme>;
+export type Article = OriginalArticle;
+export type ArticleParams = z.infer<typeof articleScheme>;

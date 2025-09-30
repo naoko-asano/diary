@@ -6,10 +6,13 @@ import MDEditor from "@uiw/react-md-editor";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import rehypeSanitize from "rehype-sanitize";
 
-import { articleScheme } from "@/features/articles/model";
-import { createArticle } from "@/features/articles/services";
+import { ArticleParams, articleScheme } from "@/features/articles/model";
 
-export function ArticleForm() {
+type Props = {
+  onSubmitAction: (values: ArticleParams) => Promise<void>;
+};
+
+export function ArticleForm({ onSubmitAction }: Props) {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -22,8 +25,7 @@ export function ArticleForm() {
   return (
     <form
       onSubmit={form.onSubmit(async (values) => {
-        await createArticle(values);
-        form.reset();
+        onSubmitAction(values);
       })}
     >
       <TextInput

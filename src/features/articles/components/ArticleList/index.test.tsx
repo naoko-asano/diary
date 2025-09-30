@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { render, screen, userEvent, waitFor } from "@/testing/utils";
 
-import { ArticleTable } from ".";
+import { ArticleList } from ".";
 
 const articles = [
   {
@@ -21,9 +21,9 @@ const articles = [
   },
 ];
 
-describe("ArticleTable", () => {
+describe("ArticleList", () => {
   it("記事の一覧が表示される", () => {
-    render(<ArticleTable articles={articles} onDeleteAction={() => {}} />);
+    render(<ArticleList articles={articles} onDeleteAction={() => {}} />);
     expect(screen.getByText("Title")).toBeInTheDocument();
     expect(screen.getByText("First Article")).toBeInTheDocument();
     expect(screen.getByText("Second Article")).toBeInTheDocument();
@@ -32,7 +32,7 @@ describe("ArticleTable", () => {
   it("削除ボタン押下時に確認モーダルが開き、承諾するとonDeleteActionに渡した関数が呼ばれる", async () => {
     const mockDeleteAction = vi.fn();
     render(
-      <ArticleTable articles={articles} onDeleteAction={mockDeleteAction} />,
+      <ArticleList articles={articles} onDeleteAction={mockDeleteAction} />,
     );
     const deletingButtons = screen.getAllByRole("button", { name: "Delete" });
 

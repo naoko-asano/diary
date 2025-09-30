@@ -19,7 +19,7 @@ type Props = {
   onDeleteAction: (id: number) => void;
 };
 
-export function ArticleTable({ articles, onDeleteAction }: Props) {
+export function ArticleList({ articles, onDeleteAction }: Props) {
   const [deletingModalOpened, setDeletingModalOpened] = useState<{
     opened: boolean;
     articleId: number | null;

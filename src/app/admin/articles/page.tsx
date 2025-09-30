@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache";
 
-import { ArticleTable } from "@/features/articles/components/ArticleTable";
+import { ArticleList } from "@/features/articles/components/ArticleList";
 import { deleteArticle } from "@/features/articles/services";
 import prisma from "@/lib/database";
 
@@ -11,5 +11,5 @@ export default async function Page() {
     await deleteArticle(id);
     revalidatePath("/admin/articles");
   }
-  return <ArticleTable articles={articles} onDeleteAction={handleDelete} />;
+  return <ArticleList articles={articles} onDeleteAction={handleDelete} />;
 }

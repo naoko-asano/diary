@@ -4,6 +4,7 @@ import { Button, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import MDEditor from "@uiw/react-md-editor";
 import { zod4Resolver } from "mantine-form-zod-resolver";
+import { useTransition } from "react";
 import rehypeSanitize from "rehype-sanitize";
 
 import { ArticleParams, articleScheme } from "@/features/articles/model";
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export function ArticleForm({ onSubmitAction }: Props) {
+  const [isPending, startTransition] = useTransition();
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -25,7 +27,9 @@ export function ArticleForm({ onSubmitAction }: Props) {
   return (
     <form
       onSubmit={form.onSubmit(async (values) => {
-        onSubmitAction(values);
+        startTransition(() => {
+          onSubmitAction(values);
+        });
       })}
     >
       <TextInput
@@ -50,7 +54,9 @@ export function ArticleForm({ onSubmitAction }: Props) {
           {form.errors.body}
         </Text>
       </div>
-      <Button type="submit">Submit</Button>
+      <Button type="submit" loading={isPending}>
+        Submit
+      </Button>
     </form>
   );
 }

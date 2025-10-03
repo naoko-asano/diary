@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { render, screen, userEvent } from "@/testing/utils";
+import { render, screen, userEvent, waitFor } from "@/testing/utils";
 
 import { ArticleForm } from ".";
 
@@ -36,7 +36,7 @@ describe("ArticleForm", () => {
     await userEvent.click(screen.getByRole("button", { name: "Submit" }));
 
     expect(mockedOnSubmitAction).toHaveBeenCalledTimes(1);
-    expect(mockedOnSubmitAction).toHaveBeenCalledWith({
+    expect(mockedOnSubmitAction).toHaveBeenCalledWith(null, {
       title: "Test Title",
       body: "Test Body",
     });
@@ -78,8 +78,11 @@ describe("ArticleForm", () => {
     expect(mockedOnSubmitAction).not.toHaveBeenCalled();
   });
 
-  it("onSubmitActionでエラー発生時、フォームの値は保持される", async () => {
-    const mockedOnSubmitAction = vi.fn().mockRejectedValue(new Error());
+  it("onSubmitActionでエラー発生時、エラーメッセージが表示され、フォームの値は保持される", async () => {
+    const mockedOnSubmitAction = vi.fn(() =>
+      Promise.resolve({ hasError: true }),
+    );
+
     render(<ArticleForm onSubmitAction={mockedOnSubmitAction} />);
 
     const titleInput = screen.getByLabelText("Title *");
@@ -90,9 +93,19 @@ describe("ArticleForm", () => {
 
     await userEvent.type(titleInput, "Test Title");
     await userEvent.type(bodyInput, "Test Body");
+
+    expect(
+      screen.queryByText("Failed to submit the form. Please try again."),
+    ).toBeNull();
+
     await userEvent.click(screen.getByRole("button", { name: "Submit" }));
 
     expect(mockedOnSubmitAction).toHaveBeenCalledTimes(1);
+    await waitFor(() =>
+      expect(
+        screen.getByText("Failed to submit the form. Please try again."),
+      ).toBeVisible(),
+    );
 
     const freshTitleInput = screen.getByLabelText(
       "Title *",

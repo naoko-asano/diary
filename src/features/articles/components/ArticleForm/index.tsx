@@ -1,20 +1,31 @@
 "use client";
 
 import { Button, Text, TextInput } from "@mantine/core";
+import { Notification } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import MDEditor from "@uiw/react-md-editor";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { useTransition } from "react";
+import { startTransition, useActionState } from "react";
 import rehypeSanitize from "rehype-sanitize";
 
 import { ArticleParams, articleScheme } from "@/features/articles/model";
 
+type FormState = {
+  hasError: boolean;
+} | null;
+
 type Props = {
-  onSubmitAction: (values: ArticleParams) => Promise<void>;
+  onSubmitAction: (
+    _prevState: FormState,
+    values: ArticleParams,
+  ) => Promise<FormState>;
 };
 
 export function ArticleForm({ onSubmitAction }: Props) {
-  const [isPending, startTransition] = useTransition();
+  const [formState, formAction, isPending] = useActionState(
+    onSubmitAction,
+    null,
+  );
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -28,10 +39,16 @@ export function ArticleForm({ onSubmitAction }: Props) {
     <form
       onSubmit={form.onSubmit(async (values) => {
         startTransition(() => {
-          onSubmitAction(values);
+          formAction(values);
         });
       })}
     >
+      {formState?.hasError && (
+        <Notification color="red" title="Error has occurred">
+          Failed to submit the form. Please try again.
+        </Notification>
+      )}
+
       <TextInput
         label="Title"
         key={form.key("title")}

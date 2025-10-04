@@ -8,6 +8,7 @@ import {
   Title,
 } from "@mantine/core";
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import localFont from "next/font/local";
 
 import { theme } from "@/lib/theme";

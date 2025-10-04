@@ -5,7 +5,7 @@ type Props = {
   title?: string;
   body: string;
   onAccept: () => void;
-  onCancel: () => void;
+  onClose: () => void;
 };
 
 export function ConfirmationModal({
@@ -13,12 +13,19 @@ export function ConfirmationModal({
   title = "確認",
   body,
   onAccept,
-  onCancel,
+  onClose,
 }: Props) {
   return (
-    <Modal opened={isOpened} onClose={onCancel} title={title} centered>
+    <Modal opened={isOpened} onClose={onClose} title={title} centered>
       <Text>{body}</Text>
-      <Button onClick={onAccept}>Accept</Button>
+      <Button
+        onClick={() => {
+          onAccept();
+          onClose();
+        }}
+      >
+        Accept
+      </Button>
     </Modal>
   );
 }

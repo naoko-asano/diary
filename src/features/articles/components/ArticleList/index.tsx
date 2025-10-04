@@ -67,7 +67,7 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
           deletingModalOpened.articleId &&
             onDeleteAction(deletingModalOpened.articleId);
         }}
-        onCancel={() =>
+        onClose={() =>
           setDeletingModalOpened({ opened: false, articleId: null })
         }
         body="記事を削除します。よろしいですか？"

@@ -10,7 +10,7 @@ describe("ConfirmationModal", () => {
       <ConfirmationModal
         isOpened={true}
         onAccept={() => {}}
-        onCancel={() => {}}
+        onClose={() => {}}
         title="sample title"
         body="sample body"
       />,
@@ -24,7 +24,7 @@ describe("ConfirmationModal", () => {
       <ConfirmationModal
         isOpened={true}
         onAccept={() => {}}
-        onCancel={() => {}}
+        onClose={() => {}}
         body="sample body"
       />,
     );
@@ -32,36 +32,38 @@ describe("ConfirmationModal", () => {
     expect(screen.getByText("確認")).toBeVisible();
   });
 
-  it("Acceptボタン押下でonAcceptが呼ばれる", async () => {
+  it("Acceptボタン押下でonAcceptとonCloseが呼ばれる", async () => {
     const mockOnAccept = vi.fn();
+    const mockOnClose = vi.fn();
 
     render(
       <ConfirmationModal
         isOpened={true}
         body="sample body"
         onAccept={mockOnAccept}
-        onCancel={() => {}}
+        onClose={mockOnClose}
       />,
     );
     const acceptButton = screen.getByRole("button", { name: "Accept" });
     await userEvent.click(acceptButton);
 
     expect(mockOnAccept).toHaveBeenCalledTimes(1);
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it("x印クリックでonCancelが呼ばれる", async () => {
-    const mockOnCancel = vi.fn();
+  it("x印クリックでonCloseが呼ばれる", async () => {
+    const mockonClose = vi.fn();
     render(
       <ConfirmationModal
         isOpened={true}
         onAccept={() => {}}
-        onCancel={mockOnCancel}
+        onClose={mockonClose}
         body="sample body"
       />,
     );
     const closingButton = screen.getAllByRole("button")[0];
     await userEvent.click(closingButton);
 
-    expect(mockOnCancel).toHaveBeenCalledTimes(1);
+    expect(mockonClose).toHaveBeenCalledTimes(1);
   });
 });

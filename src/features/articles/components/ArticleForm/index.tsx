@@ -1,11 +1,12 @@
 "use client";
 
 import { Button, Text, TextInput } from "@mantine/core";
-import { Notification } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { Notifications, notifications } from "@mantine/notifications";
+import { IconX } from "@tabler/icons-react";
 import MDEditor from "@uiw/react-md-editor";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { startTransition, useActionState } from "react";
+import { startTransition, useActionState, useEffect } from "react";
 import rehypeSanitize from "rehype-sanitize";
 
 import { ArticleParams, articleScheme } from "@/features/articles/model";
@@ -21,6 +22,8 @@ type Props = {
   ) => Promise<FormState>;
 };
 
+const xIcon = <IconX size={20} />;
+
 export function ArticleForm({ onSubmitAction }: Props) {
   const [formState, formAction, isPending] = useActionState(
     onSubmitAction,
@@ -35,45 +38,55 @@ export function ArticleForm({ onSubmitAction }: Props) {
     validate: zod4Resolver(articleScheme),
   });
 
-  return (
-    <form
-      onSubmit={form.onSubmit(async (values) => {
-        startTransition(() => {
-          formAction(values);
-        });
-      })}
-    >
-      {formState?.hasError && (
-        <Notification color="red" title="Error has occurred">
-          Failed to submit the form. Please try again.
-        </Notification>
-      )}
+  useEffect(() => {
+    if (formState?.hasError) {
+      notifications.show({
+        icon: xIcon,
+        title: <Text size="xs">Error has occurred</Text>,
+        message: (
+          <Text size="xs">Failed to submit the form. Please try again.</Text>
+        ),
+        color: "red",
+      });
+    }
+  }, [formState]);
 
-      <TextInput
-        label="Title"
-        key={form.key("title")}
-        {...form.getInputProps("title")}
-        required
-      />
-      <Text size={"sm"} my={6}>
-        Body
-      </Text>
-      <div data-theme="custom-dark">
-        <MDEditor
-          value={form.values.body}
-          onChange={(value) => form.setFieldValue("body", value ?? "")}
-          previewOptions={{
-            rehypePlugins: [[rehypeSanitize]],
-          }}
-          data-testid="body-editor"
+  return (
+    <>
+      <Notifications position="top-left" />
+      <form
+        onSubmit={form.onSubmit(async (values) => {
+          startTransition(() => {
+            formAction(values);
+          });
+        })}
+      >
+        <TextInput
+          label="Title"
+          key={form.key("title")}
+          {...form.getInputProps("title")}
+          required
         />
-        <Text c={"error"} size={"xs"} mt={4}>
-          {form.errors.body}
+        <Text size={"sm"} my={6}>
+          Body
         </Text>
-      </div>
-      <Button type="submit" loading={isPending}>
-        Submit
-      </Button>
-    </form>
+        <div data-theme="custom-dark">
+          <MDEditor
+            value={form.values.body}
+            onChange={(value) => form.setFieldValue("body", value ?? "")}
+            previewOptions={{
+              rehypePlugins: [[rehypeSanitize]],
+            }}
+            data-testid="body-editor"
+          />
+          <Text c={"error"} size={"xs"} mt={4}>
+            {form.errors.body}
+          </Text>
+        </div>
+        <Button type="submit" loading={isPending}>
+          Submit
+        </Button>
+      </form>
+    </>
   );
 }

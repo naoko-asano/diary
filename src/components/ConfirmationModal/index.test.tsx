@@ -19,6 +19,7 @@ describe("ConfirmationModal", () => {
     expect(screen.getByText("sample title")).toBeVisible();
     expect(screen.getByText("sample body")).toBeVisible();
   });
+
   it("titleを指定しない場合、デフォルトのタイトルが表示される", () => {
     render(
       <ConfirmationModal
@@ -33,37 +34,37 @@ describe("ConfirmationModal", () => {
   });
 
   it("Acceptボタン押下でonAcceptとonCloseが呼ばれる", async () => {
-    const mockOnAccept = vi.fn();
-    const mockOnClose = vi.fn();
+    const mockedOnAccept = vi.fn();
+    const mockedOnClose = vi.fn();
 
     render(
       <ConfirmationModal
         isOpened={true}
         body="sample body"
-        onAccept={mockOnAccept}
-        onClose={mockOnClose}
+        onAccept={mockedOnAccept}
+        onClose={mockedOnClose}
       />,
     );
     const acceptButton = screen.getByRole("button", { name: "Accept" });
     await userEvent.click(acceptButton);
 
-    expect(mockOnAccept).toHaveBeenCalledTimes(1);
-    expect(mockOnClose).toHaveBeenCalledTimes(1);
+    expect(mockedOnAccept).toHaveBeenCalledTimes(1);
+    expect(mockedOnClose).toHaveBeenCalledTimes(1);
   });
 
   it("x印クリックでonCloseが呼ばれる", async () => {
-    const mockonClose = vi.fn();
+    const mockedOnClose = vi.fn();
     render(
       <ConfirmationModal
         isOpened={true}
         onAccept={() => {}}
-        onClose={mockonClose}
+        onClose={mockedOnClose}
         body="sample body"
       />,
     );
     const closingButton = screen.getAllByRole("button")[0];
     await userEvent.click(closingButton);
 
-    expect(mockonClose).toHaveBeenCalledTimes(1);
+    expect(mockedOnClose).toHaveBeenCalledTimes(1);
   });
 });

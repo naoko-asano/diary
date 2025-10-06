@@ -11,4 +11,8 @@ test("記事を作成できる", async ({ page }) => {
 
   await page.waitForURL("/admin/articles");
   await expect(page.getByText("新しい記事")).toBeVisible();
+  // テスト環境ではレンダリングが2回起きてしまう
+  await expect(
+    page.getByText("Article created successfully!").first(),
+  ).toBeVisible();
 });

@@ -8,6 +8,7 @@ import {
   Title,
 } from "@mantine/core";
 import "@mantine/core/styles.css";
+import { Notifications } from "@mantine/notifications";
 import "@mantine/notifications/styles.css";
 import localFont from "next/font/local";
 
@@ -43,18 +44,21 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <MantineProvider theme={theme} defaultColorScheme="dark">
-          <Container
-            fluid
-            mx={{ base: "md", xs: "md", sm: "lg", lg: "xl" }}
-            my={{ base: "sm", xs: "sm", sm: "md", lg: "lg" }}
-          >
-            <Center mb={{ base: "sm", xs: "sm", sm: "md", lg: "lg" }}>
-              <Title order={1} size={"xl"}>
-                Diary
-              </Title>
-            </Center>
-            {children}
-          </Container>
+          <>
+            <Notifications position="top-left" />
+            <Container
+              fluid
+              mx={{ base: "md", xs: "md", sm: "lg", lg: "xl" }}
+              my={{ base: "sm", xs: "sm", sm: "md", lg: "lg" }}
+            >
+              <Center mb={{ base: "sm", xs: "sm", sm: "md", lg: "lg" }}>
+                <Title order={1} size={"xl"}>
+                  Diary
+                </Title>
+              </Center>
+              {children}
+            </Container>
+          </>
         </MantineProvider>
       </body>
     </html>

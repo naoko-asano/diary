@@ -2,7 +2,7 @@
 
 import { Button, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Notifications, notifications } from "@mantine/notifications";
+import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
 import MDEditor from "@uiw/react-md-editor";
 import { zod4Resolver } from "mantine-form-zod-resolver";
@@ -52,41 +52,38 @@ export function ArticleForm({ onSubmitAction }: Props) {
   }, [formState]);
 
   return (
-    <>
-      <Notifications position="top-left" />
-      <form
-        onSubmit={form.onSubmit(async (values) => {
-          startTransition(() => {
-            formAction(values);
-          });
-        })}
-      >
-        <TextInput
-          label="Title"
-          key={form.key("title")}
-          {...form.getInputProps("title")}
-          required
+    <form
+      onSubmit={form.onSubmit(async (values) => {
+        startTransition(() => {
+          formAction(values);
+        });
+      })}
+    >
+      <TextInput
+        label="Title"
+        key={form.key("title")}
+        {...form.getInputProps("title")}
+        required
+      />
+      <Text size={"sm"} my={6}>
+        Body
+      </Text>
+      <div data-theme="custom-dark">
+        <MDEditor
+          value={form.values.body}
+          onChange={(value) => form.setFieldValue("body", value ?? "")}
+          previewOptions={{
+            rehypePlugins: [[rehypeSanitize]],
+          }}
+          data-testid="body-editor"
         />
-        <Text size={"sm"} my={6}>
-          Body
+        <Text c={"error"} size={"xs"} mt={4}>
+          {form.errors.body}
         </Text>
-        <div data-theme="custom-dark">
-          <MDEditor
-            value={form.values.body}
-            onChange={(value) => form.setFieldValue("body", value ?? "")}
-            previewOptions={{
-              rehypePlugins: [[rehypeSanitize]],
-            }}
-            data-testid="body-editor"
-          />
-          <Text c={"error"} size={"xs"} mt={4}>
-            {form.errors.body}
-          </Text>
-        </div>
-        <Button type="submit" loading={isPending}>
-          Submit
-        </Button>
-      </form>
-    </>
+      </div>
+      <Button type="submit" loading={isPending}>
+        Submit
+      </Button>
+    </form>
   );
 }

@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
@@ -7,6 +8,21 @@ import { createArticle } from "@/features/articles/services";
 type FormState = {
   hasError: boolean;
 } | null;
+
+async function setFlashMessageCookie() {
+  "use server";
+  (await cookies()).set(
+    "flash-message",
+    JSON.stringify({
+      type: "success",
+      message: "Article created successfully!",
+    }),
+    {
+      httpOnly: false,
+      maxAge: 1,
+    },
+  );
+}
 
 export default function Page() {
   const handleSubmit = async (_prevState: FormState, values: ArticleParams) => {
@@ -21,6 +37,7 @@ export default function Page() {
     }
 
     if (!hasError) {
+      await setFlashMessageCookie();
       redirect("/admin/articles");
     }
     return { hasError };

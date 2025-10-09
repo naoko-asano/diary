@@ -9,6 +9,7 @@ import prisma from "@/lib/database";
 export default async function Page() {
   const articles = await prisma.article.findMany();
 
+  // TODO: flashMessage用のutilsを作成する
   // Article Formから遷移してきた場合のみ通知を表示
   const flashMessageCookie = (await cookies()).get("flash-message");
   const notification = flashMessageCookie
@@ -23,12 +24,10 @@ export default async function Page() {
   }
   return (
     <>
-      {isCreated && (
-        <FlashMessageNotifier
-          type={notification.type}
-          message={notification.message}
-        />
-      )}
+      <FlashMessageNotifier
+        formState={{ result: isCreated ? "success" : null }}
+        message={notification?.message || ""}
+      />
       <ArticleList articles={articles} onDeleteAction={handleDelete} />
     </>
   );

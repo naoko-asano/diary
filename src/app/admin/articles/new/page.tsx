@@ -4,11 +4,9 @@ import { redirect } from "next/navigation";
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
 import { ArticleParams } from "@/features/articles/model";
 import { createArticle } from "@/features/articles/services";
+import { FormResult, FormState } from "@/utils/formState";
 
-type FormState = {
-  hasError: boolean;
-} | null;
-
+// TODO: flashMessage用のutilsを作成する
 async function setFlashMessageCookie() {
   "use server";
   (await cookies()).set(
@@ -27,20 +25,21 @@ async function setFlashMessageCookie() {
 export default function Page() {
   const handleSubmit = async (_prevState: FormState, values: ArticleParams) => {
     "use server";
-    let hasError: boolean;
+    let formState: FormState;
+
     try {
       await createArticle(values);
-      hasError = false;
+      formState = { result: FormResult.SUCCESS };
     } catch (error) {
       console.error("Failed to create article:", error);
-      hasError = true;
+      formState = { result: FormResult.ERROR };
     }
 
-    if (!hasError) {
+    if (formState.result === FormResult.SUCCESS) {
       await setFlashMessageCookie();
       redirect("/admin/articles");
     }
-    return { hasError };
+    return formState;
   };
   return <ArticleForm onSubmitAction={handleSubmit} />;
 }

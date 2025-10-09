@@ -1,25 +1,33 @@
 "use client";
 
+import { Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { useEffect } from "react";
 
+import { FormResult, FormState } from "@/utils/formState";
+
 interface Props {
-  type: "success" | "error";
+  formState: FormState;
   message: string;
 }
 
-const checkIcon = <IconCheck size={20} />;
-const xIcon = <IconX size={20} />;
+function showFlashMessage(props: Props) {
+  const isSuccessful = props.formState.result === FormResult.SUCCESS;
+
+  notifications.show({
+    title: <Text size="xs">{isSuccessful ? "Success" : "Error"}</Text>,
+    message: <Text size="xs">{props.message}</Text>,
+    icon: isSuccessful ? <IconCheck size={20} /> : <IconX size={20} />,
+    color: isSuccessful ? "teal" : "red",
+  });
+}
 
 export function FlashMessageNotifier(props: Props) {
+  const { formState, message } = props;
   useEffect(() => {
-    const hasError = props.type === "error";
-    notifications.show({
-      title: hasError ? "Error" : "Success",
-      message: props.message,
-      icon: hasError ? xIcon : checkIcon,
-    });
-  }, [props]);
+    if (!formState.result) return;
+    showFlashMessage({ formState, message });
+  }, [formState, message]);
   return null;
 }

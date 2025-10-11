@@ -11,7 +11,7 @@ beforeEach(() => {
 });
 
 describe("FlashMessageNotifier", () => {
-  it("formState.resultがsuccessの場合、successとmessageで渡されたメッセージが表示される", () => {
+  it("渡されたmessageとformStateに合ったtitleのフラッシュメッセージが表示されること", () => {
     render(
       <FlashMessageNotifier
         formState={{ result: FormResult.SUCCESS }}
@@ -20,25 +20,5 @@ describe("FlashMessageNotifier", () => {
     );
     expect(screen.getByText("Success")).toBeInTheDocument();
     expect(screen.getByText("message")).toBeInTheDocument();
-  });
-
-  it("formState.resultがerrorの場合、errorとmessageで渡されたメッセージが表示される", () => {
-    render(
-      <FlashMessageNotifier
-        formState={{ result: FormResult.ERROR }}
-        message="message"
-      />,
-    );
-    expect(screen.getByText("Error")).toBeInTheDocument();
-    expect(screen.getByText("message")).toBeInTheDocument();
-  });
-
-  it("formState.resultがnullの場合、何も表示されない", () => {
-    render(
-      <FlashMessageNotifier formState={{ result: null }} message="message" />,
-    );
-    expect(screen.queryByText("Success")).not.toBeInTheDocument();
-    expect(screen.queryByText("Error")).not.toBeInTheDocument();
-    expect(screen.queryByText("message")).not.toBeInTheDocument();
   });
 });

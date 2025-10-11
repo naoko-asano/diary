@@ -6,7 +6,7 @@ export function render(ui: React.ReactNode) {
   return testingLibraryRender(ui, {
     wrapper: ({ children }: { children: React.ReactNode }) => (
       <MantineProvider>
-        <Notifications />
+        <Notifications position="top-left" />
         {children}
       </MantineProvider>
     ),

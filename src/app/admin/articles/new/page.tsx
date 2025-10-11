@@ -4,22 +4,15 @@ import { redirect } from "next/navigation";
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
 import { ArticleParams } from "@/features/articles/model";
 import { createArticle } from "@/features/articles/services";
+import { createFlashMessageCookieConfig } from "@/utils/flashMessage";
 import { FormResult, FormState } from "@/utils/formState";
 
-// TODO: flashMessage用のutilsを作成する
 async function setFlashMessageCookie() {
-  "use server";
-  (await cookies()).set(
-    "flash-message",
-    JSON.stringify({
-      type: "success",
-      message: "Article created successfully!",
-    }),
-    {
-      httpOnly: false,
-      maxAge: 1,
-    },
-  );
+  const config = createFlashMessageCookieConfig({
+    type: "success",
+    message: "Article created successfully!",
+  });
+  (await cookies()).set(config);
 }
 
 export default function Page() {

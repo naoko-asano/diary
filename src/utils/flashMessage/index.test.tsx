@@ -105,21 +105,17 @@ describe("resolveFlashMessageContent", () => {
     const cookieValue = JSON.stringify({
       message: "message",
     });
-    expect(() => resolveFlashMessageContent({ value: cookieValue })).toThrow(
-      "Cookie is not for flash Message",
-    );
+    expect(resolveFlashMessageContent({ value: cookieValue })).toBeNull();
   });
 
   it("cookie.valueのkeyにmessageが存在しない場合、エラーが発生する", () => {
     const cookieValue = JSON.stringify({
       type: "success",
     });
-    expect(() => resolveFlashMessageContent({ value: cookieValue })).toThrow(
-      "Cookie is not for flash Message",
-    );
+    expect(resolveFlashMessageContent({ value: cookieValue })).toBeNull();
   });
 
   it("cookie.valueがJSON.parseできない場合、エラーが発生する", () => {
-    expect(() => resolveFlashMessageContent({ value: "foo" })).toThrow();
+    expect(resolveFlashMessageContent({ value: "foo" })).toBeNull();
   });
 });

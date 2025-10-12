@@ -41,12 +41,16 @@ export function createFlashMessageCookieConfig({
 
 export function resolveFlashMessageContent(cookie?: { value: string }) {
   if (!cookie) return null;
-  const parsedCookieValue = JSON.parse(cookie.value);
-  if (!parsedCookieValue.type || !parsedCookieValue.message) {
-    throw new Error("Cookie is not for flash Message");
+  try {
+    const parsedCookieValue = JSON.parse(cookie.value);
+    if (!parsedCookieValue.type || !parsedCookieValue.message) {
+      throw new Error("Cookie is not for flash Message");
+    }
+    return {
+      formState: { result: parsedCookieValue.type },
+      message: parsedCookieValue.message,
+    };
+  } catch {
+    return null;
   }
-  return {
-    formState: { result: parsedCookieValue.type },
-    message: parsedCookieValue.message,
-  };
 }

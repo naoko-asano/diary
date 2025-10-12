@@ -25,7 +25,7 @@ export function createFlashMessageCookieConfig({
   type,
   message,
 }: {
-  type: "success" | "error";
+  type: FormResult;
   message: string;
 }) {
   return {

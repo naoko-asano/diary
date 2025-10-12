@@ -1,6 +1,8 @@
 export type FormState = {
-  result: (typeof FormResult)[keyof typeof FormResult] | null;
+  result: FormResult | null;
 };
+
+export type FormResult = (typeof FormResult)[keyof typeof FormResult];
 
 export const FormResult = {
   SUCCESS: "success",

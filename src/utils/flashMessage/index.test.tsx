@@ -2,6 +2,7 @@ import { notifications } from "@mantine/notifications";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { act, render, screen } from "@/testing/utils";
+import { FormResult } from "@/utils/formState";
 
 import {
   createFlashMessageCookieConfig,
@@ -56,11 +57,11 @@ describe("showFlashMessage", () => {
 });
 
 describe("createFlashMessageCookieConfig", () => {
-  it.each(["success", "error"])(
+  it.each([FormResult.SUCCESS, FormResult.ERROR])(
     "typeとmessageで渡された値がvalueにセットされて返る",
     (type) => {
       const config = createFlashMessageCookieConfig({
-        type: type as "success" | "error",
+        type,
         message: "message",
       });
       expect(config).toEqual({

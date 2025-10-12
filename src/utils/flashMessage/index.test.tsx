@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 describe("showFlashMessage", () => {
-  it("formState.resultがsuccessの場合、Successとmessageで渡されたメッセージが表示される", async () => {
+  it("formState.resultがsuccessの場合、Successと渡されたmessageがメッセージが表示される", async () => {
     render(<></>);
     await act(async () => {
       showFlashMessage({
@@ -27,7 +27,7 @@ describe("showFlashMessage", () => {
     expect(screen.getByText("message")).toBeInTheDocument();
   });
 
-  it("formState.resultがerrorの場合、Errorとmessageで渡されたメッセージが表示される", async () => {
+  it("formState.resultがerrorの場合、Errorと渡されたmessageが表示される", async () => {
     render(<></>);
     await act(async () => {
       showFlashMessage({
@@ -56,39 +56,45 @@ describe("showFlashMessage", () => {
 });
 
 describe("createFlashMessageCookieConfig", () => {
-  it("typeとmessageで渡された値がvalueにセットされて返る", () => {
-    const config = createFlashMessageCookieConfig({
-      type: "success",
-      message: "message",
-    });
-    expect(config).toEqual({
-      name: "flash-message",
-      value: JSON.stringify({
-        type: "success",
+  it.each(["success", "error"])(
+    "typeとmessageで渡された値がvalueにセットされて返る",
+    (type) => {
+      const config = createFlashMessageCookieConfig({
+        type: type as "success" | "error",
         message: "message",
-      }),
-      httpOnly: false,
-      maxAge: 1,
-    });
-  });
+      });
+      expect(config).toEqual({
+        name: "flash-message",
+        value: JSON.stringify({
+          type,
+          message: "message",
+        }),
+        httpOnly: false,
+        maxAge: 1,
+      });
+    },
+  );
 });
 
 describe("resolveFlashMessageContent", () => {
-  it("cookie.valueのkeyにtypeとmessageが存在する場合、formStateとmessageが返る", () => {
-    const cookieValue = JSON.stringify({
-      type: "success",
-      message: "message",
-    });
-    const flashMessageContent = resolveFlashMessageContent({
-      value: cookieValue,
-    });
-    expect(flashMessageContent).toEqual({
-      formState: {
-        result: "success",
-      },
-      message: "message",
-    });
-  });
+  it.each(["success", "error"])(
+    "cookie.valueのkeyにtypeとmessageが存在し、かつ typeが%sの場合、formStateとmessageが返る",
+    (type) => {
+      const cookieValue = JSON.stringify({
+        type,
+        message: "message",
+      });
+      const flashMessageContent = resolveFlashMessageContent({
+        value: cookieValue,
+      });
+      expect(flashMessageContent).toEqual({
+        formState: {
+          result: type,
+        },
+        message: "message",
+      });
+    },
+  );
 
   it("cookieがundefinedの場合、nullが返る", () => {
     expect(resolveFlashMessageContent()).toBeNull();

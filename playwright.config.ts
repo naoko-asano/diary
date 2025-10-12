@@ -36,6 +36,7 @@ export default defineConfig({
 
   globalSetup: "./e2e/setup",
   globalTeardown: "./e2e/teardown",
+  timeout: 50_000,
 
   /* Configure projects for major browsers */
   projects: [

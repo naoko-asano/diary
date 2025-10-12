@@ -2,18 +2,14 @@
 
 import { Button, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Notifications, notifications } from "@mantine/notifications";
-import { IconX } from "@tabler/icons-react";
 import MDEditor from "@uiw/react-md-editor";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { startTransition, useActionState, useEffect } from "react";
+import { startTransition, useActionState } from "react";
 import rehypeSanitize from "rehype-sanitize";
 
+import { FlashMessageNotifier } from "@/components/FlashMessageNotifier";
 import { ArticleParams, articleScheme } from "@/features/articles/model";
-
-type FormState = {
-  hasError: boolean;
-} | null;
+import { FormState } from "@/utils/formState";
 
 type Props = {
   onSubmitAction: (
@@ -22,13 +18,10 @@ type Props = {
   ) => Promise<FormState>;
 };
 
-const xIcon = <IconX size={20} />;
-
 export function ArticleForm({ onSubmitAction }: Props) {
-  const [formState, formAction, isPending] = useActionState(
-    onSubmitAction,
-    null,
-  );
+  const [formState, formAction, isPending] = useActionState(onSubmitAction, {
+    result: null,
+  });
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -38,22 +31,12 @@ export function ArticleForm({ onSubmitAction }: Props) {
     validate: zod4Resolver(articleScheme),
   });
 
-  useEffect(() => {
-    if (formState?.hasError) {
-      notifications.show({
-        icon: xIcon,
-        title: <Text size="xs">Error has occurred</Text>,
-        message: (
-          <Text size="xs">Failed to submit the form. Please try again.</Text>
-        ),
-        color: "red",
-      });
-    }
-  }, [formState]);
-
   return (
     <>
-      <Notifications position="top-left" />
+      <FlashMessageNotifier
+        formState={formState}
+        message="Failed to submit the form. Please try again."
+      />
       <form
         onSubmit={form.onSubmit(async (values) => {
           startTransition(() => {

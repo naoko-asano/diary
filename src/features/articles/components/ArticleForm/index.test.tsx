@@ -1,11 +1,14 @@
+import { notifications } from "@mantine/notifications";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { render, screen, userEvent, waitFor } from "@/testing/utils";
+import { FormResult } from "@/utils/formState";
 
 import { ArticleForm } from ".";
 
 beforeEach(() => {
   vi.clearAllMocks();
+  notifications.clean();
 });
 
 describe("ArticleForm", () => {
@@ -18,7 +21,9 @@ describe("ArticleForm", () => {
   });
 
   it("フォーム入力と送信ができ、onSubmitActionで渡された関数が呼ばれる", async () => {
-    const mockedOnSubmitAction = vi.fn();
+    const mockedOnSubmitAction = vi.fn(() =>
+      Promise.resolve({ result: FormResult.SUCCESS }),
+    );
     render(<ArticleForm onSubmitAction={mockedOnSubmitAction} />);
 
     const titleInput = screen.getByLabelText("Title *");
@@ -36,10 +41,13 @@ describe("ArticleForm", () => {
     await userEvent.click(screen.getByRole("button", { name: "Submit" }));
 
     expect(mockedOnSubmitAction).toHaveBeenCalledTimes(1);
-    expect(mockedOnSubmitAction).toHaveBeenCalledWith(null, {
-      title: "Test Title",
-      body: "Test Body",
-    });
+    expect(mockedOnSubmitAction).toHaveBeenCalledWith(
+      { result: null },
+      {
+        title: "Test Title",
+        body: "Test Body",
+      },
+    );
   });
 
   it("titleにバリデーションエラーがある場合、エラーメッセージが表示され、onSubmitActionで渡された関数は呼ばれない", async () => {
@@ -80,7 +88,7 @@ describe("ArticleForm", () => {
 
   it("onSubmitActionでエラー発生時、エラーメッセージが表示され、フォームの値は保持される", async () => {
     const mockedOnSubmitAction = vi.fn(() =>
-      Promise.resolve({ hasError: true }),
+      Promise.resolve({ result: FormResult.ERROR }),
     );
 
     render(<ArticleForm onSubmitAction={mockedOnSubmitAction} />);

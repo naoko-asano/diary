@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createArticle } from "@/features/articles/services";
+import { createArticle, findArticleById } from "@/features/articles/services";
 import { Article } from "@/generated/prisma";
 import prisma from "@/lib/__mocks__/database";
 
@@ -13,6 +13,24 @@ const articleParams = {
   title: "Test Article",
   body: "This is a test article.",
 };
+
+describe("findArticleById", () => {
+  it("指定IDの記事を取得できる", async () => {
+    const article: Article = {
+      id: 1,
+      ...articleParams,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    prisma.article.findUnique.mockResolvedValue(article);
+    const foundArticle = await findArticleById(1);
+    expect(prisma.article.findUnique).toHaveBeenCalledTimes(1);
+    expect(prisma.article.findUnique).toHaveBeenCalledWith({
+      where: { id: article.id },
+    });
+    expect(foundArticle).toEqual(article);
+  });
+});
 
 describe("createArticle", () => {
   it("DBに記事レコードが作成される", async () => {

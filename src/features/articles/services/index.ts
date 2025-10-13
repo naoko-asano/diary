@@ -4,6 +4,12 @@ import prisma from "@/lib/database";
 
 import { validateArticle } from "../model";
 
+export async function findArticleById(id: number) {
+  return await prisma.article.findUnique({
+    where: { id },
+  });
+}
+
 export async function createArticle(params: { title: string; body: string }) {
   try {
     validateArticle(params);

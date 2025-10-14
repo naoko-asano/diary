@@ -11,6 +11,14 @@ beforeEach(() => {
   notifications.clean();
 });
 
+const article = {
+  id: 1,
+  title: "example title",
+  body: "example body",
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
 describe("ArticleForm", () => {
   it("フォームの要素が正しく表示される", () => {
     render(<ArticleForm onSubmitAction={vi.fn()} />);
@@ -18,6 +26,32 @@ describe("ArticleForm", () => {
     expect(screen.getByLabelText("Title *")).toBeInTheDocument();
     expect(screen.getByText("Body")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Submit" })).toBeInTheDocument();
+  });
+
+  it("articleの値が渡された場合、フォームに初期値としてセットされる", () => {
+    render(<ArticleForm article={article} onSubmitAction={vi.fn()} />);
+
+    const titleInput = screen.getByLabelText("Title *") as HTMLInputElement;
+    const bodyEditor = screen.getByTestId("body-editor");
+    const bodyInput = bodyEditor.querySelector(
+      "textarea",
+    ) as HTMLTextAreaElement;
+
+    expect(titleInput).toHaveValue("example title");
+    expect(bodyInput).toHaveValue("example body");
+  });
+
+  it("articleの値が渡されなかった場合、フォームは空の状態で表示される", () => {
+    render(<ArticleForm onSubmitAction={vi.fn()} />);
+
+    const titleInput = screen.getByLabelText("Title *") as HTMLInputElement;
+    const bodyEditor = screen.getByTestId("body-editor");
+    const bodyInput = bodyEditor.querySelector(
+      "textarea",
+    ) as HTMLTextAreaElement;
+
+    expect(titleInput).toHaveValue("");
+    expect(bodyInput).toHaveValue("");
   });
 
   it("フォーム入力と送信ができ、onSubmitActionで渡された関数が呼ばれる", async () => {

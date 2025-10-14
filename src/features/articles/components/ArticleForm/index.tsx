@@ -8,25 +8,30 @@ import { startTransition, useActionState } from "react";
 import rehypeSanitize from "rehype-sanitize";
 
 import { FlashMessageNotifier } from "@/components/FlashMessageNotifier";
-import { ArticleParams, articleScheme } from "@/features/articles/model";
+import {
+  Article,
+  ArticleParams,
+  articleScheme,
+} from "@/features/articles/model";
 import { FormState } from "@/utils/formState";
 
 type Props = {
+  article?: Article;
   onSubmitAction: (
     _prevState: FormState,
     values: ArticleParams,
   ) => Promise<FormState>;
 };
 
-export function ArticleForm({ onSubmitAction }: Props) {
+export function ArticleForm({ article, onSubmitAction }: Props) {
   const [formState, formAction, isPending] = useActionState(onSubmitAction, {
     result: null,
   });
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      title: "",
-      body: "",
+      title: article?.title ?? "",
+      body: article?.body ?? "",
     },
     validate: zod4Resolver(articleScheme),
   });

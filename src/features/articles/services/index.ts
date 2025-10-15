@@ -23,6 +23,25 @@ export async function createArticle(params: { title: string; body: string }) {
   }
 }
 
+export async function updateArticle(params: {
+  id: number;
+  title: string;
+  body: string;
+}) {
+  validateArticle(params);
+  try {
+    return await prisma.article.update({
+      where: { id: params.id },
+      data: {
+        title: params.title,
+        body: params.body,
+      },
+    });
+  } catch (error) {
+    throw new Error("Failed to update article\n" + error);
+  }
+}
+
 export async function deleteArticle(id: number) {
   try {
     return await prisma.article.delete({

@@ -4,6 +4,7 @@ import {
   createArticle,
   deleteArticle,
   findArticleById,
+  updateArticle,
 } from "@/features/articles/services";
 import { Article } from "@/generated/prisma";
 import prisma from "@/lib/__mocks__/database";
@@ -65,6 +66,42 @@ describe("createArticle", () => {
 
     await expect(createArticle(articleParams)).rejects.toThrow(
       "Failed to create article\nError: DB error",
+    );
+  });
+});
+
+describe("updateArticle", () => {
+  it("記事が更新される", async () => {
+    const article: Article = {
+      id: 1,
+      ...articleParams,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    prisma.article.update.mockResolvedValue(article);
+
+    const updatedArticle = await updateArticle({ id: 1, ...articleParams });
+
+    expect(prisma.article.update).toHaveBeenCalledTimes(1);
+    expect(prisma.article.update).toHaveBeenCalledWith({
+      where: { id: 1 },
+      data: articleParams,
+    });
+    expect(updatedArticle).toEqual(article);
+  });
+
+  it("パラメータが不正な場合、エラーがスローされる", async () => {
+    await expect(
+      updateArticle({ id: 1, ...articleParams, title: "" }),
+    ).rejects.toThrow();
+    expect(prisma.article.update).not.toHaveBeenCalled();
+  });
+
+  it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
+    prisma.article.update.mockRejectedValue(new Error("DB error"));
+
+    await expect(updateArticle({ id: 999, ...articleParams })).rejects.toThrow(
+      "Failed to update article\nError: DB error",
     );
   });
 });

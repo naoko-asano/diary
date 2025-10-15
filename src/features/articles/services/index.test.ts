@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createArticle, findArticleById } from "@/features/articles/services";
+import {
+  createArticle,
+  deleteArticle,
+  findArticleById,
+} from "@/features/articles/services";
 import { Article } from "@/generated/prisma";
 import prisma from "@/lib/__mocks__/database";
 
@@ -75,13 +79,11 @@ describe("deleteArticle", () => {
     };
     prisma.article.delete.mockResolvedValue(article);
 
-    const deletedArticle = await prisma.article.delete({
-      where: { id: article.id },
-    });
+    const deletedArticle = await deleteArticle(1);
 
     expect(prisma.article.delete).toHaveBeenCalledTimes(1);
     expect(prisma.article.delete).toHaveBeenCalledWith({
-      where: { id: article.id },
+      where: { id: 1 },
     });
     expect(deletedArticle).toEqual(article);
   });

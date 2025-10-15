@@ -35,6 +35,20 @@ describe("findArticleById", () => {
     });
     expect(foundArticle).toEqual(article);
   });
+
+  it("指定IDの記事が存在しない場合、nullを返す", async () => {
+    prisma.article.findUnique.mockResolvedValue(null);
+    const foundArticle = await findArticleById(999);
+    expect(foundArticle).toBeNull();
+  });
+
+  it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
+    prisma.article.findUnique.mockRejectedValue(new Error("DB error"));
+
+    await expect(findArticleById(1)).rejects.toThrow(
+      "Failed to find article\nError: DB error",
+    );
+  });
 });
 
 describe("createArticle", () => {
@@ -55,13 +69,15 @@ describe("createArticle", () => {
     expect(article.title).toBe("Test Article");
     expect(article.body).toBe("This is a test article.");
   });
+
   it("パラメータが不正な場合、エラーがスローされる", async () => {
     await expect(
       createArticle({ ...articleParams, title: "" }),
     ).rejects.toThrow();
     expect(prisma.article.create).not.toHaveBeenCalled();
   });
-  it("DBにレコードが生成されない場合、エラーがスローされる", async () => {
+
+  it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
     prisma.article.create.mockRejectedValue(new Error("DB error"));
 
     await expect(createArticle(articleParams)).rejects.toThrow(
@@ -125,15 +141,11 @@ describe("deleteArticle", () => {
     expect(deletedArticle).toEqual(article);
   });
 
-  it("削除に失敗する場合、エラーがスローされる", async () => {
-    prisma.article.delete.mockRejectedValue(new Error("Record not found"));
+  it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
+    prisma.article.delete.mockRejectedValue(new Error("DB error"));
 
     await expect(prisma.article.delete({ where: { id: 999 } })).rejects.toThrow(
-      "Record not found",
+      "DB error",
     );
-    expect(prisma.article.delete).toHaveBeenCalledTimes(1);
-    expect(prisma.article.delete).toHaveBeenCalledWith({
-      where: { id: 999 },
-    });
   });
 });

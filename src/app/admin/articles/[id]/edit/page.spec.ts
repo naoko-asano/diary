@@ -29,7 +29,7 @@ test("更新前の記事のタイトルと本文が表示され、記事が更�
   await page.waitForURL("/admin/articles");
 
   await expect(page.getByText("updated title")).toBeVisible();
-  // テスト環境ではレンダリングが2回起きてしまう
+  // テスト環境ではレンダリングが2回起きてしまうため、first()で対応
   await expect(
     page.getByText("Article updated successfully!").first(),
   ).toBeVisible();

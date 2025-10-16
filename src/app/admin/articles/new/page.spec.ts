@@ -29,3 +29,18 @@ test("記事を作成できる", async ({ page }) => {
     page.getByText("Article created successfully!").first(),
   ).toBeVisible();
 });
+
+test("バリデーションに失敗する場合、エラーメッセージが表示され、記事は作成されない", async ({
+  page,
+}) => {
+  const titleInput = page.getByLabel("Title *");
+  const bodyEditor = page.getByTestId("body-editor");
+  const bodyInput = bodyEditor.getByRole("textbox");
+
+  await titleInput.fill(" ");
+  await bodyInput.fill("New Body");
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  await expect(page.getByText("1文字以上入力してください")).toBeVisible();
+  await expect(page).toHaveURL("/admin/articles/new");
+});

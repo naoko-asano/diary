@@ -24,7 +24,7 @@ export default function Page() {
       await createArticle(values);
       formState = { result: FormResult.SUCCESS };
     } catch (error) {
-      console.error("Failed to create article:", error);
+      console.error(error);
       formState = { result: FormResult.ERROR };
     }
 

@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createArticle } from "@/features/articles/services";
+import {
+  createArticle,
+  deleteArticle,
+  findArticleById,
+  updateArticle,
+} from "@/features/articles/services";
 import { Article } from "@/generated/prisma";
 import prisma from "@/lib/__mocks__/database";
 
@@ -13,6 +18,38 @@ const articleParams = {
   title: "Test Article",
   body: "This is a test article.",
 };
+
+describe("findArticleById", () => {
+  it("指定IDの記事を取得できる", async () => {
+    const article: Article = {
+      id: 1,
+      ...articleParams,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    prisma.article.findUnique.mockResolvedValue(article);
+    const foundArticle = await findArticleById(1);
+    expect(prisma.article.findUnique).toHaveBeenCalledTimes(1);
+    expect(prisma.article.findUnique).toHaveBeenCalledWith({
+      where: { id: article.id },
+    });
+    expect(foundArticle).toEqual(article);
+  });
+
+  it("指定IDの記事が存在しない場合、nullを返す", async () => {
+    prisma.article.findUnique.mockResolvedValue(null);
+    const foundArticle = await findArticleById(999);
+    expect(foundArticle).toBeNull();
+  });
+
+  it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
+    prisma.article.findUnique.mockRejectedValue(new Error("DB error"));
+
+    await expect(findArticleById(1)).rejects.toThrow(
+      "Failed to find article\nError: DB error",
+    );
+  });
+});
 
 describe("createArticle", () => {
   it("DBに記事レコードが作成される", async () => {
@@ -32,17 +69,55 @@ describe("createArticle", () => {
     expect(article.title).toBe("Test Article");
     expect(article.body).toBe("This is a test article.");
   });
+
   it("パラメータが不正な場合、エラーがスローされる", async () => {
     await expect(
       createArticle({ ...articleParams, title: "" }),
     ).rejects.toThrow();
     expect(prisma.article.create).not.toHaveBeenCalled();
   });
-  it("DBにレコードが生成されない場合、エラーがスローされる", async () => {
+
+  it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
     prisma.article.create.mockRejectedValue(new Error("DB error"));
 
     await expect(createArticle(articleParams)).rejects.toThrow(
       "Failed to create article\nError: DB error",
+    );
+  });
+});
+
+describe("updateArticle", () => {
+  it("記事が更新される", async () => {
+    const article: Article = {
+      id: 1,
+      ...articleParams,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    prisma.article.update.mockResolvedValue(article);
+
+    const updatedArticle = await updateArticle({ id: 1, ...articleParams });
+
+    expect(prisma.article.update).toHaveBeenCalledTimes(1);
+    expect(prisma.article.update).toHaveBeenCalledWith({
+      where: { id: 1 },
+      data: articleParams,
+    });
+    expect(updatedArticle).toEqual(article);
+  });
+
+  it("パラメータが不正な場合、エラーがスローされる", async () => {
+    await expect(
+      updateArticle({ id: 1, ...articleParams, title: "" }),
+    ).rejects.toThrow();
+    expect(prisma.article.update).not.toHaveBeenCalled();
+  });
+
+  it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
+    prisma.article.update.mockRejectedValue(new Error("DB error"));
+
+    await expect(updateArticle({ id: 999, ...articleParams })).rejects.toThrow(
+      "Failed to update article\nError: DB error",
     );
   });
 });
@@ -57,26 +132,20 @@ describe("deleteArticle", () => {
     };
     prisma.article.delete.mockResolvedValue(article);
 
-    const deletedArticle = await prisma.article.delete({
-      where: { id: article.id },
-    });
+    const deletedArticle = await deleteArticle(1);
 
     expect(prisma.article.delete).toHaveBeenCalledTimes(1);
     expect(prisma.article.delete).toHaveBeenCalledWith({
-      where: { id: article.id },
+      where: { id: 1 },
     });
     expect(deletedArticle).toEqual(article);
   });
 
-  it("削除に失敗する場合、エラーがスローされる", async () => {
-    prisma.article.delete.mockRejectedValue(new Error("Record not found"));
+  it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
+    prisma.article.delete.mockRejectedValue(new Error("DB error"));
 
-    await expect(prisma.article.delete({ where: { id: 999 } })).rejects.toThrow(
-      "Record not found",
+    await expect(deleteArticle(1)).rejects.toThrow(
+      "Failed to delete article\nError: DB error",
     );
-    expect(prisma.article.delete).toHaveBeenCalledTimes(1);
-    expect(prisma.article.delete).toHaveBeenCalledWith({
-      where: { id: 999 },
-    });
   });
 });

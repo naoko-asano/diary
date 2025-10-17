@@ -1,27 +1,40 @@
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
 import { ArticleParams } from "@/features/articles/model";
-import { createArticle } from "@/features/articles/services";
+import { findArticleById, updateArticle } from "@/features/articles/services";
 import { createFlashMessageCookieConfig } from "@/utils/flashMessage";
 import { FormResult, FormState } from "@/utils/formState";
+
+type Props = {
+  params: Promise<Params>;
+};
+
+type Params = { id: string };
 
 async function setFlashMessageCookie() {
   const config = createFlashMessageCookieConfig({
     type: "success",
-    message: "Article created successfully!",
+    message: "Article updated successfully!",
   });
   (await cookies()).set(config);
 }
 
-export default function Page() {
+export default async function Page(props: Props) {
+  const { id: stringifiedId } = await props.params;
+  const id = Number(stringifiedId);
+  const article = await findArticleById(id);
+  if (!article) {
+    notFound();
+  }
+
   const handleSubmit = async (_prevState: FormState, values: ArticleParams) => {
     "use server";
     let formState: FormState;
 
     try {
-      await createArticle(values);
+      await updateArticle({ id, ...values });
       formState = { result: FormResult.SUCCESS };
     } catch (error) {
       console.error(error);
@@ -34,5 +47,5 @@ export default function Page() {
     }
     return formState;
   };
-  return <ArticleForm onSubmitAction={handleSubmit} />;
+  return <ArticleForm article={article} onSubmitAction={handleSubmit} />;
 }

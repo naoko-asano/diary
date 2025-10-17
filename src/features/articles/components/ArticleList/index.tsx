@@ -41,7 +41,13 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
             <TableTr>
               <TableTd>{article.title}</TableTd>
               <TableTd>
-                <Button size="xs">Edit</Button>
+                <Button
+                  size="xs"
+                  component="a"
+                  href={`/admin/articles/${article.id}/edit`}
+                >
+                  Edit
+                </Button>
               </TableTd>
               <TableTd>
                 <Button

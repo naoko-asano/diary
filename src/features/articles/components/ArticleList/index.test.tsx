@@ -29,6 +29,15 @@ describe("ArticleList", () => {
     expect(screen.getByText("Second Article")).toBeInTheDocument();
   });
 
+  it("編集ボタンのリンク先が記事の編集ページである", () => {
+    render(<ArticleList articles={articles} onDeleteAction={() => {}} />);
+    const editingLinks = screen.getAllByRole("link", { name: "Edit" });
+
+    expect(editingLinks).toHaveLength(2);
+    expect(editingLinks[0]).toHaveAttribute("href", "/admin/articles/1/edit");
+    expect(editingLinks[1]).toHaveAttribute("href", "/admin/articles/2/edit");
+  });
+
   it("削除ボタン押下時に確認モーダルが開き、承諾するとonDeleteActionに渡した関数が呼ばれる", async () => {
     const mockDeleteAction = vi.fn();
     render(

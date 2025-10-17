@@ -144,8 +144,8 @@ describe("deleteArticle", () => {
   it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
     prisma.article.delete.mockRejectedValue(new Error("DB error"));
 
-    await expect(prisma.article.delete({ where: { id: 999 } })).rejects.toThrow(
-      "DB error",
+    await expect(deleteArticle(1)).rejects.toThrow(
+      "Failed to delete article\nError: DB error",
     );
   });
 });

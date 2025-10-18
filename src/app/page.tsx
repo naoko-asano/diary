@@ -1,9 +1,9 @@
 import { Grid, GridCol, Title } from "@mantine/core";
 
-import prisma from "@/lib/database";
+import { getAllArticles } from "@/features/articles/services";
 
 export default async function Page() {
-  const articles = await prisma.article.findMany();
+  const articles = await getAllArticles();
   return (
     <Grid>
       {articles.map((article) => (

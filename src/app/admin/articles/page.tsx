@@ -4,14 +4,14 @@ import { cookies } from "next/headers";
 import { FlashMessageNotifier } from "@/components/FlashMessageNotifier";
 import { ArticleList } from "@/features/articles/components/ArticleList";
 import { deleteArticle } from "@/features/articles/services";
-import prisma from "@/lib/database";
+import { getAllArticles } from "@/features/articles/services";
 import {
   FLASH_MESSAGE_COOKIE_NAME,
   resolveFlashMessageContent,
 } from "@/utils/flashMessage";
 
 export default async function Page() {
-  const articles = await prisma.article.findMany();
+  const articles = await getAllArticles();
 
   // Article Formから遷移してきた場合のみ通知を表示
   const flashMessageCookie = (await cookies()).get(FLASH_MESSAGE_COOKIE_NAME);

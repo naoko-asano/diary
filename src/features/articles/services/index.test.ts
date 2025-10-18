@@ -4,6 +4,7 @@ import {
   createArticle,
   deleteArticle,
   findArticleById,
+  getAllArticles,
   updateArticle,
 } from "@/features/articles/services";
 import { Article } from "@/generated/prisma";
@@ -19,6 +20,40 @@ const articleParams = {
   body: "This is a test article.",
 };
 
+describe("getAllArticles", () => {
+  it("全ての記事を取得できる", async () => {
+    const articles: Article[] = [
+      {
+        id: 1,
+        ...articleParams,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 2,
+        title: "Another Article",
+        body: "This is another test article.",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+    prisma.article.findMany.mockResolvedValue(articles);
+
+    const result = await getAllArticles();
+
+    expect(prisma.article.findMany).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(articles);
+  });
+
+  it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
+    prisma.article.findMany.mockRejectedValue(new Error("DB error"));
+
+    await expect(getAllArticles()).rejects.toThrow(
+      "Failed to get all articles\nError: DB error",
+    );
+  });
+});
+
 describe("findArticleById", () => {
   it("指定IDの記事を取得できる", async () => {
     const article: Article = {
@@ -28,18 +63,18 @@ describe("findArticleById", () => {
       updatedAt: new Date(),
     };
     prisma.article.findUnique.mockResolvedValue(article);
-    const foundArticle = await findArticleById(1);
+    const result = await findArticleById(1);
     expect(prisma.article.findUnique).toHaveBeenCalledTimes(1);
     expect(prisma.article.findUnique).toHaveBeenCalledWith({
       where: { id: article.id },
     });
-    expect(foundArticle).toEqual(article);
+    expect(result).toEqual(article);
   });
 
   it("指定IDの記事が存在しない場合、nullを返す", async () => {
     prisma.article.findUnique.mockResolvedValue(null);
-    const foundArticle = await findArticleById(999);
-    expect(foundArticle).toBeNull();
+    const result = await findArticleById(999);
+    expect(result).toBeNull();
   });
 
   it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
@@ -59,15 +94,15 @@ describe("createArticle", () => {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    const article = await createArticle(articleParams);
+    const result = await createArticle(articleParams);
 
     expect(prisma.article.create).toHaveBeenCalledTimes(1);
     expect(prisma.article.create).toHaveBeenCalledWith({
       data: articleParams,
     });
-    expect(article).toHaveProperty("id", 1);
-    expect(article.title).toBe("Test Article");
-    expect(article.body).toBe("This is a test article.");
+    expect(result).toHaveProperty("id", 1);
+    expect(result.title).toBe("Test Article");
+    expect(result.body).toBe("This is a test article.");
   });
 
   it("パラメータが不正な場合、エラーがスローされる", async () => {
@@ -96,14 +131,14 @@ describe("updateArticle", () => {
     };
     prisma.article.update.mockResolvedValue(article);
 
-    const updatedArticle = await updateArticle({ id: 1, ...articleParams });
+    const result = await updateArticle({ id: 1, ...articleParams });
 
     expect(prisma.article.update).toHaveBeenCalledTimes(1);
     expect(prisma.article.update).toHaveBeenCalledWith({
       where: { id: 1 },
       data: articleParams,
     });
-    expect(updatedArticle).toEqual(article);
+    expect(result).toEqual(article);
   });
 
   it("パラメータが不正な場合、エラーがスローされる", async () => {
@@ -132,13 +167,13 @@ describe("deleteArticle", () => {
     };
     prisma.article.delete.mockResolvedValue(article);
 
-    const deletedArticle = await deleteArticle(1);
+    const result = await deleteArticle(1);
 
     expect(prisma.article.delete).toHaveBeenCalledTimes(1);
     expect(prisma.article.delete).toHaveBeenCalledWith({
       where: { id: 1 },
     });
-    expect(deletedArticle).toEqual(article);
+    expect(result).toEqual(article);
   });
 
   it("DB側のエラーが発生した場合、エラーがスローされる", async () => {

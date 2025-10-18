@@ -4,6 +4,14 @@ import prisma from "@/lib/database";
 
 import { validateArticle } from "../model";
 
+export async function getAllArticles() {
+  try {
+    return await prisma.article.findMany();
+  } catch (error) {
+    throw new Error("Failed to get all articles\n" + error);
+  }
+}
+
 export async function findArticleById(id: number) {
   try {
     return await prisma.article.findUnique({

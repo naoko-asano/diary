@@ -54,3 +54,8 @@ a {
   --color-fg-default: #ffffff;
   --color-border-default: #424242;
 }
+
+.markdown ul,
+.markdown ol {
+  list-style-position: inside;
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Anchor,
   Button,
   Table,
   TableTbody,
@@ -39,7 +40,11 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
         {articles.map((article) => (
           <TableTbody key={article.id}>
             <TableTr>
-              <TableTd>{article.title}</TableTd>
+              <TableTd>
+                <Anchor href={`/articles/${article.id}`} c="white">
+                  {article.title}
+                </Anchor>
+              </TableTd>
               <TableTd>
                 <Button
                   size="xs"

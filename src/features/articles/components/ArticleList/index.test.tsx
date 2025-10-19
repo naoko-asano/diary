@@ -29,6 +29,17 @@ describe("ArticleList", () => {
     expect(screen.getByText("Second Article")).toBeInTheDocument();
   });
 
+  it("記事のタイトルのリンク先が記事の詳細ページである", () => {
+    render(<ArticleList articles={articles} onDeleteAction={() => {}} />);
+    const firstTitleLink = screen.getByRole("link", { name: "First Article" });
+    const secondTitleLink = screen.getByRole("link", {
+      name: "Second Article",
+    });
+
+    expect(firstTitleLink).toHaveAttribute("href", "/articles/1");
+    expect(secondTitleLink).toHaveAttribute("href", "/articles/2");
+  });
+
   it("編集ボタンのリンク先が記事の編集ページである", () => {
     render(<ArticleList articles={articles} onDeleteAction={() => {}} />);
     const editingLinks = screen.getAllByRole("link", { name: "Edit" });

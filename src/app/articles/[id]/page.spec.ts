@@ -11,8 +11,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("titleとbodyが正しく表示される", async ({ page }) => {
-  await expect(page.getByText("Title1")).toBeVisible();
-  await expect(page.getByText("Body1")).toBeVisible();
+  await expect(page.getByText("title1")).toBeVisible();
+  await expect(page.getByText("body1")).toBeVisible();
 });
 
 test("記事が見つからない場合、404ページが表示される", async ({ page }) => {

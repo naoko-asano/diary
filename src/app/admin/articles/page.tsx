@@ -1,3 +1,4 @@
+import { Box, Center, Flex, Pagination } from "@mantine/core";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -10,8 +11,11 @@ import {
   resolveFlashMessageContent,
 } from "@/utils/flashMessage";
 
+const ARTICLE_COUNT_PER_PAGE = 20;
+
 export default async function Page() {
   const articles = await getAllArticles();
+  const lastPageIndex = Math.ceil(articles.length / ARTICLE_COUNT_PER_PAGE);
 
   // Article Formから遷移してきた場合のみ通知を表示
   const flashMessageCookie = (await cookies()).get(FLASH_MESSAGE_COOKIE_NAME);
@@ -24,8 +28,25 @@ export default async function Page() {
   }
   return (
     <>
-      {flashMessageContent && <FlashMessageNotifier {...flashMessageContent} />}
-      <ArticleList articles={articles} onDeleteAction={handleDelete} />
+      <Flex
+        direction="column"
+        miw="100%"
+        mih="calc(100vh - 128px - 78px - 64px)"
+      >
+        {flashMessageContent && (
+          <FlashMessageNotifier {...flashMessageContent} />
+        )}
+        <Box style={{ flex: 1 }}>
+          <ArticleList articles={articles} onDeleteAction={handleDelete} />
+        </Box>
+        <Center mt="auto">
+          <Pagination
+            total={lastPageIndex}
+            size="sm"
+            styles={{ control: { fontSize: "20px" } }}
+          />
+        </Center>
+      </Flex>
     </>
   );
 }

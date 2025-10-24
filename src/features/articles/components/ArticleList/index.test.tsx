@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { render, screen, userEvent, waitFor } from "@/testing/utils";
+import { render, screen, userEvent, waitFor } from "@testing/utils";
 
 import { ArticleList } from ".";
 

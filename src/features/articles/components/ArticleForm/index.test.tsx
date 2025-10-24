@@ -1,7 +1,7 @@
 import { notifications } from "@mantine/notifications";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { render, screen, userEvent, waitFor } from "@/testing/utils";
+import { render, screen, userEvent, waitFor } from "@testing/utils";
 import { FormResult } from "@/utils/formState";
 
 import { ArticleForm } from ".";

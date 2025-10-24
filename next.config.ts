@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["@mantine/core", "@mantine/hooks"],
   },
   eslint: {
-    dirs: ["src", "e2e"],
+    dirs: ["src", "e2e", "testing"],
   },
 };
 

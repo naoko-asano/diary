@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { render, screen, userEvent } from "@/testing/utils";
+import { render, screen, userEvent } from "@testing/utils";
 
 import { ConfirmationModal } from ".";
 

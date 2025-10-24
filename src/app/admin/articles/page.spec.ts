@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { resetArticles, seedArticles } from "$e2e/factories/article";
+import { resetArticles, seedArticles } from "@e2e/factories/article";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/admin/articles");

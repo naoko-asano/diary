@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { resetArticles, seedArticles } from "$e2e/factories/article";
+import { resetArticles, seedArticles } from "@e2e/factories/article";
 import prisma from "@/lib/database";
 
 test.beforeEach(async ({ page }) => {

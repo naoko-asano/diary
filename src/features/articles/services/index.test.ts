@@ -4,7 +4,7 @@ import {
   createArticle,
   deleteArticle,
   findArticleById,
-  getAllArticles,
+  getPaginatedArticles,
   updateArticle,
 } from "@/features/articles/services";
 import { Article } from "@/generated/prisma";
@@ -20,8 +20,8 @@ const articleParams = {
   body: "This is a test article.",
 };
 
-describe("getAllArticles", () => {
-  it("全ての記事を取得できる", async () => {
+describe("getPaginatedArticles", () => {
+  it("指定ページの記事と全てのページ数を取得できる", async () => {
     const articles: Article[] = [
       {
         id: 1,
@@ -38,18 +38,23 @@ describe("getAllArticles", () => {
       },
     ];
     prisma.article.findMany.mockResolvedValue(articles);
+    prisma.article.count.mockResolvedValue(2);
 
-    const result = await getAllArticles();
+    const result = await getPaginatedArticles({ page: 1, perPage: 2 });
 
     expect(prisma.article.findMany).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(articles);
+    expect(prisma.article.findMany).toHaveBeenCalledWith({
+      skip: 0,
+      take: 2,
+    });
+    expect(result).toEqual({ articles, totalPage: 1 });
   });
 
   it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
     prisma.article.findMany.mockRejectedValue(new Error("DB error"));
 
-    await expect(getAllArticles()).rejects.toThrow(
-      "Failed to get all articles\nError: DB error",
+    await expect(getPaginatedArticles({ page: 1, perPage: 2 })).rejects.toThrow(
+      "Failed to get paginated articles\nError: DB error",
     );
   });
 });

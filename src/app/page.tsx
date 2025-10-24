@@ -1,9 +1,9 @@
 import { Grid, GridCol, Title } from "@mantine/core";
 
-import { getAllArticles } from "@/features/articles/services";
+import { getPaginatedArticles } from "@/features/articles/services";
 
 export default async function Page() {
-  const articles = await getAllArticles();
+  const { articles } = await getPaginatedArticles({ page: 1 });
   return (
     <Grid>
       {articles.map((article) => (

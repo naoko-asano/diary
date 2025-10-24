@@ -1,21 +1,27 @@
-import { Box, Center, Flex, Pagination } from "@mantine/core";
+import { Box, Center, Flex } from "@mantine/core";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
 import { FlashMessageNotifier } from "@/components/FlashMessageNotifier";
+import { Pagination } from "@/components/Pagination";
 import { ArticleList } from "@/features/articles/components/ArticleList";
 import { deleteArticle } from "@/features/articles/services";
-import { getAllArticles } from "@/features/articles/services";
+import { getPaginatedArticles } from "@/features/articles/services";
 import {
   FLASH_MESSAGE_COOKIE_NAME,
   resolveFlashMessageContent,
 } from "@/utils/flashMessage";
 
-const ARTICLE_COUNT_PER_PAGE = 20;
+type Props = {
+  searchParams: Promise<{
+    page?: string;
+  }>;
+};
 
-export default async function Page() {
-  const articles = await getAllArticles();
-  const lastPageIndex = Math.ceil(articles.length / ARTICLE_COUNT_PER_PAGE);
+export default async function Page(props: Props) {
+  const searchParams = await props.searchParams;
+  const page = searchParams.page ? parseInt(searchParams.page) : 1;
+  const { articles, totalPage } = await getPaginatedArticles({ page });
 
   // Article Formから遷移してきた場合のみ通知を表示
   const flashMessageCookie = (await cookies()).get(FLASH_MESSAGE_COOKIE_NAME);
@@ -40,11 +46,7 @@ export default async function Page() {
           <ArticleList articles={articles} onDeleteAction={handleDelete} />
         </Box>
         <Center mt="auto">
-          <Pagination
-            total={lastPageIndex}
-            size="sm"
-            styles={{ control: { fontSize: "20px" } }}
-          />
+          <Pagination total={totalPage} />
         </Center>
       </Flex>
     </>

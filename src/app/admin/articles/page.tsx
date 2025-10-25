@@ -1,4 +1,4 @@
-import { Box, Center, Flex } from "@mantine/core";
+import { Box, Center } from "@mantine/core";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -11,6 +11,7 @@ import {
   FLASH_MESSAGE_COOKIE_NAME,
   resolveFlashMessageContent,
 } from "@/utils/flashMessage";
+import { parsePageParam } from "@/utils/parsePageParam";
 
 type Props = {
   searchParams: Promise<{
@@ -18,20 +19,9 @@ type Props = {
   }>;
 };
 
-function resolvePageNumber(pageParam: string | undefined): number {
-  if (!pageParam) {
-    return 1;
-  }
-  const pageNumber = parseInt(pageParam, 10);
-  if (isNaN(pageNumber) || pageNumber < 1) {
-    return 1;
-  }
-  return pageNumber;
-}
-
 export default async function Page(props: Props) {
   const searchParams = await props.searchParams;
-  const page = resolvePageNumber(searchParams.page);
+  const page = parsePageParam(searchParams.page);
   const { articles, totalPage } = await getPaginatedArticles({ page });
 
   // Article Formから遷移してきた場合のみ通知を表示
@@ -45,21 +35,13 @@ export default async function Page(props: Props) {
   }
   return (
     <>
-      <Flex
-        direction="column"
-        miw="100%"
-        mih="calc(100vh - 128px - 78px - 64px)"
-      >
-        {flashMessageContent && (
-          <FlashMessageNotifier {...flashMessageContent} />
-        )}
-        <Box style={{ flex: 1 }}>
-          <ArticleList articles={articles} onDeleteAction={handleDelete} />
-        </Box>
-        <Center mt="auto">
-          <Pagination total={totalPage} />
-        </Center>
-      </Flex>
+      {flashMessageContent && <FlashMessageNotifier {...flashMessageContent} />}
+      <Box style={{ flex: 1 }}>
+        <ArticleList articles={articles} onDeleteAction={handleDelete} />
+      </Box>
+      <Center mt="auto">
+        <Pagination total={totalPage} />
+      </Center>
     </>
   );
 }

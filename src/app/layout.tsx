@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import {
   Center,
   ColorSchemeScript,
-  Container,
+  Flex,
   mantineHtmlProps,
   MantineProvider,
   Title,
@@ -46,10 +46,11 @@ export default function RootLayout({
         <MantineProvider theme={theme} defaultColorScheme="dark">
           <>
             <Notifications position="top-left" />
-            <Container
-              fluid
-              mx={{ base: "md", xs: "md", sm: "lg", lg: "xl" }}
-              my={{ base: "sm", xs: "sm", sm: "md", lg: "lg" }}
+            <Flex
+              mih="100vh"
+              direction="column"
+              px={{ base: "md", xs: "md", sm: "lg", lg: "xl" }}
+              py={{ base: "sm", xs: "sm", sm: "md", lg: "lg" }}
             >
               <Center mb={{ base: "sm", xs: "sm", sm: "md", lg: "lg" }}>
                 <Title order={1} size={"xl"}>
@@ -57,7 +58,7 @@ export default function RootLayout({
                 </Title>
               </Center>
               {children}
-            </Container>
+            </Flex>
           </>
         </MantineProvider>
       </body>

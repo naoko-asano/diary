@@ -1,8 +1,8 @@
 import { notifications } from "@mantine/notifications";
-import { act, render, screen } from "@testing/utils";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { FormResult } from "@/utils/formState";
+import { act, render, screen } from "@testing/utils";
 
 import {
   createFlashMessageCookieConfig,

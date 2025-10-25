@@ -1,7 +1,7 @@
 "use client";
 
 import { Pagination as OriginalPagination } from "@mantine/core";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 type Props = {
   total: number;
@@ -9,11 +9,11 @@ type Props = {
 
 export function Pagination(props: Props) {
   const { total } = props;
-
   const pathName = usePathname();
+  const router = useRouter();
 
-  function handlePageChange(page: number) {
-    redirect(`${pathName}?page=${page}`);
+  function handlePageChange(page: number, pathName: string) {
+    router.push(`${pathName}?page=${page}`);
   }
 
   return (
@@ -22,7 +22,7 @@ export function Pagination(props: Props) {
       size="sm"
       styles={{ control: { fontSize: "20px" } }}
       onChange={(page) => {
-        handlePageChange(page);
+        handlePageChange(page, pathName);
       }}
     />
   );

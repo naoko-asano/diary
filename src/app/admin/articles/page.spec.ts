@@ -51,3 +51,23 @@ test("1ページにつき15記事が表示される", async ({ page }) => {
   await expect(page.getByText("title15", { exact: true })).toHaveCount(0);
   await expect(page.getByText("title16", { exact: true })).toBeVisible();
 });
+
+test("URLクエリストリングのpageの値が数字に変換できない場合でもエラーにならない", async ({
+  page,
+}) => {
+  await seedArticles(2);
+  await page.goto("/admin/articles?page=foo");
+
+  await expect(page.getByText("title1")).toBeVisible();
+  await expect(page.getByText("title2")).toBeVisible();
+});
+
+test("URLクエリストリングのpageの値が0の場合でもエラーにならない", async ({
+  page,
+}) => {
+  await seedArticles(2);
+  await page.goto("/admin/articles?page=0");
+
+  await expect(page.getByText("title1")).toBeVisible();
+  await expect(page.getByText("title2")).toBeVisible();
+});

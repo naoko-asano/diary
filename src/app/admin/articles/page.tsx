@@ -18,9 +18,20 @@ type Props = {
   }>;
 };
 
+function resolvePageNumber(pageParam: string | undefined): number {
+  if (!pageParam) {
+    return 1;
+  }
+  const pageNumber = parseInt(pageParam, 10);
+  if (isNaN(pageNumber) || pageNumber < 1) {
+    return 1;
+  }
+  return pageNumber;
+}
+
 export default async function Page(props: Props) {
   const searchParams = await props.searchParams;
-  const page = searchParams.page ? parseInt(searchParams.page) : 1;
+  const page = resolvePageNumber(searchParams.page);
   const { articles, totalPage } = await getPaginatedArticles({ page });
 
   // Article Formから遷移してきた場合のみ通知を表示

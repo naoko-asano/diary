@@ -21,22 +21,23 @@ const articleParams = {
 };
 
 describe("getPaginatedArticles", () => {
-  it("指定ページの記事と全てのページ数を取得できる", async () => {
-    const articles: Article[] = [
-      {
-        id: 1,
-        ...articleParams,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 2,
-        title: "Another Article",
-        body: "This is another test article.",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
+  const articles: Article[] = [
+    {
+      id: 1,
+      ...articleParams,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 2,
+      title: "Another Article",
+      body: "This is another test article.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ];
+
+  it("指定ページの記事と全てのページ数を返す", async () => {
     prisma.article.findMany.mockResolvedValue(articles);
     prisma.article.count.mockResolvedValue(2);
 
@@ -48,6 +49,26 @@ describe("getPaginatedArticles", () => {
       take: 2,
     });
     expect(result).toEqual({ articles, totalPage: 1 });
+  });
+
+  it("正しいスキップ数が計算される", async () => {
+    await getPaginatedArticles({ page: 3, perPage: 5 });
+
+    expect(prisma.article.findMany).toHaveBeenCalledWith({
+      skip: 10,
+      take: 5,
+    });
+  });
+
+  it("perPageが指定されなかった場合、デフォルト値の15が使用される", async () => {
+    prisma.article.count.mockResolvedValue(30);
+    const result = await getPaginatedArticles({ page: 1 });
+
+    expect(prisma.article.findMany).toHaveBeenCalledWith({
+      skip: 0,
+      take: 15,
+    });
+    expect(result.totalPage).toBe(2);
   });
 
   it("DB側のエラーが発生した場合、エラーがスローされる", async () => {

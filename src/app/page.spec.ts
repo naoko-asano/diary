@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 
 test.beforeAll(async () => {
   await resetArticles();
-  await seedArticles();
+  await seedArticles(2);
 });
 
 test("記事タイトル一覧が表示されている", async ({ page }) => {

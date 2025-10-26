@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 
-import { render, screen } from "@/testing/utils";
+import { render, screen } from "@testing/utils";
 
 import { ArticleDetails } from ".";
 

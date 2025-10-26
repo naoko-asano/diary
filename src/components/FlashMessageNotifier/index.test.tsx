@@ -1,8 +1,8 @@
 import { notifications } from "@mantine/notifications";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { render, screen } from "@/testing/utils";
 import { FormResult } from "@/utils/formState";
+import { render, screen } from "@testing/utils";
 
 import { FlashMessageNotifier } from ".";
 

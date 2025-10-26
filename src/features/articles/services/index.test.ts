@@ -1,55 +1,78 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   createArticle,
   deleteArticle,
   findArticleById,
-  getAllArticles,
+  getPaginatedArticles,
   updateArticle,
 } from "@/features/articles/services";
 import { Article } from "@/generated/prisma";
 import prisma from "@/lib/__mocks__/database";
 
 vi.mock("@/lib/database");
-beforeEach(() => {
-  vi.clearAllMocks();
-});
 
 const articleParams = {
   title: "Test Article",
   body: "This is a test article.",
 };
 
-describe("getAllArticles", () => {
-  it("全ての記事を取得できる", async () => {
-    const articles: Article[] = [
-      {
-        id: 1,
-        ...articleParams,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 2,
-        title: "Another Article",
-        body: "This is another test article.",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-    prisma.article.findMany.mockResolvedValue(articles);
+describe("getPaginatedArticles", () => {
+  const articles: Article[] = [
+    {
+      id: 1,
+      ...articleParams,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 2,
+      title: "Another Article",
+      body: "This is another test article.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ];
 
-    const result = await getAllArticles();
+  it("指定ページの記事と全てのページ数を返す", async () => {
+    prisma.article.findMany.mockResolvedValue(articles);
+    prisma.article.count.mockResolvedValue(2);
+
+    const result = await getPaginatedArticles({ page: 1, perPage: 2 });
 
     expect(prisma.article.findMany).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(articles);
+    expect(prisma.article.findMany).toHaveBeenCalledWith({
+      skip: 0,
+      take: 2,
+    });
+    expect(result).toEqual({ articles, totalPage: 1 });
+  });
+
+  it("正しいスキップ数が計算される", async () => {
+    await getPaginatedArticles({ page: 3, perPage: 5 });
+
+    expect(prisma.article.findMany).toHaveBeenCalledWith({
+      skip: 10,
+      take: 5,
+    });
+  });
+
+  it("perPageが指定されなかった場合、デフォルト値の15が使用される", async () => {
+    prisma.article.count.mockResolvedValue(30);
+    const result = await getPaginatedArticles({ page: 1 });
+
+    expect(prisma.article.findMany).toHaveBeenCalledWith({
+      skip: 0,
+      take: 15,
+    });
+    expect(result.totalPage).toBe(2);
   });
 
   it("DB側のエラーが発生した場合、エラーがスローされる", async () => {
     prisma.article.findMany.mockRejectedValue(new Error("DB error"));
 
-    await expect(getAllArticles()).rejects.toThrow(
-      "Failed to get all articles\nError: DB error",
+    await expect(getPaginatedArticles({ page: 1, perPage: 2 })).rejects.toThrow(
+      "Failed to get paginated articles\nError: DB error",
     );
   });
 });

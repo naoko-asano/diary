@@ -4,11 +4,20 @@ import prisma from "@/lib/database";
 
 import { validateArticle } from "../model";
 
-export async function getAllArticles() {
+export async function getPaginatedArticles(params: {
+  page: number;
+  perPage?: number;
+}) {
+  const { page, perPage = 15 } = params;
   try {
-    return await prisma.article.findMany();
+    const articles = await prisma.article.findMany({
+      skip: (page - 1) * perPage,
+      take: perPage,
+    });
+    const total = await prisma.article.count();
+    return { articles, totalPage: Math.ceil(total / perPage) };
   } catch (error) {
-    throw new Error("Failed to get all articles\n" + error);
+    throw new Error("Failed to get paginated articles\n" + error);
   }
 }
 

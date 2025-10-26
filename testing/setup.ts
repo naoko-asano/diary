@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest";
 import { afterEach, vi } from "vitest";
 
-import { cleanup } from "@/testing/utils";
+import { cleanup } from "./utils";
 
 afterEach(() => {
   cleanup();

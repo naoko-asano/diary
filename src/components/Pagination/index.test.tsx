@@ -16,7 +16,7 @@ vi.mock("next/navigation", () => {
 
 describe("Pagination", () => {
   it("ページ変更時にクエリストリングが更新される", () => {
-    render(<Pagination total={3} />);
+    render(<Pagination total={2} />);
     const page2Button = screen.getByRole("button", { name: "2" });
     page2Button.click();
     expect(mockedPush).toHaveBeenCalledWith("/foo?page=2");

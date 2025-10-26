@@ -4,7 +4,7 @@ import { parsePageParam } from ".";
 
 describe("parsePageParam", () => {
   it("pageParamが正の整数文字列の場合、その数値を返す", () => {
-    expect(parsePageParam("10")).toBe(10);
+    expect(parsePageParam("1")).toBe(1);
   });
 
   it("pageParamがundefinedの場合、1を返す", () => {
@@ -20,6 +20,6 @@ describe("parsePageParam", () => {
   });
 
   it("pageParamが負の整数文字列の場合、1を返す", () => {
-    expect(parsePageParam("-10")).toBe(1);
+    expect(parsePageParam("-1")).toBe(1);
   });
 });

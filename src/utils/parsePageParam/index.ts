@@ -1,4 +1,4 @@
-export function parsePageParam(pageParam: string | undefined): number {
+export function parsePageParam(pageParam?: string): number {
   if (!pageParam) {
     return 1;
   }

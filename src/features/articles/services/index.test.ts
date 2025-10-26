@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   createArticle,
@@ -11,9 +11,6 @@ import { Article } from "@/generated/prisma";
 import prisma from "@/lib/__mocks__/database";
 
 vi.mock("@/lib/database");
-beforeEach(() => {
-  vi.clearAllMocks();
-});
 
 const articleParams = {
   title: "Test Article",

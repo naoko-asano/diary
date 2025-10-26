@@ -7,7 +7,6 @@ import { render, screen, userEvent, waitFor } from "@testing/utils";
 import { ArticleForm } from ".";
 
 beforeEach(() => {
-  vi.clearAllMocks();
   notifications.clean();
 });
 

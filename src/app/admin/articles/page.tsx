@@ -40,7 +40,7 @@ export default async function Page(props: Props) {
         <ArticleList articles={articles} onDeleteAction={handleDelete} />
       </Box>
       <Center mt="auto">
-        <Pagination total={totalPage} />
+        <Pagination activePage={page} total={totalPage} />
       </Center>
     </>
   );

@@ -1,8 +1,7 @@
 import { spawn } from "child_process";
 
-import { execCommand } from "@/utils/execCommand";
-
 import { createDbBranch } from "./utils/dbBranch";
+import { execCommand } from "./utils/execCommand";
 
 export default async function setupDb() {
   const dbBranch = await createDbBranch();

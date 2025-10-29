@@ -81,7 +81,7 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
         onClose={() =>
           setDeletingModalOpened({ opened: false, articleId: null })
         }
-        body="記事を削除します。よろしいですか？"
+        body={"記事を削除します。\nこの操作は元に戻せません。よろしいですか？"}
       />
     </>
   );

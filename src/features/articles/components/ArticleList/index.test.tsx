@@ -62,7 +62,9 @@ describe("ArticleList", () => {
 
     await waitFor(() =>
       expect(
-        screen.getByText("記事を削除します。よろしいですか？"),
+        screen.getByText(
+          "記事を削除します。 この操作は元に戻せません。よろしいですか？",
+        ),
       ).toBeVisible(),
     );
 

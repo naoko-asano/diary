@@ -29,7 +29,9 @@ test("削除ボタンをクリックすると記事が削除される", async ({
   await firstDeleteButton.click();
 
   await expect(
-    page.getByText("記事を削除します。よろしいですか？"),
+    page.getByText(
+      "記事を削除します。 この操作は元に戻せません。よろしいですか？",
+    ),
   ).toBeVisible();
 
   await page.getByRole("button", { name: "Accept" }).click();

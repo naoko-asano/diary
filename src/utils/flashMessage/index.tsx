@@ -15,7 +15,11 @@ export function showFlashMessage(props: {
 
   notifications.show({
     title: <Text size="xs">{isSuccessful ? "Success" : "Error"}</Text>,
-    message: <Text size="xs">{props.message}</Text>,
+    message: (
+      <Text size="xs" style={{ whiteSpace: "pre-wrap" }}>
+        {props.message}
+      </Text>
+    ),
     icon: isSuccessful ? <IconCheck size={20} /> : <IconX size={20} />,
     color: isSuccessful ? "teal" : "red",
   });

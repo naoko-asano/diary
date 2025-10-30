@@ -9,7 +9,7 @@ import { FormResult, FormState } from "@/utils/formState";
 
 async function setFlashMessageCookie() {
   const config = createFlashMessageCookieConfig({
-    type: "success",
+    type: FormResult.SUCCESS,
     message: "Article created successfully!",
   });
   (await cookies()).set(config);

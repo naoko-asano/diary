@@ -15,7 +15,7 @@ type Params = { id: string };
 
 async function setFlashMessageCookie() {
   const config = createFlashMessageCookieConfig({
-    type: "success",
+    type: FormResult.SUCCESS,
     message: "Article updated successfully!",
   });
   (await cookies()).set(config);

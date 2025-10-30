@@ -2,16 +2,21 @@ import { Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconX } from "@tabler/icons-react";
 
-import { FormResult, FormState } from "@/utils/formState";
-
 export const FLASH_MESSAGE_COOKIE_NAME = "flash-message";
 
+export const FlashMessageTypes = {
+  SUCCESS: "success",
+  ERROR: "error",
+} as const;
+
+type FlashMessageType =
+  (typeof FlashMessageTypes)[keyof typeof FlashMessageTypes];
+
 export function showFlashMessage(props: {
-  formState: FormState;
+  type: FlashMessageType;
   message: string;
 }) {
-  if (!props.formState.result) return;
-  const isSuccessful = props.formState.result === FormResult.SUCCESS;
+  const isSuccessful = props.type === FlashMessageTypes.SUCCESS;
 
   notifications.show({
     title: <Text size="xs">{isSuccessful ? "Success" : "Error"}</Text>,
@@ -29,7 +34,7 @@ export function createFlashMessageCookieConfig({
   type,
   message,
 }: {
-  type: FormResult;
+  type: FlashMessageType;
   message: string;
 }) {
   return {

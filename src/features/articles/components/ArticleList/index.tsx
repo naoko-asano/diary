@@ -14,8 +14,7 @@ import { useState } from "react";
 
 import { ConfirmationModal } from "@/components/ConfirmationModal";
 import { Article } from "@/generated/prisma";
-import { showFlashMessage } from "@/utils/flashMessage";
-import { FormResult } from "@/utils/formState";
+import { FlashMessageTypes, showFlashMessage } from "@/utils/flashMessage";
 
 type Props = {
   articles: Article[];
@@ -36,12 +35,12 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
     try {
       await onDeleteAction(deletingModalOpened.articleId);
       showFlashMessage({
-        formState: { result: FormResult.SUCCESS },
+        type: FlashMessageTypes.SUCCESS,
         message: "Article deleted successfully!",
       });
     } catch {
       showFlashMessage({
-        formState: { result: FormResult.ERROR },
+        type: FlashMessageTypes.ERROR,
         message: "Failed to delete article.\nPlease try again later.",
       });
     }

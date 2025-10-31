@@ -24,7 +24,6 @@ export default async function Page(props: Props) {
   const page = parsePageParam(searchParams.page);
   const { articles, totalPage } = await getPaginatedArticles({ page });
 
-  // Article Formから遷移してきた場合のみ通知を表示
   const flashMessageCookie = (await cookies()).get(FLASH_MESSAGE_COOKIE_NAME);
   const flashMessageContent = resolveFlashMessageContent(flashMessageCookie);
 
@@ -33,6 +32,7 @@ export default async function Page(props: Props) {
     await deleteArticle(id);
     revalidatePath("/admin/articles");
   }
+
   return (
     <>
       {flashMessageContent && <FlashMessageNotifier {...flashMessageContent} />}

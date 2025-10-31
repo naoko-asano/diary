@@ -13,7 +13,8 @@ interface Props {
 export function FlashMessageNotifier(props: Props) {
   const { formState, message } = props;
   useEffect(() => {
-    showFlashMessage({ formState, message });
+    if (!formState.result) return;
+    showFlashMessage({ type: formState.result, message });
   }, [formState, message]);
   return null;
 }

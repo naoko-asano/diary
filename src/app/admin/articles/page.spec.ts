@@ -36,6 +36,8 @@ test("削除ボタンをクリックすると記事が削除される", async ({
 
   await page.getByRole("button", { name: "Accept" }).click();
 
+  await expect(page).toHaveURL("/admin/articles");
+  await expect(page.getByText("Article deleted successfully!")).toBeVisible();
   await expect(deletingButtons).toHaveCount(1);
   await expect(page.getByText("title1")).toHaveCount(0);
   await expect(page.getByText("title2")).toBeVisible();

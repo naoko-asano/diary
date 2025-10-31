@@ -14,10 +14,11 @@ import { useState } from "react";
 
 import { ConfirmationModal } from "@/components/ConfirmationModal";
 import { Article } from "@/generated/prisma";
+import { FlashMessageTypes, showFlashMessage } from "@/utils/flashMessage";
 
 type Props = {
   articles: Article[];
-  onDeleteAction: (id: number) => void;
+  onDeleteAction: (id: number) => Promise<void>;
 };
 
 export function ArticleList({ articles, onDeleteAction }: Props) {
@@ -28,6 +29,22 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
     opened: false,
     articleId: null,
   });
+
+  const handleDelete = async () => {
+    if (!deletingModalOpened.articleId) return;
+    try {
+      await onDeleteAction(deletingModalOpened.articleId);
+      showFlashMessage({
+        type: FlashMessageTypes.SUCCESS,
+        message: "Article deleted successfully!",
+      });
+    } catch {
+      showFlashMessage({
+        type: FlashMessageTypes.ERROR,
+        message: "Failed to delete article.\nPlease try again later.",
+      });
+    }
+  };
 
   return (
     <>
@@ -74,10 +91,7 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
       </Table>
       <ConfirmationModal
         isOpened={deletingModalOpened.opened}
-        onAccept={() => {
-          deletingModalOpened.articleId &&
-            onDeleteAction(deletingModalOpened.articleId);
-        }}
+        onAccept={handleDelete}
         onClose={() =>
           setDeletingModalOpened({ opened: false, articleId: null })
         }

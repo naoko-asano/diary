@@ -40,7 +40,7 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
     <>
       <FlashMessageNotifier
         formState={formState}
-        message="Failed to submit the form. Please try again."
+        message={"Failed to submit the form.\nPlease try again later."}
       />
       <form
         onSubmit={form.onSubmit(async (values) => {

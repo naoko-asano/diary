@@ -136,7 +136,7 @@ describe("ArticleForm", () => {
     await userEvent.type(bodyInput, "Test Body");
 
     expect(
-      screen.queryByText("Failed to submit the form. Please try again."),
+      screen.queryByText("Failed to submit the form. Please try again later."),
     ).toBeNull();
 
     await userEvent.click(screen.getByRole("button", { name: "Submit" }));
@@ -144,7 +144,7 @@ describe("ArticleForm", () => {
     expect(mockedOnSubmitAction).toHaveBeenCalledTimes(1);
     await waitFor(() =>
       expect(
-        screen.getByText("Failed to submit the form. Please try again."),
+        screen.getByText("Failed to submit the form. Please try again later."),
       ).toBeVisible(),
     );
 

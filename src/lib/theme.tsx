@@ -16,7 +16,6 @@ export const theme = createTheme({
       "#7a2aa0",
       "#6b218d",
     ],
-    error: colorsTuple("#e03131"),
   },
   primaryColor: "purple",
   breakpoints: {

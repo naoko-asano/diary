@@ -43,7 +43,7 @@ export const theme = createTheme({
   components: {
     TextInput: TextInput.extend({
       styles: {
-        error: { fontSize: "16px" },
+        error: { fontSize: "var(--mantine-font-size-xs)" },
       },
     }),
   },

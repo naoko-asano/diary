@@ -23,7 +23,7 @@ export function Pagination(props: Props) {
       value={activePage}
       total={total}
       size="sm"
-      styles={{ control: { fontSize: "20px" } }}
+      styles={{ control: { fontSize: "var(--mantine-font-size-xs)" } }}
       onChange={(page) => {
         handlePageChange(page, pathName);
       }}

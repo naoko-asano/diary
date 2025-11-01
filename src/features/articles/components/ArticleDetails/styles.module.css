@@ -1,0 +1,4 @@
+.markdown ul,
+.markdown ol {
+  list-style-position: inside;
+}

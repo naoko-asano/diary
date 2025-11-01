@@ -15,6 +15,8 @@ import {
 } from "@/features/articles/model";
 import { FormState } from "@/utils/formState";
 
+import "./styles.css";
+
 type Props = {
   article?: Article;
   onSubmitAction: (
@@ -58,19 +60,17 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
         <Text size={"sm"} my={6}>
           Body
         </Text>
-        <div data-theme="custom-dark">
-          <MDEditor
-            value={form.values.body}
-            onChange={(value) => form.setFieldValue("body", value ?? "")}
-            previewOptions={{
-              rehypePlugins: [[rehypeSanitize]],
-            }}
-            data-testid="body-editor"
-          />
-          <Text c={"error"} size={"xs"} mt={4}>
-            {form.errors.body}
-          </Text>
-        </div>
+        <MDEditor
+          value={form.values.body}
+          onChange={(value) => form.setFieldValue("body", value ?? "")}
+          previewOptions={{
+            rehypePlugins: [[rehypeSanitize]],
+          }}
+          data-testid="body-editor"
+        />
+        <Text c={"error"} size={"xs"} mt={4}>
+          {form.errors.body}
+        </Text>
         <Button type="submit" loading={isPending}>
           Submit
         </Button>

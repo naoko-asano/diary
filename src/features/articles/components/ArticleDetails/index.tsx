@@ -3,6 +3,8 @@ import Markdown from "react-markdown";
 
 import { Article } from "../../model";
 
+import styles from "./styles.module.css";
+
 type Props = {
   article: Article;
 };
@@ -15,7 +17,7 @@ export function ArticleDetails(props: Props) {
         {article.title}
       </Title>
       <Divider mb="sm" />
-      <Box fz="sm" className="markdown">
+      <Box fz="sm" className={styles.markdown}>
         <Markdown>{article.body}</Markdown>
       </Box>
     </div>

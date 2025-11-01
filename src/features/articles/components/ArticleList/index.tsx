@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Anchor,
   Button,
   Table,
   TableTbody,
@@ -9,12 +8,16 @@ import {
   TableTh,
   TableThead,
   TableTr,
+  Text,
 } from "@mantine/core";
+import Link from "next/link";
 import { useState } from "react";
 
 import { ConfirmationModal } from "@/components/ConfirmationModal";
 import { Article } from "@/generated/prisma";
 import { FlashMessageTypes, showFlashMessage } from "@/utils/flashMessage";
+
+import styles from "./styles.module.css";
 
 type Props = {
   articles: Article[];
@@ -58,14 +61,16 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
           <TableTbody key={article.id}>
             <TableTr>
               <TableTd>
-                <Anchor href={`/articles/${article.id}`} c="white">
-                  {article.title}
-                </Anchor>
+                <Link href={`/articles/${article.id}`}>
+                  <Text size="sm" className={styles.title}>
+                    {article.title}
+                  </Text>
+                </Link>
               </TableTd>
               <TableTd>
                 <Button
                   size="xs"
-                  component="a"
+                  component={Link}
                   href={`/admin/articles/${article.id}/edit`}
                 >
                   Edit

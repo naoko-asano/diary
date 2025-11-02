@@ -18,6 +18,7 @@ model Article {
   id        Int      @id @default(autoincrement())
   title     String   @db.VarChar(255)
   body      String
+  date      DateTime @db.Date
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

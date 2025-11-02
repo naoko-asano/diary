@@ -1,6 +1,6 @@
 "use client";
 
-import { colorsTuple, createTheme, TextInput } from "@mantine/core";
+import { createTheme, TextInput } from "@mantine/core";
 
 export const theme = createTheme({
   colors: {

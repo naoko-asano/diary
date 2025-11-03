@@ -1,12 +1,13 @@
-import { Article } from "@/generated/prisma";
+import { ArticleParams } from "@/features/articles/model";
 import prisma from "@/lib/database";
 
-export async function createArticle(article?: Pick<Article, "title" | "body">) {
+export async function createArticle(articleParams?: ArticleParams) {
   const count = await prisma.article.count();
   await prisma.article.create({
     data: {
-      title: article?.title ?? `title${count + 1}`,
-      body: article?.body ?? `body${count + 1}`,
+      title: articleParams?.title ?? `title${count + 1}`,
+      body: articleParams?.body ?? `body${count + 1}`,
+      date: articleParams?.date ?? new Date(),
     },
   });
 }

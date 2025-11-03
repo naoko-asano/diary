@@ -5,6 +5,7 @@ import { articleScheme, validateArticle } from ".";
 const article = {
   title: "Test Article",
   body: "This is a test article.",
+  date: new Date("2025-01-01"),
 };
 
 describe("articleScheme", () => {
@@ -69,6 +70,22 @@ describe("articleScheme", () => {
       expect(() => articleScheme.parse({ ...article, body: " " })).toThrow(
         "1文字以上入力してください",
       );
+    });
+  });
+
+  describe("dateが", () => {
+    it.each([
+      ["string", "2025-01-01"],
+      ["number", 1234567890],
+      ["null", null],
+      ["undefined", undefined],
+      ["boolean", true],
+      ["object", {}],
+      ["array", []],
+    ])("%s型の場合、エラーがスローされる", (typeName, invalidDate) => {
+      expect(() =>
+        articleScheme.parse({ ...article, date: invalidDate }),
+      ).toThrow();
     });
   });
 });

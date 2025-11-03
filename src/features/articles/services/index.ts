@@ -1,8 +1,7 @@
 "use server";
 
+import { ArticleParams, validateArticle } from "@/features/articles/model";
 import prisma from "@/lib/database";
-
-import { validateArticle } from "../model";
 
 export async function getPaginatedArticles(params: {
   page: number;
@@ -31,7 +30,7 @@ export async function findArticleById(id: number) {
   }
 }
 
-export async function createArticle(params: { title: string; body: string }) {
+export async function createArticle(params: ArticleParams) {
   try {
     validateArticle(params);
     return await prisma.article.create({
@@ -44,11 +43,7 @@ export async function createArticle(params: { title: string; body: string }) {
   }
 }
 
-export async function updateArticle(params: {
-  id: number;
-  title: string;
-  body: string;
-}) {
+export async function updateArticle(params: { id: number } & ArticleParams) {
   validateArticle(params);
   try {
     return await prisma.article.update({
@@ -56,6 +51,7 @@ export async function updateArticle(params: {
       data: {
         title: params.title,
         body: params.body,
+        date: params.date,
       },
     });
   } catch (error) {

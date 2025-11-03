@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { ArticleParams } from "@/features/articles/model";
 import {
   createArticle,
   deleteArticle,
@@ -12,9 +13,10 @@ import prisma from "@/lib/__mocks__/database";
 
 vi.mock("@/lib/database");
 
-const articleParams = {
+const articleParams: ArticleParams = {
   title: "Test Article",
   body: "This is a test article.",
+  date: new Date("2025-01-01"),
 };
 
 describe("getPaginatedArticles", () => {
@@ -29,6 +31,7 @@ describe("getPaginatedArticles", () => {
       id: 2,
       title: "Another Article",
       body: "This is another test article.",
+      date: new Date("2025-01-02"),
       createdAt: new Date(),
       updatedAt: new Date(),
     },

@@ -5,20 +5,37 @@ import { resetArticles, seedArticles } from "@e2e/factories/article";
 
 test.beforeEach(async ({ page }) => {
   await resetArticles();
-  await seedArticles();
+  await seedArticles(1, {
+    title: "title1",
+    body: "body1",
+    date: new Date("2025-01-01"),
+  });
   const firstArticle = await prisma.article.findFirst();
+
   await page.goto(`/admin/articles/${firstArticle?.id}/edit`);
 });
 
 test("更新前の記事のタイトルと本文が表示され、記事が更新できる", async ({
   page,
 }) => {
+  const dateInput = page.getByLabel("Date *");
   const titleInput = page.getByLabel("Title *");
   const bodyEditor = page.getByTestId("body-editor");
   const bodyInput = bodyEditor.getByRole("textbox");
 
+  await expect(dateInput).toHaveText("2025/01/01");
   await expect(titleInput).toHaveValue("title1");
   await expect(bodyInput).toHaveValue("body1");
+
+  await dateInput.click();
+  const calendar = page.getByRole("dialog");
+  const dayButton = calendar.getByRole("button", {
+    name: "2 January 2025",
+    exact: true,
+  });
+  await dayButton.click();
+
+  await expect(dateInput).toHaveText("2025/01/02");
 
   await titleInput.fill("updated title");
   await bodyInput.fill("updated body");

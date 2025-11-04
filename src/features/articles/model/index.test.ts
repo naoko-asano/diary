@@ -75,17 +75,13 @@ describe("articleScheme", () => {
 
   describe("dateが", () => {
     it.each([
-      ["string", "2025-01-01"],
-      ["number", 1234567890],
-      ["null", null],
       ["undefined", undefined],
-      ["boolean", true],
       ["object", {}],
       ["array", []],
     ])("%s型の場合、エラーがスローされる", (typeName, invalidDate) => {
       expect(() =>
         articleScheme.parse({ ...article, date: invalidDate }),
-      ).toThrow();
+      ).toThrow("日付を選択してください");
     });
   });
 });

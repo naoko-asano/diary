@@ -16,8 +16,11 @@ export async function resetArticles() {
   await prisma.article.deleteMany({});
 }
 
-export async function seedArticles(count: number = 1) {
+export async function seedArticles(
+  count: number = 1,
+  articleParams?: ArticleParams,
+) {
   for (let i = 0; i < count; i++) {
-    await createArticle();
+    await createArticle(articleParams);
   }
 }

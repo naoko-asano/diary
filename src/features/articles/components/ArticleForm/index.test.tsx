@@ -2,7 +2,7 @@ import { notifications } from "@mantine/notifications";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { FormResult } from "@/utils/formState";
-import { render, screen, userEvent, waitFor } from "@testing/utils";
+import { render, screen, userEvent, waitFor, within } from "@testing/utils";
 
 import { ArticleForm } from ".";
 
@@ -14,6 +14,7 @@ const article = {
   id: 1,
   title: "example title",
   body: "example body",
+  date: new Date("2025-01-01"),
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -22,6 +23,7 @@ describe("ArticleForm", () => {
   it("フォームの要素が正しく表示される", () => {
     render(<ArticleForm onSubmitAction={vi.fn()} />);
 
+    expect(screen.getByLabelText("Date *")).toBeInTheDocument();
     expect(screen.getByLabelText("Title *")).toBeInTheDocument();
     expect(screen.getByText("Body")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Submit" })).toBeInTheDocument();
@@ -30,40 +32,63 @@ describe("ArticleForm", () => {
   it("articleの値が渡された場合、フォームに初期値としてセットされる", () => {
     render(<ArticleForm article={article} onSubmitAction={vi.fn()} />);
 
+    const dateInput = screen.getByLabelText("Date *");
     const titleInput = screen.getByLabelText("Title *") as HTMLInputElement;
     const bodyEditor = screen.getByTestId("body-editor");
     const bodyInput = bodyEditor.querySelector(
       "textarea",
     ) as HTMLTextAreaElement;
 
+    expect(dateInput).toHaveTextContent("2025/01/01");
     expect(titleInput).toHaveValue("example title");
     expect(bodyInput).toHaveValue("example body");
   });
 
   it("articleの値が渡されなかった場合、フォームは空の状態で表示される", () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2025-02-01"));
+
     render(<ArticleForm onSubmitAction={vi.fn()} />);
 
+    const dateInput = screen.getByLabelText("Date *");
     const titleInput = screen.getByLabelText("Title *") as HTMLInputElement;
     const bodyEditor = screen.getByTestId("body-editor");
     const bodyInput = bodyEditor.querySelector(
       "textarea",
     ) as HTMLTextAreaElement;
 
+    expect(dateInput).toHaveTextContent("2025/02/01");
     expect(titleInput).toHaveValue("");
     expect(bodyInput).toHaveValue("");
+
+    vi.useRealTimers();
   });
 
   it("フォーム入力と送信ができ、onSubmitActionで渡された関数が呼ばれる", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2025-02-01"));
+
     const mockedOnSubmitAction = vi.fn(() =>
       Promise.resolve({ result: FormResult.SUCCESS }),
     );
+
     render(<ArticleForm onSubmitAction={mockedOnSubmitAction} />);
 
+    const dateInput = screen.getByLabelText("Date *");
     const titleInput = screen.getByLabelText("Title *");
     const bodyEditor = screen.getByTestId("body-editor");
     const bodyInput = bodyEditor.querySelector(
       "textarea",
     ) as HTMLTextAreaElement;
+
+    await userEvent.click(dateInput);
+    const calendar = screen.getByRole("dialog");
+    const dayButton = within(calendar).getByRole("button", {
+      name: "2 February 2025",
+    });
+    await userEvent.click(dayButton);
+
+    expect(dateInput).toHaveTextContent("2025/02/02");
 
     await userEvent.type(titleInput, "Test Title");
     await userEvent.type(bodyInput, "Test Body");
@@ -77,10 +102,13 @@ describe("ArticleForm", () => {
     expect(mockedOnSubmitAction).toHaveBeenCalledWith(
       { result: null },
       {
+        date: new Date("2025-02-02"),
         title: "Test Title",
         body: "Test Body",
       },
     );
+
+    vi.useRealTimers();
   });
 
   it("titleにバリデーションエラーがある場合、エラーメッセージが表示され、onSubmitActionで渡された関数は呼ばれない", async () => {
@@ -148,14 +176,7 @@ describe("ArticleForm", () => {
       ).toBeVisible(),
     );
 
-    const freshTitleInput = screen.getByLabelText(
-      "Title *",
-    ) as HTMLInputElement;
-    const freshBodyInput = screen
-      .getByTestId("body-editor")
-      .querySelector("textarea") as HTMLTextAreaElement;
-
-    expect(freshTitleInput).toHaveValue("Test Title");
-    expect(freshBodyInput).toHaveValue("Test Body");
+    expect(titleInput).toHaveValue("Test Title");
+    expect(bodyInput).toHaveValue("Test Body");
   });
 });

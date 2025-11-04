@@ -1,6 +1,7 @@
 "use client";
 
 import { Button, Text, TextInput } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import MDEditor from "@uiw/react-md-editor";
 import { zod4Resolver } from "mantine-form-zod-resolver";
@@ -34,8 +35,13 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
     initialValues: {
       title: article?.title ?? "",
       body: article?.body ?? "",
+      date: article?.date ?? new Date(),
     },
     validate: zod4Resolver(articleScheme),
+    transformValues: (values) => ({
+      ...values,
+      date: new Date(values.date),
+    }),
   });
 
   return (
@@ -51,6 +57,20 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
           });
         })}
       >
+        <DatePickerInput
+          label="Date"
+          key={form.key("date")}
+          {...form.getInputProps("date")}
+          required
+          firstDayOfWeek={0}
+          valueFormat="YYYY/MM/DD"
+          styles={{
+            calendarHeaderLevel: {
+              fontSize: "var(--mantine-font-size-xs)",
+            },
+            weekday: { fontSize: "var(--mantine-font-size-xs)" },
+          }}
+        />
         <TextInput
           label="Title"
           key={form.key("title")}

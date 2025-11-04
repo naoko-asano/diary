@@ -9,7 +9,7 @@ export const articleScheme = z.object({
     .min(1, { message: "1文字以上入力してください" })
     .max(255, { message: "255文字以内で入力してください" }),
   body: z.string().trim().min(1, { message: "1文字以上入力してください" }),
-  date: z.date(),
+  date: z.coerce.date("日付を選択してください"),
 });
 
 export function validateArticle(params: ArticleParams) {

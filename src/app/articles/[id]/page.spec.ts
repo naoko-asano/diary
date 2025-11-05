@@ -10,8 +10,9 @@ test.beforeEach(async ({ page }) => {
   await page.goto(`/articles/${firstArticle?.id}`);
 });
 
-test("titleとbodyが正しく表示される", async ({ page }) => {
+test("タイトルと日付と本文が正しく表示される", async ({ page }) => {
   await expect(page.getByText("title1")).toBeVisible();
+  await expect(page.getByText("2025/01/01")).toBeVisible();
   await expect(page.getByText("body1")).toBeVisible();
 });
 

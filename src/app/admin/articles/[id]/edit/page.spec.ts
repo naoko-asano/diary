@@ -5,11 +5,7 @@ import { resetArticles, seedArticles } from "@e2e/factories/article";
 
 test.beforeEach(async ({ page }) => {
   await resetArticles();
-  await seedArticles(1, {
-    title: "title1",
-    body: "body1",
-    date: new Date("2025-01-01"),
-  });
+  await seedArticles(1);
   const firstArticle = await prisma.article.findFirst();
 
   await page.goto(`/admin/articles/${firstArticle?.id}/edit`);

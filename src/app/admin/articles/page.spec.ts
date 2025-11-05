@@ -6,12 +6,15 @@ test.beforeEach(async () => {
   await resetArticles();
 });
 
-test("記事タイトル一覧が表示されている", async ({ page }) => {
+test("記事一覧が表示されている", async ({ page }) => {
   await seedArticles(2);
   await page.goto("/admin/articles");
 
   await expect(page.getByText("title1")).toBeVisible();
+  await expect(page.getByText("2025/01/01")).toBeVisible();
+
   await expect(page.getByText("title2")).toBeVisible();
+  await expect(page.getByText("2025/01/02")).toBeVisible();
 });
 
 test("削除ボタンをクリックすると記事が削除される", async ({ page }) => {
@@ -22,11 +25,11 @@ test("削除ボタンをクリックすると記事が削除される", async ({
     name: "Delete",
   });
 
-  const firstDeleteButton = deletingButtons.first();
+  const lastDeleteButton = deletingButtons.last();
 
   await expect(deletingButtons).toHaveCount(2);
 
-  await firstDeleteButton.click();
+  await lastDeleteButton.click();
 
   await expect(
     page.getByText(
@@ -47,12 +50,14 @@ test("1ページにつき15記事が表示される", async ({ page }) => {
   await seedArticles(16);
   await page.goto("/admin/articles");
 
-  await expect(page.getByText("title1", { exact: true })).toBeVisible();
-  await expect(page.getByText("title15", { exact: true })).toBeVisible();
+  // 日付が新しい順に表示されている
+  await expect(page.getByText("title16", { exact: true })).toBeVisible();
+  await expect(page.getByText("title2", { exact: true })).toBeVisible();
+  await expect(page.getByText("title1", { exact: true })).toHaveCount(0);
 
   await page.getByRole("button", { name: "2", exact: true }).click();
 
   await expect(page).toHaveURL("/admin/articles?page=2");
-  await expect(page.getByText("title15", { exact: true })).toHaveCount(0);
-  await expect(page.getByText("title16", { exact: true })).toBeVisible();
+  await expect(page.getByText("title2", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("title1", { exact: true })).toBeVisible();
 });

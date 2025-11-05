@@ -14,9 +14,10 @@ const article = {
 };
 
 describe("ArticleDetails", () => {
-  it("titleとbodyが正しく表示される", () => {
+  it("タイトルと日付、本文が正しく表示される", () => {
     render(<ArticleDetails article={article} />);
     screen.getByText("example title");
+    screen.getByText("2025/01/01");
     screen.getByText("example body");
   });
 });

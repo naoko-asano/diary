@@ -16,7 +16,7 @@ vi.mock("@/lib/database");
 const articleParams: ArticleParams = {
   title: "Test Article",
   body: "This is a test article.",
-  date: new Date("2025-01-01"),
+  date: new Date("2025-02-01"),
 };
 
 describe("getPaginatedArticles", () => {
@@ -31,7 +31,7 @@ describe("getPaginatedArticles", () => {
       id: 2,
       title: "Another Article",
       body: "This is another test article.",
-      date: new Date("2025-01-02"),
+      date: new Date("2025-01-01"),
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -47,7 +47,9 @@ describe("getPaginatedArticles", () => {
     expect(prisma.article.findMany).toHaveBeenCalledWith({
       skip: 0,
       take: 2,
+      orderBy: { date: "desc" },
     });
+    expect(prisma.article.count).toHaveBeenCalledTimes(1);
     expect(result).toEqual({ articles, totalPage: 1 });
   });
 
@@ -57,6 +59,7 @@ describe("getPaginatedArticles", () => {
     expect(prisma.article.findMany).toHaveBeenCalledWith({
       skip: 10,
       take: 5,
+      orderBy: { date: "desc" },
     });
   });
 
@@ -67,6 +70,7 @@ describe("getPaginatedArticles", () => {
     expect(prisma.article.findMany).toHaveBeenCalledWith({
       skip: 0,
       take: 15,
+      orderBy: { date: "desc" },
     });
     expect(result.totalPage).toBe(2);
   });

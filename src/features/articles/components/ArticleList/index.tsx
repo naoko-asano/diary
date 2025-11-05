@@ -15,6 +15,7 @@ import { useState } from "react";
 
 import { ConfirmationModal } from "@/components/ConfirmationModal";
 import { Article } from "@/generated/prisma";
+import { formatDate } from "@/utils/date";
 import { FlashMessageTypes, showFlashMessage } from "@/utils/flashMessage";
 
 import styles from "./styles.module.css";
@@ -55,6 +56,7 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
         <TableThead>
           <TableTr>
             <TableTh>Title</TableTh>
+            <TableTh>Date</TableTh>
           </TableTr>
         </TableThead>
         {articles.map((article) => (
@@ -62,11 +64,12 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
             <TableTr>
               <TableTd>
                 <Link href={`/articles/${article.id}`}>
-                  <Text size="sm" className={styles.title}>
+                  <Text size="sm" className={styles.title} td="underline">
                     {article.title}
                   </Text>
                 </Link>
               </TableTd>
+              <TableTd>{formatDate(article.date)}</TableTd>
               <TableTd>
                 <Button
                   size="xs"

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { render, screen, userEvent, waitFor } from "@testing/utils";
+import { render, screen, userEvent, waitFor, within } from "@testing/utils";
 
 import { ArticleList } from ".";
 
@@ -9,7 +9,7 @@ const articles = [
     id: 1,
     title: "First Article",
     body: "This is the first article.",
-    date: new Date("2025-01-01"),
+    date: new Date("2025-01-02"),
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -17,7 +17,7 @@ const articles = [
     id: 2,
     title: "Second Article",
     body: "This is the second article.",
-    date: new Date("2025-01-02"),
+    date: new Date("2025-01-01"),
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -27,8 +27,19 @@ describe("ArticleList", () => {
   it("記事の一覧が表示される", () => {
     render(<ArticleList articles={articles} onDeleteAction={async () => {}} />);
     expect(screen.getByText("Title")).toBeInTheDocument();
-    expect(screen.getByText("First Article")).toBeInTheDocument();
-    expect(screen.getByText("Second Article")).toBeInTheDocument();
+    expect(screen.getByText("Date")).toBeInTheDocument();
+
+    const firstArticleRow = screen.getByRole("row", { name: /First Article/i });
+    expect(firstArticleRow).toBeInTheDocument();
+    expect(within(firstArticleRow).getByText("2025/01/02")).toBeInTheDocument();
+
+    const secondArticleRow = screen.getByRole("row", {
+      name: /Second Article/i,
+    });
+    expect(secondArticleRow).toBeInTheDocument();
+    expect(
+      within(secondArticleRow).getByText("2025/01/01"),
+    ).toBeInTheDocument();
   });
 
   it("記事のタイトルのリンク先が記事の詳細ページである", () => {

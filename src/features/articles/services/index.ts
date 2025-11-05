@@ -12,6 +12,7 @@ export async function getPaginatedArticles(params: {
     const articles = await prisma.article.findMany({
       skip: (page - 1) * perPage,
       take: perPage,
+      orderBy: { date: "desc" },
     });
     const total = await prisma.article.count();
     return { articles, totalPage: Math.ceil(total / perPage) };

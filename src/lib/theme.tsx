@@ -1,6 +1,6 @@
 "use client";
 
-import { createTheme, TextInput } from "@mantine/core";
+import { colorsTuple, createTheme, TextInput } from "@mantine/core";
 
 export const theme = createTheme({
   colors: {
@@ -16,6 +16,7 @@ export const theme = createTheme({
       "#7a2aa0",
       "#6b218d",
     ],
+    error: colorsTuple("#e03131"),
   },
   primaryColor: "purple",
   breakpoints: {

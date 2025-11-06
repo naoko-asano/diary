@@ -45,6 +45,9 @@ test("記事を作成できる", async ({ page }) => {
 test("バリデーションに失敗する場合、エラーメッセージが表示され、記事は作成されない", async ({
   page,
 }) => {
+  // HINT: Webkitでは日付選択欄の初期化が完了しないと、他の値も正しく反映されない
+  await expect(page.getByLabel("Date *")).toHaveText("2025/01/01");
+
   const titleInput = page.getByLabel("Title *");
   const bodyEditor = page.getByTestId("body-editor");
   const bodyInput = bodyEditor.getByRole("textbox");

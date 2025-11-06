@@ -48,6 +48,12 @@ test("更新前の記事のタイトルと本文が表示され、記事が更�
 test("バリデーションに失敗する場合、エラーメッセージが表示され、記事は更新されない", async ({
   page,
 }) => {
+  // HINT: Webkitでは日付選択欄の初期化が完了しないと、他の値も初期値に差し戻ってしまう
+  await expect(page.getByLabel("Date *")).toHaveText("2025/01/01");
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => requestAnimationFrame(() => resolve())),
+  );
   const titleInput = page.getByLabel("Title *");
   const bodyEditor = page.getByTestId("body-editor");
   const bodyInput = bodyEditor.getByRole("textbox");

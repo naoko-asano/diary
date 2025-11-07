@@ -1,0 +1,5 @@
+.title {
+  &:hover {
+    color: var(--mantine-color-default-hover);
+  }
+}

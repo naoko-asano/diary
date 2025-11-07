@@ -1,6 +1,7 @@
 "use client";
 
 import { Button, Text, TextInput } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import MDEditor from "@uiw/react-md-editor";
 import { zod4Resolver } from "mantine-form-zod-resolver";
@@ -14,6 +15,8 @@ import {
   articleScheme,
 } from "@/features/articles/model";
 import { FormState } from "@/utils/formState";
+
+import "./styles.css";
 
 type Props = {
   article?: Article;
@@ -32,8 +35,13 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
     initialValues: {
       title: article?.title ?? "",
       body: article?.body ?? "",
+      date: article?.date ?? new Date(),
     },
     validate: zod4Resolver(articleScheme),
+    transformValues: (values) => ({
+      ...values,
+      date: new Date(values.date),
+    }),
   });
 
   return (
@@ -49,6 +57,20 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
           });
         })}
       >
+        <DatePickerInput
+          label="Date"
+          key={form.key("date")}
+          {...form.getInputProps("date")}
+          required
+          firstDayOfWeek={0}
+          valueFormat="YYYY/MM/DD"
+          styles={{
+            calendarHeaderLevel: {
+              fontSize: "var(--mantine-font-size-xs)",
+            },
+            weekday: { fontSize: "var(--mantine-font-size-xs)" },
+          }}
+        />
         <TextInput
           label="Title"
           key={form.key("title")}
@@ -58,19 +80,17 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
         <Text size={"sm"} my={6}>
           Body
         </Text>
-        <div data-theme="custom-dark">
-          <MDEditor
-            value={form.values.body}
-            onChange={(value) => form.setFieldValue("body", value ?? "")}
-            previewOptions={{
-              rehypePlugins: [[rehypeSanitize]],
-            }}
-            data-testid="body-editor"
-          />
-          <Text c={"error"} size={"xs"} mt={4}>
-            {form.errors.body}
-          </Text>
-        </div>
+        <MDEditor
+          value={form.values.body}
+          onChange={(value) => form.setFieldValue("body", value ?? "")}
+          previewOptions={{
+            rehypePlugins: [[rehypeSanitize]],
+          }}
+          data-testid="body-editor"
+        />
+        <Text c={"error"} size={"xs"} mt={4}>
+          {form.errors.body}
+        </Text>
         <Button type="submit" loading={isPending}>
           Submit
         </Button>

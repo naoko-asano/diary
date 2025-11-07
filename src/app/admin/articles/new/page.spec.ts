@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 import { resetArticles } from "@e2e/factories/article";
 
 test.beforeEach(async ({ page }) => {
+  await page.clock.setFixedTime(new Date("2025-01-01"));
   await page.goto("/admin/articles/new");
 });
 
@@ -11,13 +12,24 @@ test.beforeAll(async () => {
 });
 
 test("記事を作成できる", async ({ page }) => {
+  const dateInput = page.getByLabel("Date *");
   const titleInput = page.getByLabel("Title *");
   const bodyEditor = page.getByTestId("body-editor");
   const bodyInput = bodyEditor.getByRole("textbox");
 
+  await expect(dateInput).toHaveText("2025/01/01");
   await expect(titleInput).toHaveValue("");
   await expect(bodyInput).toHaveValue("");
 
+  await dateInput.click();
+  const calendar = page.getByRole("dialog");
+  const dayButton = calendar.getByRole("button", {
+    name: "2 January 2025",
+    exact: true,
+  });
+  await dayButton.click();
+
+  await expect(dateInput).toHaveText("2025/01/02");
   await titleInput.fill("New Title");
   await bodyInput.fill("New Body");
   await page.getByRole("button", { name: "Submit" }).click();
@@ -33,6 +45,9 @@ test("記事を作成できる", async ({ page }) => {
 test("バリデーションに失敗する場合、エラーメッセージが表示され、記事は作成されない", async ({
   page,
 }) => {
+  // HINT: Webkitでは日付選択欄の初期化が完了しないと、他の値も正しく反映されない
+  await expect(page.getByLabel("Date *")).toHaveText("2025/01/01");
+
   const titleInput = page.getByLabel("Title *");
   const bodyEditor = page.getByTestId("body-editor");
   const bodyInput = bodyEditor.getByRole("textbox");

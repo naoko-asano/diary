@@ -1,7 +1,10 @@
-import { Box, Divider, Title } from "@mantine/core";
+import { Box, Divider, Text, Title } from "@mantine/core";
 import Markdown from "react-markdown";
 
-import { Article } from "../../model";
+import { Article } from "@/features/articles/model";
+import { formatDate } from "@/utils/date";
+
+import styles from "./styles.module.css";
 
 type Props = {
   article: Article;
@@ -15,7 +18,10 @@ export function ArticleDetails(props: Props) {
         {article.title}
       </Title>
       <Divider mb="sm" />
-      <Box fz="sm" className="markdown">
+      <Text size="xs" ta="right">
+        {formatDate(article.date)}
+      </Text>
+      <Box fz="sm" className={styles.markdown} mt="sm">
         <Markdown>{article.body}</Markdown>
       </Box>
     </div>

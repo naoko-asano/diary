@@ -8,6 +8,7 @@ import { zod4Resolver } from "mantine-form-zod-resolver";
 import { startTransition, useActionState } from "react";
 import rehypeSanitize from "rehype-sanitize";
 
+import { ErrorMessage } from "@/components/ErrorMessage";
 import { FlashMessageNotifier } from "@/components/FlashMessageNotifier";
 import {
   Article,
@@ -88,9 +89,9 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
           }}
           data-testid="body-editor"
         />
-        <Text c={"error"} size={"xs"} mt={4}>
+        <ErrorMessage size="xs" mt={4}>
           {form.errors.body}
-        </Text>
+        </ErrorMessage>
         <Button type="submit" loading={isPending}>
           Submit
         </Button>

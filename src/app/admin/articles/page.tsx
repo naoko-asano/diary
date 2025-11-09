@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 
 import { FlashMessageNotifier } from "@/components/FlashMessageNotifier";
 import { Pagination } from "@/components/Pagination";
+import { PlusButton } from "@/components/PlusButton";
 import { ArticleList } from "@/features/articles/components/ArticleList";
 import { deleteArticle } from "@/features/articles/services";
 import { getPaginatedArticles } from "@/features/articles/services";
@@ -38,6 +39,14 @@ export default async function Page(props: Props) {
       {flashMessageContent && <FlashMessageNotifier {...flashMessageContent} />}
       <Box style={{ flex: 1 }}>
         <ArticleList articles={articles} onDeleteAction={handleDelete} />
+      </Box>
+      <Box ta="right">
+        <PlusButton
+          role="link"
+          href="/admin/articles/new"
+          size="input-xl"
+          aria-label="Add Article"
+        />
       </Box>
       <Center mt="auto">
         <Pagination activePage={page} total={totalPage} />

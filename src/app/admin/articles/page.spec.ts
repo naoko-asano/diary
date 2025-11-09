@@ -61,3 +61,13 @@ test("1ページにつき15記事が表示される", async ({ page }) => {
   await expect(page.getByText("title2", { exact: true })).toHaveCount(0);
   await expect(page.getByText("title1", { exact: true })).toBeVisible();
 });
+
+test("追加ボタンをクリックすると記事作成ページに遷移する", async ({ page }) => {
+  await page.goto("/admin/articles");
+
+  const plusButton = page.getByRole("link", { name: "Add Article" });
+  await expect(plusButton).toBeVisible();
+  await plusButton.click();
+
+  await expect(page).toHaveURL("/admin/articles/new");
+});

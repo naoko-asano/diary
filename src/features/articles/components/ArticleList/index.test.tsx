@@ -55,11 +55,11 @@ describe("ArticleList", () => {
 
   it("編集ボタンのリンク先が記事の編集ページである", () => {
     render(<ArticleList articles={articles} onDeleteAction={async () => {}} />);
-    const editingLinks = screen.getAllByRole("link", { name: "Edit" });
+    const editLinks = screen.getAllByRole("link", { name: "Edit Article" });
 
-    expect(editingLinks).toHaveLength(2);
-    expect(editingLinks[0]).toHaveAttribute("href", "/admin/articles/1/edit");
-    expect(editingLinks[1]).toHaveAttribute("href", "/admin/articles/2/edit");
+    expect(editLinks).toHaveLength(2);
+    expect(editLinks[0]).toHaveAttribute("href", "/admin/articles/1/edit");
+    expect(editLinks[1]).toHaveAttribute("href", "/admin/articles/2/edit");
   });
 
   it("削除ボタン押下時に確認モーダルが開き、承諾するとonDeleteActionに渡した関数が呼ばれ、フラッシュメッセージが表示される", async () => {

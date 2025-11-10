@@ -8,7 +8,12 @@ interface TrashButtonProps extends ActionIconProps {
 export function TrashButton(props: TrashButtonProps) {
   const { onClick, ...other } = props;
   return (
-    <ActionIcon onClick={onClick} variant="transparent" {...other}>
+    <ActionIcon
+      onClick={onClick}
+      variant="transparent"
+      color="var(--mantine-color-text)"
+      {...other}
+    >
       <IconTrash />
     </ActionIcon>
   );

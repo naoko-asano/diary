@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Button,
   Table,
   TableTbody,
   TableTd,
@@ -14,6 +13,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { ConfirmationModal } from "@/components/ConfirmationModal";
+import { EditButton } from "@/components/EditButton";
 import { TrashButton } from "@/components/TrashButton";
 import { Article } from "@/generated/prisma";
 import { formatDate } from "@/utils/date";
@@ -72,13 +72,11 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
               </TableTd>
               <TableTd>{formatDate(article.date)}</TableTd>
               <TableTd>
-                <Button
-                  size="xs"
-                  component={Link}
+                <EditButton
                   href={`/admin/articles/${article.id}/edit`}
-                >
-                  Edit
-                </Button>
+                  aria-label="Edit Article"
+                  size="input-sm"
+                />
               </TableTd>
               <TableTd>
                 <TrashButton

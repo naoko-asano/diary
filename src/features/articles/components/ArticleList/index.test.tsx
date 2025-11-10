@@ -67,11 +67,13 @@ describe("ArticleList", () => {
     render(
       <ArticleList articles={articles} onDeleteAction={mockDeleteAction} />,
     );
-    const deletingButtons = screen.getAllByRole("button", { name: "Delete" });
+    const deleteButtons = screen.getAllByRole("button", {
+      name: "Delete Article",
+    });
 
-    expect(deletingButtons).toHaveLength(2);
+    expect(deleteButtons).toHaveLength(2);
 
-    await userEvent.click(deletingButtons[0]);
+    await userEvent.click(deleteButtons[0]);
 
     await waitFor(() =>
       expect(
@@ -97,8 +99,10 @@ describe("ArticleList", () => {
     render(
       <ArticleList articles={articles} onDeleteAction={mockDeleteAction} />,
     );
-    const deletingButtons = screen.getAllByRole("button", { name: "Delete" });
-    await userEvent.click(deletingButtons[0]);
+    const deleteButtons = screen.getAllByRole("button", {
+      name: "Delete Article",
+    });
+    await userEvent.click(deleteButtons[0]);
 
     await waitFor(() =>
       expect(

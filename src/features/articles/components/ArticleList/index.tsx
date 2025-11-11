@@ -53,11 +53,18 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
 
   return (
     <>
-      <Table>
+      <Table layout="fixed" w={{ base: "100%", xl: "80%" }} mx="auto">
         <TableThead>
           <TableTr>
-            <TableTh>Title</TableTh>
-            <TableTh>Date</TableTh>
+            <TableTh>
+              <Text size="sm">Title</Text>
+            </TableTh>
+            <TableTh w="150px">
+              <Text size="sm">Date</Text>
+            </TableTh>
+            <TableTh w="100px">
+              <Text size="sm">Actions</Text>
+            </TableTh>
           </TableTr>
         </TableThead>
         {articles.map((article) => (
@@ -65,20 +72,28 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
             <TableTr>
               <TableTd>
                 <Link href={`/articles/${article.id}`}>
-                  <Text size="sm" className={styles.title} td="underline">
+                  <Text
+                    size="sm"
+                    className={styles.title}
+                    truncate="end"
+                    td="underline"
+                  >
                     {article.title}
                   </Text>
                 </Link>
               </TableTd>
-              <TableTd>{formatDate(article.date)}</TableTd>
               <TableTd>
+                {/* TODO: レスポンシブ対応した際にtruncateを外す */}
+                <Text size="sm" truncate>
+                  {formatDate(article.date)}
+                </Text>
+              </TableTd>
+              <TableTd style={{ display: "flex", gap: "0.25rem" }}>
                 <EditButton
                   href={`/admin/articles/${article.id}/edit`}
                   aria-label="Edit Article"
                   size="input-sm"
                 />
-              </TableTd>
-              <TableTd>
                 <TrashButton
                   onClick={() => {
                     setDeleteModalOpened({

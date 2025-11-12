@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Button,
   Table,
   TableTbody,
   TableTd,
@@ -14,6 +13,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { ConfirmationModal } from "@/components/ConfirmationModal";
+import { EditButton } from "@/components/EditButton";
+import { TrashButton } from "@/components/TrashButton";
 import { Article } from "@/generated/prisma";
 import { formatDate } from "@/utils/date";
 import { FlashMessageTypes, showFlashMessage } from "@/utils/flashMessage";
@@ -26,7 +27,7 @@ type Props = {
 };
 
 export function ArticleList({ articles, onDeleteAction }: Props) {
-  const [deletingModalOpened, setDeletingModalOpened] = useState<{
+  const [deleteModalOpened, setDeleteModalOpened] = useState<{
     opened: boolean;
     articleId: number | null;
   }>({
@@ -35,9 +36,9 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
   });
 
   const handleDelete = async () => {
-    if (!deletingModalOpened.articleId) return;
+    if (!deleteModalOpened.articleId) return;
     try {
-      await onDeleteAction(deletingModalOpened.articleId);
+      await onDeleteAction(deleteModalOpened.articleId);
       showFlashMessage({
         type: FlashMessageTypes.SUCCESS,
         message: "Article deleted successfully!",
@@ -52,11 +53,18 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
 
   return (
     <>
-      <Table>
+      <Table layout="fixed" w={{ base: "100%", xl: "80%" }} mx="auto">
         <TableThead>
           <TableTr>
-            <TableTh>Title</TableTh>
-            <TableTh>Date</TableTh>
+            <TableTh>
+              <Text size="sm">Title</Text>
+            </TableTh>
+            <TableTh w="150px">
+              <Text size="sm">Date</Text>
+            </TableTh>
+            <TableTh w="100px">
+              <Text size="sm">Actions</Text>
+            </TableTh>
           </TableTr>
         </TableThead>
         {articles.map((article) => (
@@ -64,45 +72,49 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
             <TableTr>
               <TableTd>
                 <Link href={`/articles/${article.id}`}>
-                  <Text size="sm" className={styles.title} td="underline">
+                  <Text
+                    size="sm"
+                    className={styles.title}
+                    truncate="end"
+                    td="underline"
+                  >
                     {article.title}
                   </Text>
                 </Link>
               </TableTd>
-              <TableTd>{formatDate(article.date)}</TableTd>
               <TableTd>
-                <Button
-                  size="xs"
-                  component={Link}
-                  href={`/admin/articles/${article.id}/edit`}
-                >
-                  Edit
-                </Button>
+                {/* TODO: レスポンシブ対応した際にtruncateを外す */}
+                <Text size="sm" truncate>
+                  {formatDate(article.date)}
+                </Text>
               </TableTd>
-              <TableTd>
-                <Button
-                  size="xs"
-                  color="red"
-                  onClick={() =>
-                    setDeletingModalOpened({
+              <TableTd
+                style={{ display: "flex", gap: "var(--mantine-spacing-xs)" }}
+              >
+                <EditButton
+                  href={`/admin/articles/${article.id}/edit`}
+                  aria-label="Edit Article"
+                  size="input-sm"
+                />
+                <TrashButton
+                  onClick={() => {
+                    setDeleteModalOpened({
                       opened: true,
                       articleId: article.id,
-                    })
-                  }
-                >
-                  Delete
-                </Button>
+                    });
+                  }}
+                  aria-label="Delete Article"
+                  size="input-sm"
+                />
               </TableTd>
             </TableTr>
           </TableTbody>
         ))}
       </Table>
       <ConfirmationModal
-        isOpened={deletingModalOpened.opened}
+        isOpened={deleteModalOpened.opened}
         onAccept={handleDelete}
-        onClose={() =>
-          setDeletingModalOpened({ opened: false, articleId: null })
-        }
+        onClose={() => setDeleteModalOpened({ opened: false, articleId: null })}
         body={"記事を削除します。\nこの操作は元に戻せません。よろしいですか？"}
       />
     </>

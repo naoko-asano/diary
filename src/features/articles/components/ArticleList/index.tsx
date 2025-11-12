@@ -88,7 +88,9 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
                   {formatDate(article.date)}
                 </Text>
               </TableTd>
-              <TableTd style={{ display: "flex", gap: "0.25rem" }}>
+              <TableTd
+                style={{ display: "flex", gap: "var(--mantine-spacing-xs)" }}
+              >
                 <EditButton
                   href={`/admin/articles/${article.id}/edit`}
                   aria-label="Edit Article"

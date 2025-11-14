@@ -179,4 +179,13 @@ describe("ArticleForm", () => {
     expect(titleInput).toHaveValue("Test Title");
     expect(bodyInput).toHaveValue("Test Body");
   });
+
+  it("戻るボタンのhref属性が記事一覧ページである", () => {
+    render(<ArticleForm onSubmitAction={vi.fn()} />);
+
+    const backButton = screen.getByRole("link", {
+      name: "Back to Article List",
+    });
+    expect(backButton).toHaveAttribute("href", "/admin/articles");
+  });
 });

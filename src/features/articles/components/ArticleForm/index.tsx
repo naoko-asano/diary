@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Text, TextInput } from "@mantine/core";
+import { Box, Button, Text, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import MDEditor from "@uiw/react-md-editor";
@@ -8,6 +8,7 @@ import { zod4Resolver } from "mantine-form-zod-resolver";
 import { startTransition, useActionState } from "react";
 import rehypeSanitize from "rehype-sanitize";
 
+import { BackButton } from "@/components/BackButton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { FlashMessageNotifier } from "@/components/FlashMessageNotifier";
 import {
@@ -78,7 +79,7 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
           {...form.getInputProps("title")}
           required
         />
-        <Text size={"sm"} my={6}>
+        <Text size="sm" my={6}>
           Body
         </Text>
         <MDEditor
@@ -92,9 +93,19 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
         <ErrorMessage size="xs" mt={4}>
           {form.errors.body}
         </ErrorMessage>
-        <Button type="submit" loading={isPending}>
-          Submit
-        </Button>
+        <Box
+          mt="var(--mantine-spacing-sm)"
+          style={{ display: "flex", justifyContent: "flex-end" }}
+        >
+          <BackButton
+            href="/admin/articles"
+            mr="sm"
+            aria-label="Back to Article List"
+          />
+          <Button type="submit" loading={isPending}>
+            <Text size="sm">Submit</Text>
+          </Button>
+        </Box>
       </form>
     </>
   );

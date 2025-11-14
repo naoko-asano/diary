@@ -11,7 +11,7 @@ describe("BackButton", () => {
   });
 
   it("href属性が正しく設定されている", () => {
-    render(<BackButton href="/previous-page">Go Back</BackButton>);
+    render(<BackButton href="/previous-page" />);
     expect(screen.getByRole("link")).toHaveAttribute("href", "/previous-page");
   });
 });

@@ -66,7 +66,12 @@ test("バリデーションに失敗する場合、エラーメッセージが�
   await expect(page).toHaveURL(/\/admin\/articles\/\d+\/edit/);
 });
 
-test("記事が見つからない場合、404ページが表示される", async ({ page }) => {
-  await page.goto("/admin/articles/9999/edit");
-  await expect(page.getByText("Not Found")).toBeVisible();
+test("記事が存在しないidが指定された場合、404が返る", async ({ page }) => {
+  const response = await page.goto("/admin/articles/9999/edit");
+  expect(response?.status()).toBe(404);
+});
+
+test("不正なidが指定された場合、404が返る", async ({ page }) => {
+  const response = await page.goto("/admin/articles/invalid/edit");
+  expect(response?.status()).toBe(404);
 });

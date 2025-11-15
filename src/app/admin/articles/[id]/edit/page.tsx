@@ -23,7 +23,9 @@ async function setFlashMessageCookie() {
 
 export default async function Page(props: Props) {
   const { id: stringifiedId } = await props.params;
-  const id = Number(stringifiedId);
+  const id = parseInt(stringifiedId);
+  if (isNaN(id)) notFound();
+
   const article = await findArticleById(id);
   if (!article) {
     notFound();

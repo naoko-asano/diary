@@ -8,9 +8,11 @@ export default async function Page({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const article = await findArticleById(Number(id));
+  const { id: stringifiedId } = await params;
+  const id = parseInt(stringifiedId);
+  if (isNaN(id)) notFound();
 
+  const article = await findArticleById(id);
   if (!article) {
     notFound();
   }

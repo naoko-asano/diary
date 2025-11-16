@@ -9,7 +9,7 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id: stringifiedId } = await params;
-  const id = parseInt(stringifiedId);
+  const id = Number(stringifiedId);
   if (isNaN(id)) notFound();
 
   const article = await findArticleById(id);

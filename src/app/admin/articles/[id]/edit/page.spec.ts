@@ -72,6 +72,6 @@ test("記事が存在しないidが指定された場合、404が返る", async 
 });
 
 test("不正なidが指定された場合、404が返る", async ({ page }) => {
-  const response = await page.goto("/admin/articles/1invalid/edit");
+  const response = await page.goto("/admin/articles/invalid/edit");
   expect(response?.status()).toBe(404);
 });

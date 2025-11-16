@@ -7,12 +7,13 @@ describe("parsePageParam", () => {
     expect(parsePageParam("1")).toBe(1);
   });
 
-  it("pageParamがundefinedの場合、1を返す", () => {
-    expect(parsePageParam(undefined)).toBe(1);
-  });
+  it("pageParamがundefinedの場合、1を返す", () => {});
 
-  it("pageParamが数字に変換できない文字列の場合、1を返す", () => {
+  it("pageParamが整数に変換できない文字列の場合、1を返す", () => {
     expect(parsePageParam("foo")).toBe(1);
+    expect(parsePageParam("1.5")).toBe(1);
+    expect(parsePageParam("123foo")).toBe(1);
+    expect(parsePageParam(undefined)).toBe(1);
   });
 
   it("pageParamが0の場合、1を返す", () => {

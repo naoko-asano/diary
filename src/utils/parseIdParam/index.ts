@@ -1,7 +1,10 @@
 export function parseIdParam(idParam: string): number {
-  const id = Number(idParam);
-  if (!Number.isInteger(id) || id < 1) {
+  if (!/^\d+$/.test(idParam)) {
     throw new Error("Invalid id parameter");
   }
-  return id;
+
+  const id = Number(idParam);
+  if (id > 0) return id;
+
+  throw new Error("Invalid id parameter");
 }

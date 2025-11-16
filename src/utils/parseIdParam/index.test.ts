@@ -8,10 +8,12 @@ describe("parseIdParam", () => {
     expect(parseIdParam("123")).toBe(123);
   });
 
-  it("引数が整数に変換できない文字列の場合、エラーを返す", () => {
+  it("引数が10進数に変換できない文字列の場合、エラーを返す", () => {
     expect(() => parseIdParam("foo")).toThrowError("Invalid id parameter");
-    expect(() => parseIdParam("1.5")).toThrowError("Invalid id parameter");
     expect(() => parseIdParam("123foo")).toThrowError("Invalid id parameter");
+    expect(() => parseIdParam("1.5")).toThrowError("Invalid id parameter");
+    expect(() => parseIdParam("0x10")).toThrowError("Invalid id parameter");
+    expect(() => parseIdParam("1e3")).toThrowError("Invalid id parameter");
   });
 
   it("引数が0の場合、エラーを返す", () => {

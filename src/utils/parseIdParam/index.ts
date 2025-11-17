@@ -1,5 +1,5 @@
 export function parseIdParam(idParam: string): number {
-  if (!/^\d+$/.test(idParam)) {
+  if (/\D/.test(idParam)) {
     throw new Error("Invalid id parameter");
   }
 

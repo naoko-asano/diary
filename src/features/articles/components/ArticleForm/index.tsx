@@ -15,6 +15,7 @@ import {
   Article,
   ArticleParams,
   articleScheme,
+  Status,
 } from "@/features/articles/model";
 import { FormState } from "@/utils/formState";
 
@@ -38,6 +39,7 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
       title: article?.title ?? "",
       body: article?.body ?? "",
       date: article?.date ?? new Date(),
+      status: article?.status ?? Status.DRAFT,
     },
     validate: zod4Resolver(articleScheme),
     transformValues: (values) => ({

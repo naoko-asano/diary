@@ -1,6 +1,7 @@
 import { notifications } from "@mantine/notifications";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { Status } from "@/features/articles/model";
 import { FormResult } from "@/utils/formState";
 import { render, screen, userEvent, waitFor, within } from "@testing/utils";
 
@@ -15,6 +16,7 @@ const article = {
   title: "example title",
   body: "example body",
   date: new Date("2025-01-01"),
+  status: Status.DRAFT,
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -105,6 +107,7 @@ describe("ArticleForm", () => {
         date: new Date("2025-02-02"),
         title: "Test Title",
         body: "Test Body",
+        status: Status.DRAFT,
       },
     );
 

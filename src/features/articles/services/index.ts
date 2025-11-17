@@ -53,6 +53,7 @@ export async function updateArticle(params: { id: number } & ArticleParams) {
         title: params.title,
         body: params.body,
         date: params.date,
+        status: params.status,
       },
     });
   } catch (error) {

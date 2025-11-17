@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { Status } from "@/features/articles/model";
 import { render, screen, userEvent, waitFor, within } from "@testing/utils";
 
 import { ArticleList } from ".";
@@ -10,6 +11,7 @@ const articles = [
     title: "First Article",
     body: "This is the first article.",
     date: new Date("2025-01-02"),
+    status: Status.DRAFT,
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -18,6 +20,7 @@ const articles = [
     title: "Second Article",
     body: "This is the second article.",
     date: new Date("2025-01-01"),
+    status: Status.PUBLISHED,
     createdAt: new Date(),
     updatedAt: new Date(),
   },

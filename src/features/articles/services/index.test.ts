@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { ArticleParams } from "@/features/articles/model";
+import { ArticleParams, Status } from "@/features/articles/model";
 import {
   createArticle,
   deleteArticle,
@@ -17,6 +17,7 @@ const articleParams: ArticleParams = {
   title: "Test Article",
   body: "This is a test article.",
   date: new Date("2025-02-01"),
+  status: Status.DRAFT,
 };
 
 describe("getPaginatedArticles", () => {
@@ -32,6 +33,7 @@ describe("getPaginatedArticles", () => {
       title: "Another Article",
       body: "This is another test article.",
       date: new Date("2025-01-01"),
+      status: Status.PUBLISHED,
       createdAt: new Date(),
       updatedAt: new Date(),
     },

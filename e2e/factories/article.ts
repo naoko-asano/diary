@@ -1,3 +1,4 @@
+import { Status } from "@/features/articles/model";
 import { ArticleParams } from "@/features/articles/model";
 import prisma from "@/lib/database";
 
@@ -23,6 +24,7 @@ export async function seedArticles(count: number = 1) {
       title: `title${i + 1}`,
       body: `body${i + 1}`,
       date: new Date(baseDate.setDate(baseDate.getDate() + i)),
+      status: Status.DRAFT,
     });
   }
 }

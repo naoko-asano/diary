@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { articleScheme, validateArticle } from ".";
+import { articleScheme, Status, validateArticle } from ".";
 
 const article = {
   title: "Test Article",
   body: "This is a test article.",
   date: new Date("2025-01-01"),
+  status: Status.DRAFT,
 };
 
 describe("articleScheme", () => {

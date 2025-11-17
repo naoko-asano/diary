@@ -1,10 +1,6 @@
 export function parsePageParam(pageParam?: string): number {
-  if (!pageParam) {
-    return 1;
-  }
-  const pageNumber = parseInt(pageParam, 10);
-  if (isNaN(pageNumber) || pageNumber < 1) {
-    return 1;
-  }
-  return pageNumber;
+  if (!pageParam || /\D/.test(pageParam)) return 1;
+
+  const page = Number(pageParam);
+  return page > 1 ? page : 1;
 }

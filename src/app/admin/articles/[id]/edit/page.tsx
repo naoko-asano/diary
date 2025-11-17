@@ -6,6 +6,7 @@ import { ArticleParams } from "@/features/articles/model";
 import { findArticleById, updateArticle } from "@/features/articles/services";
 import { createFlashMessageCookieConfig } from "@/utils/flashMessage";
 import { FormResult, FormState } from "@/utils/formState";
+import { parseIdParam } from "@/utils/parseIdParam";
 
 type Props = {
   params: Promise<Params>;
@@ -22,8 +23,15 @@ async function setFlashMessageCookie() {
 }
 
 export default async function Page(props: Props) {
-  const { id: stringifiedId } = await props.params;
-  const id = Number(stringifiedId);
+  const { id: idParam } = await props.params;
+
+  let id: number;
+  try {
+    id = parseIdParam(idParam);
+  } catch {
+    notFound();
+  }
+
   const article = await findArticleById(id);
   if (!article) {
     notFound();

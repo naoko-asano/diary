@@ -2,6 +2,7 @@ import { Center, Grid, GridCol } from "@mantine/core";
 
 import { Pagination } from "@/components/Pagination";
 import { ArticleCard } from "@/features/articles/components/ArticleCard";
+import { Status } from "@/features/articles/model";
 import { getPaginatedArticles } from "@/features/articles/services";
 import { parsePageParam } from "@/utils/parsePageParam";
 
@@ -14,7 +15,10 @@ type Props = {
 export default async function Page(props: Props) {
   const searchParams = await props.searchParams;
   const page = parsePageParam(searchParams.page);
-  const { articles, totalPage } = await getPaginatedArticles({ page });
+  const { articles, totalPage } = await getPaginatedArticles({
+    page,
+    conditions: { status: Status.PUBLISHED },
+  });
 
   return (
     <>

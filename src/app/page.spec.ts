@@ -1,20 +1,41 @@
 import { expect, test } from "@playwright/test";
 
-import { resetArticles, seedArticles } from "@e2e/factories/article";
+import { Status } from "@/features/articles/model";
+import {
+  createArticle,
+  resetArticles,
+  seedArticles,
+} from "@e2e/factories/article";
 
 test.beforeEach(async () => {
   await resetArticles();
 });
 
-test("記事一覧が表示されている", async ({ page }) => {
-  await seedArticles(2);
+test("公開された記事のみが表示されている", async ({ page }) => {
+  const articles = [
+    {
+      title: "title1",
+      body: "body1",
+      date: new Date("2025-01-01"),
+      status: Status.PUBLISHED,
+    },
+    {
+      title: "title2",
+      body: "body2",
+      date: new Date("2025-01-02"),
+      status: Status.DRAFT,
+    },
+  ];
+  for (const article of articles) {
+    await createArticle(article);
+  }
   await page.goto("/");
 
   await expect(page.getByText("title1")).toBeVisible();
   await expect(page.getByText("2025/01/01")).toBeVisible();
 
-  await expect(page.getByText("title2")).toBeVisible();
-  await expect(page.getByText("2025/01/02")).toBeVisible();
+  await expect(page.getByText("title2")).toHaveCount(0);
+  await expect(page.getByText("2025/01/02")).toHaveCount(0);
 });
 
 test("1ページにつき15記事が表示される", async ({ page }) => {

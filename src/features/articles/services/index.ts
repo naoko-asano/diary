@@ -6,13 +6,15 @@ import prisma from "@/lib/database";
 export async function getPaginatedArticles(params: {
   page: number;
   perPage?: number;
+  conditions?: Partial<ArticleParams>;
 }) {
-  const { page, perPage = 15 } = params;
+  const { page, perPage = 15, conditions } = params;
   try {
     const articles = await prisma.article.findMany({
       skip: (page - 1) * perPage,
       take: perPage,
       orderBy: { date: "desc" },
+      where: { ...conditions },
     });
     const total = await prisma.article.count();
     return { articles, totalPage: Math.ceil(total / perPage) };

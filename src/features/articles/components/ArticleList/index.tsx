@@ -18,6 +18,7 @@ import { TrashButton } from "@/components/TrashButton";
 import { Article } from "@/generated/prisma";
 import { formatDate } from "@/utils/date";
 import { FlashMessageTypes, showFlashMessage } from "@/utils/flashMessage";
+import { capitalize } from "@/utils/string";
 
 import styles from "./styles.module.css";
 
@@ -63,6 +64,9 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
               <Text size="sm">Date</Text>
             </TableTh>
             <TableTh w="100px">
+              <Text size="sm">Status</Text>
+            </TableTh>
+            <TableTh w="100px">
               <Text size="sm">Actions</Text>
             </TableTh>
           </TableTr>
@@ -87,6 +91,9 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
                 <Text size="sm" truncate>
                   {formatDate(article.date)}
                 </Text>
+              </TableTd>
+              <TableTd>
+                <Text size="sm">{capitalize(article.status)}</Text>
               </TableTd>
               <TableTd
                 style={{ display: "flex", gap: "var(--mantine-spacing-xs)" }}

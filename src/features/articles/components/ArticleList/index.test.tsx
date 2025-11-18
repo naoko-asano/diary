@@ -31,10 +31,13 @@ describe("ArticleList", () => {
     render(<ArticleList articles={articles} onDeleteAction={async () => {}} />);
     expect(screen.getByText("Title")).toBeInTheDocument();
     expect(screen.getByText("Date")).toBeInTheDocument();
+    expect(screen.getByText("Status")).toBeInTheDocument();
+    expect(screen.getByText("Actions")).toBeInTheDocument();
 
     const firstArticleRow = screen.getByRole("row", { name: /First Article/i });
     expect(firstArticleRow).toBeInTheDocument();
     expect(within(firstArticleRow).getByText("2025/01/02")).toBeInTheDocument();
+    expect(within(firstArticleRow).getByText("Draft")).toBeInTheDocument();
 
     const secondArticleRow = screen.getByRole("row", {
       name: /Second Article/i,
@@ -43,6 +46,7 @@ describe("ArticleList", () => {
     expect(
       within(secondArticleRow).getByText("2025/01/01"),
     ).toBeInTheDocument();
+    expect(within(secondArticleRow).getByText("Published")).toBeInTheDocument();
   });
 
   it("記事のタイトルのリンク先が記事の詳細ページである", () => {

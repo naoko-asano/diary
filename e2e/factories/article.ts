@@ -31,11 +31,12 @@ export async function seedArticles({
 
   for (let i = 0; i < count; i++) {
     const article = articles?.[i];
+    const { title, body, date, status } = article ?? {};
     await createArticle({
-      title: article?.title,
-      body: article?.body,
-      date: article?.date ?? new Date(baseDate.setDate(baseDate.getDate() + i)),
-      status: article?.status ?? Status.PUBLISHED,
+      title,
+      body,
+      date: date ?? new Date(baseDate.setDate(baseDate.getDate() + i)),
+      status: status ?? Status.PUBLISHED,
     });
   }
 }

@@ -47,15 +47,16 @@ export async function createArticle(params: ArticleParams) {
 }
 
 export async function updateArticle(params: { id: number } & ArticleParams) {
+  const { id, title, body, date, status } = params;
   validateArticle(params);
   try {
     return await prisma.article.update({
-      where: { id: params.id },
+      where: { id },
       data: {
-        title: params.title,
-        body: params.body,
-        date: params.date,
-        status: params.status,
+        title,
+        body,
+        date,
+        status,
       },
     });
   } catch (error) {

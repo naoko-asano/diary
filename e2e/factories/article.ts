@@ -41,12 +41,7 @@ export async function seedArticles({
   }
 }
 
-export async function fetchFirstArticleId() {
-  const firstArticle = await prisma.article.findFirst();
-  return firstArticle?.id;
-}
-
-export async function fetchLastArticleId() {
+export async function fetchLatestArticleId() {
   const lastArticle = await prisma.article.findFirst({
     orderBy: { id: "desc" },
   });

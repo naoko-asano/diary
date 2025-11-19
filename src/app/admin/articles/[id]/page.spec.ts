@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import {
-  fetchFirstArticleId,
+  fetchLatestArticleId,
   resetArticles,
   seedArticles,
 } from "@e2e/factories/article";
@@ -10,8 +10,8 @@ test.beforeEach(async ({ page }) => {
   await resetArticles();
   await seedArticles();
 
-  const firstArticleId = await fetchFirstArticleId();
-  await page.goto(`/articles/${firstArticleId}`);
+  const latestArticleId = await fetchLatestArticleId();
+  await page.goto(`/articles/${latestArticleId}`);
 });
 
 test("タイトルと日付と本文が正しく表示される", async ({ page }) => {

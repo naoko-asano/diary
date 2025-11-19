@@ -1,8 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import {
-  fetchFirstArticleId,
-  fetchLastArticleId,
+  fetchLatestArticleId,
   resetArticles,
   seedArticles,
 } from "@e2e/factories/article";
@@ -10,8 +9,8 @@ import {
 test.beforeEach(async ({ page }) => {
   await resetArticles();
   await seedArticles();
-  const firstArticleId = await fetchFirstArticleId();
-  await page.goto(`/articles/${firstArticleId}`);
+  const latestArticleId = await fetchLatestArticleId();
+  await page.goto(`/articles/${latestArticleId}`);
 });
 
 test("タイトルと日付と本文が正しく表示される", async ({ page }) => {
@@ -32,8 +31,8 @@ test("不正なidが指定された場合、404が返る", async ({ page }) => {
 
 test("下書き記事が指定された場合、404が返る", async ({ page }) => {
   await seedArticles({ articles: [{ status: "DRAFT" }] });
-  const lastArticleId = await fetchLastArticleId();
-  const response = await page.goto(`/articles/${lastArticleId}`);
+  const latestArticleId = await fetchLatestArticleId();
+  const response = await page.goto(`/articles/${latestArticleId}`);
 
   expect(response?.status()).toBe(404);
 });

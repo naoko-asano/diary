@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import {
-  fetchFirstArticleId,
+  fetchLatestArticleId,
   resetArticles,
   seedArticles,
 } from "@e2e/factories/article";
@@ -9,9 +9,9 @@ import {
 test.beforeEach(async ({ page }) => {
   await resetArticles();
   await seedArticles();
-  const firstArticleId = await fetchFirstArticleId();
+  const latestArticleId = await fetchLatestArticleId();
 
-  await page.goto(`/admin/articles/${firstArticleId}/edit`);
+  await page.goto(`/admin/articles/${latestArticleId}/edit`);
 });
 
 test("更新前の記事のタイトルと本文が表示され、記事が更新できる", async ({

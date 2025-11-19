@@ -1,34 +1,17 @@
 import { expect, test } from "@playwright/test";
 
 import { Status } from "@/features/articles/model";
-import {
-  createArticle,
-  resetArticles,
-  seedArticles,
-} from "@e2e/factories/article";
+import { resetArticles, seedArticles } from "@e2e/factories/article";
 
 test.beforeEach(async () => {
   await resetArticles();
 });
 
 test("公開された記事のみが表示されている", async ({ page }) => {
-  const articles = [
-    {
-      title: "title1",
-      body: "body1",
-      date: new Date("2025-01-01"),
-      status: Status.PUBLISHED,
-    },
-    {
-      title: "title2",
-      body: "body2",
-      date: new Date("2025-01-02"),
-      status: Status.DRAFT,
-    },
-  ];
-  for (const article of articles) {
-    await createArticle(article);
-  }
+  await seedArticles({
+    count: 2,
+    articles: [{ status: Status.PUBLISHED }, { status: Status.DRAFT }],
+  });
   await page.goto("/");
 
   await expect(page.getByText("title1")).toBeVisible();
@@ -39,7 +22,7 @@ test("公開された記事のみが表示されている", async ({ page }) => 
 });
 
 test("1ページにつき15記事が表示される", async ({ page }) => {
-  await seedArticles(16);
+  await seedArticles({ count: 16 });
   await page.goto("/");
 
   // 日付が新しい順に表示されている

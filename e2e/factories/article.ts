@@ -44,3 +44,10 @@ export async function fetchFirstArticleId() {
   const firstArticle = await prisma.article.findFirst();
   return firstArticle?.id;
 }
+
+export async function fetchLastArticleId() {
+  const lastArticle = await prisma.article.findFirst({
+    orderBy: { id: "desc" },
+  });
+  return lastArticle?.id;
+}

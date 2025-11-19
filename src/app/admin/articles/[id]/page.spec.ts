@@ -8,7 +8,8 @@ import {
 
 test.beforeEach(async ({ page }) => {
   await resetArticles();
-  await seedArticles();
+  await seedArticles(1);
+
   const firstArticleId = await fetchFirstArticleId();
   await page.goto(`/articles/${firstArticleId}`);
 });

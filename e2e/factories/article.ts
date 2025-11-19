@@ -29,3 +29,8 @@ export async function seedArticles(count: number = 1) {
     });
   }
 }
+
+export async function fetchFirstArticleId() {
+  const firstArticle = await prisma.article.findFirst();
+  return firstArticle?.id;
+}

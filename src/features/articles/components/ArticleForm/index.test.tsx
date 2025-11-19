@@ -16,7 +16,7 @@ const article = {
   title: "example title",
   body: "example body",
   date: new Date("2025-01-01"),
-  status: Status.DRAFT,
+  status: Status.PUBLISHED,
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -25,6 +25,7 @@ describe("ArticleForm", () => {
   it("フォームの要素が正しく表示される", () => {
     render(<ArticleForm onSubmitAction={vi.fn()} />);
 
+    expect(screen.getByLabelText("Status")).toBeInTheDocument();
     expect(screen.getByLabelText("Date *")).toBeInTheDocument();
     expect(screen.getByLabelText("Title *")).toBeInTheDocument();
     expect(screen.getByText("Body")).toBeInTheDocument();
@@ -34,6 +35,7 @@ describe("ArticleForm", () => {
   it("articleの値が渡された場合、フォームに初期値としてセットされる", () => {
     render(<ArticleForm article={article} onSubmitAction={vi.fn()} />);
 
+    const statusSelector = screen.getByLabelText("Status");
     const dateInput = screen.getByLabelText("Date *");
     const titleInput = screen.getByLabelText("Title *") as HTMLInputElement;
     const bodyEditor = screen.getByTestId("body-editor");
@@ -41,6 +43,7 @@ describe("ArticleForm", () => {
       "textarea",
     ) as HTMLTextAreaElement;
 
+    expect(statusSelector).toHaveTextContent("Publish");
     expect(dateInput).toHaveTextContent("2025/01/01");
     expect(titleInput).toHaveValue("example title");
     expect(bodyInput).toHaveValue("example body");
@@ -52,6 +55,7 @@ describe("ArticleForm", () => {
 
     render(<ArticleForm onSubmitAction={vi.fn()} />);
 
+    const statusSelector = screen.getByLabelText("Status");
     const dateInput = screen.getByLabelText("Date *");
     const titleInput = screen.getByLabelText("Title *") as HTMLInputElement;
     const bodyEditor = screen.getByTestId("body-editor");
@@ -59,6 +63,7 @@ describe("ArticleForm", () => {
       "textarea",
     ) as HTMLTextAreaElement;
 
+    expect(statusSelector).toHaveTextContent("Draft");
     expect(dateInput).toHaveTextContent("2025/02/01");
     expect(titleInput).toHaveValue("");
     expect(bodyInput).toHaveValue("");
@@ -76,6 +81,7 @@ describe("ArticleForm", () => {
 
     render(<ArticleForm onSubmitAction={mockedOnSubmitAction} />);
 
+    const statusSelector = screen.getByLabelText("Status");
     const dateInput = screen.getByLabelText("Date *");
     const titleInput = screen.getByLabelText("Title *");
     const bodyEditor = screen.getByTestId("body-editor");
@@ -83,6 +89,7 @@ describe("ArticleForm", () => {
       "textarea",
     ) as HTMLTextAreaElement;
 
+    await userEvent.selectOptions(statusSelector, "Publish");
     await userEvent.click(dateInput);
     const calendar = screen.getByRole("dialog");
     const dayButton = within(calendar).getByRole("button", {
@@ -107,7 +114,7 @@ describe("ArticleForm", () => {
         date: new Date("2025-02-02"),
         title: "Test Title",
         body: "Test Body",
-        status: Status.DRAFT,
+        status: Status.PUBLISHED,
       },
     );
 

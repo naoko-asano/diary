@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Text, TextInput } from "@mantine/core";
+import { Box, Button, NativeSelect, Text, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import MDEditor from "@uiw/react-md-editor";
@@ -28,6 +28,11 @@ type Props = {
     values: ArticleParams,
   ) => Promise<FormState>;
 };
+
+const statusOptions = [
+  { value: Status.DRAFT, label: "Draft" },
+  { value: Status.PUBLISHED, label: "Publish" },
+];
 
 export function ArticleForm({ article, onSubmitAction }: Props) {
   const [formState, formAction, isPending] = useActionState(onSubmitAction, {
@@ -61,6 +66,11 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
           });
         })}
       >
+        <NativeSelect
+          label="Status"
+          data={statusOptions}
+          {...form.getInputProps("status")}
+        />
         <DatePickerInput
           label="Date"
           key={form.key("date")}

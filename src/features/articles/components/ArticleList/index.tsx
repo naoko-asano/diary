@@ -63,7 +63,7 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
             <TableTh w="150px">
               <Text size="sm">Date</Text>
             </TableTh>
-            <TableTh w="100px">
+            <TableTh w="130px">
               <Text size="sm">Status</Text>
             </TableTh>
             <TableTh w="100px">

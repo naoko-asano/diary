@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Text, TextInput } from "@mantine/core";
+import { Box, Button, NativeSelect, Text, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import MDEditor from "@uiw/react-md-editor";
@@ -15,6 +15,7 @@ import {
   Article,
   ArticleParams,
   articleScheme,
+  Status,
 } from "@/features/articles/model";
 import { FormState } from "@/utils/formState";
 
@@ -28,6 +29,11 @@ type Props = {
   ) => Promise<FormState>;
 };
 
+const statusOptions = [
+  { value: Status.DRAFT, label: "Draft" },
+  { value: Status.PUBLISHED, label: "Publish" },
+];
+
 export function ArticleForm({ article, onSubmitAction }: Props) {
   const [formState, formAction, isPending] = useActionState(onSubmitAction, {
     result: null,
@@ -38,6 +44,7 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
       title: article?.title ?? "",
       body: article?.body ?? "",
       date: article?.date ?? new Date(),
+      status: article?.status ?? Status.DRAFT,
     },
     validate: zod4Resolver(articleScheme),
     transformValues: (values) => ({
@@ -59,6 +66,11 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
           });
         })}
       >
+        <NativeSelect
+          label="Status"
+          data={statusOptions}
+          {...form.getInputProps("status")}
+        />
         <DatePickerInput
           label="Date"
           key={form.key("date")}

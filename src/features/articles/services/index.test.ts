@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { ArticleParams } from "@/features/articles/model";
+import { ArticleParams, Status } from "@/features/articles/model";
 import {
   createArticle,
   deleteArticle,
@@ -17,6 +17,7 @@ const articleParams: ArticleParams = {
   title: "Test Article",
   body: "This is a test article.",
   date: new Date("2025-02-01"),
+  status: Status.DRAFT,
 };
 
 describe("getPaginatedArticles", () => {
@@ -32,6 +33,7 @@ describe("getPaginatedArticles", () => {
       title: "Another Article",
       body: "This is another test article.",
       date: new Date("2025-01-01"),
+      status: Status.PUBLISHED,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -48,9 +50,33 @@ describe("getPaginatedArticles", () => {
       skip: 0,
       take: 2,
       orderBy: { date: "desc" },
+      where: {},
     });
     expect(prisma.article.count).toHaveBeenCalledTimes(1);
     expect(result).toEqual({ articles, totalPage: 1 });
+  });
+
+  it("引数に渡したconditionsで記事を絞り込める", async () => {
+    prisma.article.findMany.mockResolvedValue([articles[1]]);
+    prisma.article.count.mockResolvedValue(1);
+
+    const result = await getPaginatedArticles({
+      page: 1,
+      perPage: 2,
+      conditions: { status: Status.PUBLISHED },
+    });
+
+    expect(prisma.article.findMany).toHaveBeenCalledWith({
+      skip: 0,
+      take: 2,
+      orderBy: { date: "desc" },
+      where: { status: Status.PUBLISHED },
+    });
+
+    expect(prisma.article.count).toHaveBeenCalledWith({
+      where: { status: Status.PUBLISHED },
+    });
+    expect(result).toEqual({ articles: [articles[1]], totalPage: 1 });
   });
 
   it("正しいスキップ数が計算される", async () => {
@@ -60,6 +86,7 @@ describe("getPaginatedArticles", () => {
       skip: 10,
       take: 5,
       orderBy: { date: "desc" },
+      where: {},
     });
   });
 
@@ -71,6 +98,7 @@ describe("getPaginatedArticles", () => {
       skip: 0,
       take: 15,
       orderBy: { date: "desc" },
+      where: {},
     });
     expect(result.totalPage).toBe(2);
   });

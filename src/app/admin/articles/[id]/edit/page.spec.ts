@@ -1,14 +1,17 @@
 import { expect, test } from "@playwright/test";
 
-import prisma from "@/lib/database";
-import { resetArticles, seedArticles } from "@e2e/factories/article";
+import {
+  fetchLatestArticleId,
+  resetArticles,
+  seedArticles,
+} from "@e2e/factories/article";
 
 test.beforeEach(async ({ page }) => {
   await resetArticles();
-  await seedArticles(1);
-  const firstArticle = await prisma.article.findFirst();
+  await seedArticles();
+  const latestArticleId = await fetchLatestArticleId();
 
-  await page.goto(`/admin/articles/${firstArticle?.id}/edit`);
+  await page.goto(`/admin/articles/${latestArticleId}/edit`);
 });
 
 test("更新前の記事のタイトルと本文が表示され、記事が更新できる", async ({

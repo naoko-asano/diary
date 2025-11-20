@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { Status } from "@/features/articles/model";
 import { render, screen, userEvent, waitFor, within } from "@testing/utils";
 
 import { ArticleList } from ".";
@@ -10,6 +11,7 @@ const articles = [
     title: "First Article",
     body: "This is the first article.",
     date: new Date("2025-01-02"),
+    status: Status.DRAFT,
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -18,6 +20,7 @@ const articles = [
     title: "Second Article",
     body: "This is the second article.",
     date: new Date("2025-01-01"),
+    status: Status.PUBLISHED,
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -28,10 +31,13 @@ describe("ArticleList", () => {
     render(<ArticleList articles={articles} onDeleteAction={async () => {}} />);
     expect(screen.getByText("Title")).toBeInTheDocument();
     expect(screen.getByText("Date")).toBeInTheDocument();
+    expect(screen.getByText("Status")).toBeInTheDocument();
+    expect(screen.getByText("Actions")).toBeInTheDocument();
 
     const firstArticleRow = screen.getByRole("row", { name: /First Article/i });
     expect(firstArticleRow).toBeInTheDocument();
     expect(within(firstArticleRow).getByText("2025/01/02")).toBeInTheDocument();
+    expect(within(firstArticleRow).getByText("Draft")).toBeInTheDocument();
 
     const secondArticleRow = screen.getByRole("row", {
       name: /Second Article/i,
@@ -40,6 +46,7 @@ describe("ArticleList", () => {
     expect(
       within(secondArticleRow).getByText("2025/01/01"),
     ).toBeInTheDocument();
+    expect(within(secondArticleRow).getByText("Published")).toBeInTheDocument();
   });
 
   it("記事のタイトルのリンク先が記事の詳細ページである", () => {
@@ -49,8 +56,8 @@ describe("ArticleList", () => {
       name: "Second Article",
     });
 
-    expect(firstTitleLink).toHaveAttribute("href", "/articles/1");
-    expect(secondTitleLink).toHaveAttribute("href", "/articles/2");
+    expect(firstTitleLink).toHaveAttribute("href", "/admin/articles/1");
+    expect(secondTitleLink).toHaveAttribute("href", "/admin/articles/2");
   });
 
   it("編集ボタンのリンク先が記事の編集ページである", () => {

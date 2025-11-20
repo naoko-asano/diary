@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+import { Status } from "@/generated/prisma";
 import { resetArticles, seedArticles } from "@e2e/factories/article";
 
 test.beforeEach(async () => {
@@ -7,7 +8,10 @@ test.beforeEach(async () => {
 });
 
 test("記事一覧が表示されている", async ({ page }) => {
-  await seedArticles(2);
+  await seedArticles({
+    count: 2,
+    articles: [{ status: Status.PUBLISHED }, { status: Status.DRAFT }],
+  });
   await page.goto("/admin/articles");
 
   await expect(page.getByText("title1")).toBeVisible();
@@ -18,7 +22,9 @@ test("記事一覧が表示されている", async ({ page }) => {
 });
 
 test("削除ボタンをクリックすると記事が削除される", async ({ page }) => {
-  await seedArticles(2);
+  await seedArticles({
+    count: 2,
+  });
   await page.goto("/admin/articles");
 
   const deletingButtons = page.getByRole("button", {
@@ -47,7 +53,9 @@ test("削除ボタンをクリックすると記事が削除される", async ({
 });
 
 test("1ページにつき15記事が表示される", async ({ page }) => {
-  await seedArticles(16);
+  await seedArticles({
+    count: 16,
+  });
   await page.goto("/admin/articles");
 
   // 日付が新しい順に表示されている

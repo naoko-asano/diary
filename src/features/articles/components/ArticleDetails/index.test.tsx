@@ -1,5 +1,6 @@
 import { describe, it } from "vitest";
 
+import { Status } from "@/features/articles/model";
 import { render, screen } from "@testing/utils";
 
 import { ArticleDetails } from ".";
@@ -9,6 +10,7 @@ const article = {
   title: "example title",
   body: "example body",
   date: new Date("2025-01-01"),
+  status: Status.PUBLISHED,
   createdAt: new Date(),
   updatedAt: new Date(),
 };

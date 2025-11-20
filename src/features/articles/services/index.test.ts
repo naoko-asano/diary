@@ -72,6 +72,10 @@ describe("getPaginatedArticles", () => {
       orderBy: { date: "desc" },
       where: { status: Status.PUBLISHED },
     });
+
+    expect(prisma.article.count).toHaveBeenCalledWith({
+      where: { status: Status.PUBLISHED },
+    });
     expect(result).toEqual({ articles: [articles[1]], totalPage: 1 });
   });
 

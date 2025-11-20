@@ -36,3 +36,19 @@ test("1ページにつき15記事が表示される", async ({ page }) => {
   await expect(page.getByText("title2", { exact: true })).toHaveCount(0);
   await expect(page.getByText("title1", { exact: true })).toBeVisible();
 });
+
+test("公開された記事の数にあったページネーションが表示される", async ({
+  page,
+}) => {
+  const draftArticle = Array(15).fill({ status: Status.DRAFT });
+  const publishedArticle = Array(1).fill({ status: Status.PUBLISHED });
+
+  await seedArticles({
+    count: 16,
+    articles: [...draftArticle, ...publishedArticle],
+  });
+  await page.goto("/");
+  await expect(
+    page.getByRole("button", { name: "2", exact: true }),
+  ).toHaveCount(0);
+});

@@ -16,7 +16,7 @@ export async function getPaginatedArticles(params: {
       orderBy: { date: "desc" },
       where: { ...conditions },
     });
-    const total = await prisma.article.count();
+    const total = await prisma.article.count({ where: { ...conditions } });
     return { articles, totalPage: Math.ceil(total / perPage) };
   } catch (error) {
     throw new Error("Failed to get paginated articles\n" + error);

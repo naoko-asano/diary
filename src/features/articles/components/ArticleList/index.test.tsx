@@ -56,8 +56,8 @@ describe("ArticleList", () => {
       name: "Second Article",
     });
 
-    expect(firstTitleLink).toHaveAttribute("href", "/articles/1");
-    expect(secondTitleLink).toHaveAttribute("href", "/articles/2");
+    expect(firstTitleLink).toHaveAttribute("href", "/admin/articles/1");
+    expect(secondTitleLink).toHaveAttribute("href", "/admin/articles/2");
   });
 
   it("編集ボタンのリンク先が記事の編集ページである", () => {

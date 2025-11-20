@@ -75,7 +75,7 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
           <TableTbody key={article.id}>
             <TableTr>
               <TableTd>
-                <Link href={`/articles/${article.id}`}>
+                <Link href={`/admin/articles/${article.id}`}>
                   <Text
                     size="sm"
                     className={styles.title}

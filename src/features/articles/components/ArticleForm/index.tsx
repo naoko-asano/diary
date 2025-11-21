@@ -43,6 +43,7 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
     initialValues: {
       title: article?.title ?? "",
       body: article?.body ?? "",
+      featuredImageUrl: article?.featuredImageUrl ?? null,
       date: article?.date ?? new Date(),
       status: article?.status ?? Status.DRAFT,
     },

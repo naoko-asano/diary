@@ -16,6 +16,7 @@ vi.mock("@/lib/database");
 const articleParams: ArticleParams = {
   title: "Test Article",
   body: "This is a test article.",
+  featuredImageUrl: null,
   date: new Date("2025-02-01"),
   status: Status.DRAFT,
 };
@@ -32,6 +33,7 @@ describe("getPaginatedArticles", () => {
       id: 2,
       title: "Another Article",
       body: "This is another test article.",
+      featuredImageUrl: null,
       date: new Date("2025-01-01"),
       status: Status.PUBLISHED,
       createdAt: new Date(),

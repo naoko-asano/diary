@@ -47,7 +47,7 @@ export async function createArticle(params: ArticleParams) {
 }
 
 export async function updateArticle(params: { id: number } & ArticleParams) {
-  const { id, title, body, date, status } = params;
+  const { id, title, body, featuredImageUrl, date, status } = params;
   validateArticle(params);
   try {
     return await prisma.article.update({
@@ -55,6 +55,7 @@ export async function updateArticle(params: { id: number } & ArticleParams) {
       data: {
         title,
         body,
+        featuredImageUrl,
         date,
         status,
       },

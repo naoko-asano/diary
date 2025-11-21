@@ -15,6 +15,7 @@ const article = {
   id: 1,
   title: "example title",
   body: "example body",
+  featuredImageUrl: null,
   date: new Date("2025-01-01"),
   status: Status.PUBLISHED,
   createdAt: new Date(),
@@ -114,6 +115,7 @@ describe("ArticleForm", () => {
         date: new Date("2025-02-02"),
         title: "Test Title",
         body: "Test Body",
+        featuredImageUrl: null,
         status: Status.PUBLISHED,
       },
     );

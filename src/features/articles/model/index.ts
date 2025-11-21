@@ -13,6 +13,7 @@ export const articleScheme = z.object({
   body: z.string().trim().min(1, { message: "1文字以上入力してください" }),
   date: z.coerce.date("日付を選択してください"),
   status: z.enum(Status),
+  featuredImageUrl: z.string().nullable(),
 });
 
 export function validateArticle(params: ArticleParams) {

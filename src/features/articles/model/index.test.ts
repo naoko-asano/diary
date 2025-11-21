@@ -5,6 +5,7 @@ import { articleScheme, Status, validateArticle } from ".";
 const article = {
   title: "Test Article",
   body: "This is a test article.",
+  featuredImageUrl: null,
   date: new Date("2025-01-01"),
   status: Status.DRAFT,
 };

@@ -13,6 +13,8 @@ type Props = {
   article: Article;
 };
 
+const contentWidth = 180;
+
 export function ArticleCard(props: Props) {
   const { article } = props;
 
@@ -20,23 +22,30 @@ export function ArticleCard(props: Props) {
     <Paper
       component={Link}
       href={`/articles/${article.id}`}
-      p="sm"
       className={styles.articleCard}
       bg="var(--mantine-color-default)"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "var(--mantine-spacing-xs)",
+      }}
+      py="sm"
     >
-      <Box mb="sm" style={{ display: "flex", justifyContent: "center" }}>
-        <Image
-          src={resolveFeaturedImage(article)}
-          alt={article.title}
-          width={200}
-          height={200}
-          style={{ textAlign: "center", stroke: "pink" }}
-        />
+      <Image
+        src={resolveFeaturedImage(article)}
+        alt={article.title}
+        width={contentWidth}
+        height={contentWidth}
+      />
+      <Box style={{ width: contentWidth, textAlign: "left" }}>
+        <Text size="sm" truncate>
+          {article.title}
+        </Text>
+        <Text size="xs" c="dimmed">
+          {formatDate(article.date)}
+        </Text>
       </Box>
-      <Text size="sm">{article.title}</Text>
-      <Text size="xs" c="dimmed">
-        {formatDate(article.date)}
-      </Text>
     </Paper>
   );
 }

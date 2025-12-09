@@ -126,7 +126,7 @@ describe("resolveFeaturedImage", () => {
       updatedAt: new Date(),
     };
     expect(resolveFeaturedImage(articleWithoutImage)).toBe(
-      "/default-featured-image.jpg",
+      "/images/default-featured-image.jpg",
     );
   });
 });

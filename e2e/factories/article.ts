@@ -12,6 +12,7 @@ async function createArticle(articleParams?: Partial<ArticleParams>) {
       body: body ?? `body${count + 1}`,
       date: date ?? new Date("2025-01-01"),
       status: status ?? Status.PUBLISHED,
+      featuredImageUrl: null,
     },
   });
 }
@@ -31,12 +32,13 @@ export async function seedArticles({
 
   for (let i = 0; i < count; i++) {
     const article = articles?.[i];
-    const { title, body, date, status } = article ?? {};
+    const { title, body, date, status, featuredImageUrl } = article ?? {};
     await createArticle({
       title,
       body,
       date: date ?? new Date(baseDate.setDate(baseDate.getDate() + i)),
-      status: status ?? Status.PUBLISHED,
+      status,
+      featuredImageUrl,
     });
   }
 }

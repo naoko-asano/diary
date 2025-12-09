@@ -3,9 +3,20 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Status } from "@/features/articles/model";
 import { FormResult } from "@/utils/formState";
+import { uploadImage } from "@/utils/image";
 import { render, screen, userEvent, waitFor, within } from "@testing/utils";
 
 import { ArticleForm } from ".";
+
+vi.mock("@/utils/image");
+const mockedUploadImage = vi.mocked(uploadImage);
+mockedUploadImage.mockResolvedValue({
+  url: "https://example.com/uploaded-image.jpg",
+  downloadUrl: "https://example.com/uploaded-image.jpg",
+  pathname: "/uploaded-image.jpg",
+  contentType: "image/jpeg",
+  contentDisposition: "inline",
+});
 
 beforeEach(() => {
   notifications.clean();
@@ -15,7 +26,7 @@ const article = {
   id: 1,
   title: "example title",
   body: "example body",
-  featuredImageUrl: null,
+  featuredImageUrl: "https://example.com/image.jpg",
   date: new Date("2025-01-01"),
   status: Status.PUBLISHED,
   createdAt: new Date(),
@@ -29,6 +40,7 @@ describe("ArticleForm", () => {
     expect(screen.getByLabelText("Status")).toBeInTheDocument();
     expect(screen.getByLabelText("Date *")).toBeInTheDocument();
     expect(screen.getByLabelText("Title *")).toBeInTheDocument();
+    expect(screen.getByLabelText("Featured Image")).toBeInTheDocument();
     expect(screen.getByText("Body")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Submit" })).toBeInTheDocument();
   });
@@ -72,7 +84,7 @@ describe("ArticleForm", () => {
     vi.useRealTimers();
   });
 
-  it("フォーム入力と送信ができ、onSubmitActionで渡された関数が呼ばれる", async () => {
+  it("アイキャッチ画像を登録していない場合、submitボタン押下でonSubmitActionで渡された関数が呼ばれる", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2025-02-01"));
 
@@ -119,8 +131,46 @@ describe("ArticleForm", () => {
         status: Status.PUBLISHED,
       },
     );
+    expect(mockedUploadImage).not.toHaveBeenCalled();
 
     vi.useRealTimers();
+  });
+
+  it("アイキャッチ画像が登録された場合、submitボタン押下でonSubmitActionに渡された関数とuploadImageが呼ばれる", async () => {
+    const mockedSubmitAction = vi.fn(() =>
+      Promise.resolve({ result: FormResult.SUCCESS }),
+    );
+
+    render(<ArticleForm onSubmitAction={mockedSubmitAction} />);
+    const titleInput = screen.getByLabelText("Title *");
+    const bodyEditor = screen.getByTestId("body-editor");
+    const bodyInput = bodyEditor.querySelector(
+      "textarea",
+    ) as HTMLTextAreaElement;
+
+    await userEvent.type(titleInput, "Test Title");
+    await userEvent.type(bodyInput, "Test Body");
+
+    expect(titleInput).toHaveValue("Test Title");
+    expect(bodyInput).toHaveValue("Test Body");
+
+    const file = new File(["dummy content"], "example.png", {
+      type: "image/png",
+    });
+    const fileButton = screen.getByLabelText(/Featured Image/i);
+    const fileInput = document.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
+
+    await userEvent.upload(fileInput, file);
+
+    await waitFor(() => expect(fileButton).toHaveTextContent("example.png"));
+    expect(fileInput.files).toHaveLength(1);
+    expect(fileInput.files?.[0]).toStrictEqual(file);
+
+    await userEvent.click(screen.getByRole("button", { name: "Submit" }));
+    expect(mockedUploadImage).toHaveBeenCalledTimes(1);
+    expect(mockedSubmitAction).toHaveBeenCalledTimes(1);
   });
 
   it("titleにバリデーションエラーがある場合、エラーメッセージが表示され、onSubmitActionで渡された関数は呼ばれない", async () => {

@@ -1,11 +1,18 @@
 "use client";
 
-import { Box, Button, NativeSelect, Text, TextInput } from "@mantine/core";
+import {
+  Box,
+  Button,
+  FileInput,
+  NativeSelect,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import MDEditor from "@uiw/react-md-editor";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { startTransition, useActionState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import rehypeSanitize from "rehype-sanitize";
 
 import { BackButton } from "@/components/BackButton";
@@ -18,6 +25,7 @@ import {
   Status,
 } from "@/features/articles/model";
 import { FormState } from "@/utils/formState";
+import { uploadImage } from "@/utils/image";
 
 import "./styles.css";
 
@@ -34,7 +42,8 @@ const statusOptions = [
   { value: Status.PUBLISHED, label: "Publish" },
 ];
 
-export function ArticleForm({ article, onSubmitAction }: Props) {
+export function ArticleForm(props: Props) {
+  const { article, onSubmitAction } = props;
   const [formState, formAction, isPending] = useActionState(onSubmitAction, {
     result: null,
   });
@@ -53,6 +62,9 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
       date: new Date(values.date),
     }),
   });
+  const [featuredImage, setFeaturedImage] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const canSubmit = !(uploading || isPending);
 
   return (
     <>
@@ -62,6 +74,12 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
       />
       <form
         onSubmit={form.onSubmit(async (values) => {
+          if (!canSubmit) return;
+          if (featuredImage) {
+            setUploading(true);
+            values.featuredImageUrl = (await uploadImage(featuredImage)).url;
+            setUploading(false);
+          }
           startTransition(() => {
             formAction(values);
           });
@@ -85,6 +103,11 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
             },
             weekday: { fontSize: "var(--mantine-font-size-xs)" },
           }}
+        />
+        <FileInput
+          label="Featured Image"
+          value={featuredImage}
+          onChange={setFeaturedImage}
         />
         <TextInput
           label="Title"
@@ -115,7 +138,7 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
             mr="sm"
             aria-label="Back to Article List"
           />
-          <Button type="submit" loading={isPending}>
+          <Button type="submit" loading={!canSubmit}>
             <Text size="sm">Submit</Text>
           </Button>
         </Box>

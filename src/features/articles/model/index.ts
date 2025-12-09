@@ -28,5 +28,5 @@ export type Article = OriginalArticle;
 export type ArticleParams = z.infer<typeof articleScheme>;
 
 export function resolveFeaturedImage(article: Article): string {
-  return article.featuredImageUrl || "/default-featured-image.jpg";
+  return article.featuredImageUrl || "/images/default-featured-image.jpg";
 }

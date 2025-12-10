@@ -7,6 +7,8 @@ import { resetArticles } from "@e2e/factories/article";
 test.beforeEach(async ({ page }) => {
   await page.clock.setFixedTime(new Date("2025-01-01"));
   await page.goto("/admin/articles/new");
+  // ハイドレーションの完了を待たないと、入力内容が戻されてしまうことがある
+  await page.waitForTimeout(200);
 });
 
 test.beforeAll(async () => {

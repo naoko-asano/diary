@@ -168,9 +168,50 @@ describe("ArticleForm", () => {
     expect(fileInput.files).toHaveLength(1);
     expect(fileInput.files?.[0]).toStrictEqual(file);
 
-    await userEvent.click(screen.getByRole("button", { name: "Submit" }));
+    const submitButton = screen.getByRole("button", { name: "Submit" });
+
+    expect(submitButton).toBeEnabled();
+    await userEvent.click(submitButton);
+
     expect(mockedUploadImage).toHaveBeenCalledTimes(1);
     expect(mockedSubmitAction).toHaveBeenCalledTimes(1);
+  });
+
+  it("画像のアップロードに失敗した場合、onSubmitActionで渡された関数は呼ばれない", async () => {
+    mockedUploadImage.mockRejectedValueOnce(new Error("Upload failed"));
+    const mockedOnSubmitAction = vi.fn();
+
+    render(<ArticleForm onSubmitAction={mockedOnSubmitAction} />);
+    const titleInput = screen.getByLabelText("Title *");
+    const bodyEditor = screen.getByTestId("body-editor");
+    const bodyInput = bodyEditor.querySelector(
+      "textarea",
+    ) as HTMLTextAreaElement;
+
+    await userEvent.type(titleInput, "Test Title");
+    await userEvent.type(bodyInput, "Test Body");
+
+    const file = new File(["dummy content"], "example.png", {
+      type: "image/png",
+    });
+    const fileInput = document.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
+
+    await userEvent.upload(fileInput, file);
+
+    const submitButton = screen.getByRole("button", { name: "Submit" });
+    expect(submitButton).toBeEnabled();
+    await userEvent.click(submitButton);
+
+    expect(mockedUploadImage).toHaveBeenCalledTimes(1);
+    expect(mockedOnSubmitAction).not.toHaveBeenCalled();
+    await waitFor(() =>
+      expect(
+        screen.getByText("Failed to upload image. Please try again later."),
+      ).toBeVisible(),
+    );
+    expect(submitButton).toBeEnabled();
   });
 
   it("titleにバリデーションエラーがある場合、エラーメッセージが表示され、onSubmitActionで渡された関数は呼ばれない", async () => {

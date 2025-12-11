@@ -24,6 +24,7 @@ import {
   articleScheme,
   Status,
 } from "@/features/articles/model";
+import { FlashMessageTypes, showFlashMessage } from "@/utils/flashMessage";
 import { FormState } from "@/utils/formState";
 import { uploadImage } from "@/utils/image";
 
@@ -44,9 +45,14 @@ const statusOptions = [
 
 export function ArticleForm(props: Props) {
   const { article, onSubmitAction } = props;
+  const [featuredImage, setFeaturedImage] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
   const [formState, formAction, isPending] = useActionState(onSubmitAction, {
     result: null,
   });
+  const canSubmit = !(uploading || isPending);
+
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -62,9 +68,27 @@ export function ArticleForm(props: Props) {
       date: new Date(values.date),
     }),
   });
-  const [featuredImage, setFeaturedImage] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const canSubmit = !(uploading || isPending);
+
+  const handleSubmit = form.onSubmit(async (values) => {
+    if (!canSubmit) return;
+    if (featuredImage) {
+      setUploading(true);
+      try {
+        values.featuredImageUrl = (await uploadImage(featuredImage)).url;
+      } catch (_error) {
+        showFlashMessage({
+          type: FlashMessageTypes.ERROR,
+          message: "Failed to upload image.\nPlease try again later.",
+        });
+        return;
+      } finally {
+        setUploading(false);
+      }
+    }
+    startTransition(() => {
+      formAction(values);
+    });
+  });
 
   return (
     <>
@@ -72,19 +96,7 @@ export function ArticleForm(props: Props) {
         formState={formState}
         message={"Failed to submit the form.\nPlease try again later."}
       />
-      <form
-        onSubmit={form.onSubmit(async (values) => {
-          if (!canSubmit) return;
-          if (featuredImage) {
-            setUploading(true);
-            values.featuredImageUrl = (await uploadImage(featuredImage)).url;
-            setUploading(false);
-          }
-          startTransition(() => {
-            formAction(values);
-          });
-        })}
-      >
+      <form onSubmit={handleSubmit}>
         <NativeSelect
           label="Status"
           data={statusOptions}

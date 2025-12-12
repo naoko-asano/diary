@@ -33,10 +33,13 @@ export async function seedArticles({
   for (let i = 0; i < count; i++) {
     const article = articles?.[i];
     const { title, body, date, status, featuredImageUrl } = article ?? {};
+    const defaultDate = new Date(baseDate);
+    defaultDate.setDate(baseDate.getDate() + i);
+
     await createArticle({
       title,
       body,
-      date: date ?? new Date(baseDate.setDate(baseDate.getDate() + i)),
+      date: date ?? defaultDate,
       status,
       featuredImageUrl,
     });

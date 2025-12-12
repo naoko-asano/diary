@@ -3,7 +3,7 @@ import { ArticleParams } from "@/features/articles/model";
 import prisma from "@/lib/database";
 
 async function createArticle(articleParams?: Partial<ArticleParams>) {
-  const { title, body, date, status } = articleParams ?? {};
+  const { title, body, date, status, featuredImageUrl } = articleParams ?? {};
 
   const count = await prisma.article.count();
   await prisma.article.create({
@@ -12,7 +12,7 @@ async function createArticle(articleParams?: Partial<ArticleParams>) {
       body: body ?? `body${count + 1}`,
       date: date ?? new Date("2025-01-01"),
       status: status ?? Status.PUBLISHED,
-      featuredImageUrl: null,
+      featuredImageUrl,
     },
   });
 }

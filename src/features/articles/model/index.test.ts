@@ -1,10 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { articleScheme, Status, validateArticle } from ".";
+import {
+  articleScheme,
+  resolveFeaturedImage,
+  Status,
+  validateArticle,
+} from ".";
 
 const article = {
   title: "Test Article",
   body: "This is a test article.",
+  featuredImageUrl: null,
   date: new Date("2025-01-01"),
   status: Status.DRAFT,
 };
@@ -95,6 +101,32 @@ describe("validateArticle", () => {
   it("無効な記事の場合、エラーがスローされる", () => {
     expect(() => validateArticle({ ...article, title: "" })).toThrow(
       /Invalid article params\n/,
+    );
+  });
+});
+
+describe("resolveFeaturedImage", () => {
+  it("featuredImageUrlが存在する場合、そのURLを返す", () => {
+    const articleWithImage = {
+      ...article,
+      id: 1,
+      featuredImageUrl: "/image.jpg",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    expect(resolveFeaturedImage(articleWithImage)).toBe("/image.jpg");
+  });
+
+  it("featuredImageUrlがnullの場合、デフォルトの画像URLを返す", () => {
+    const articleWithoutImage = {
+      ...article,
+      id: 2,
+      resolveFeaturedImage: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    expect(resolveFeaturedImage(articleWithoutImage)).toBe(
+      "/images/default-featured-image.jpg",
     );
   });
 });

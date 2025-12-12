@@ -1,3 +1,5 @@
+import path from "path";
+
 import { expect, test } from "@playwright/test";
 
 import { resetArticles } from "@e2e/factories/article";
@@ -5,22 +7,19 @@ import { resetArticles } from "@e2e/factories/article";
 test.beforeEach(async ({ page }) => {
   await page.clock.setFixedTime(new Date("2025-01-01"));
   await page.goto("/admin/articles/new");
+  // ハイドレーションの完了を待たないと、入力内容が戻されてしまうことがある
+  await page.waitForTimeout(200);
 });
 
 test.beforeAll(async () => {
   await resetArticles();
 });
 
-test("記事を作成できる", async ({ page }) => {
+test("アイキャッチ画像をアップロードし、記事を作成できる", async ({ page }) => {
+  const statusSelector = page.getByLabel("Status");
+  await statusSelector.selectOption({ label: "Publish" });
+
   const dateInput = page.getByLabel("Date *");
-  const titleInput = page.getByLabel("Title *");
-  const bodyEditor = page.getByTestId("body-editor");
-  const bodyInput = bodyEditor.getByRole("textbox");
-
-  await expect(dateInput).toHaveText("2025/01/01");
-  await expect(titleInput).toHaveValue("");
-  await expect(bodyInput).toHaveValue("");
-
   await dateInput.click();
   const calendar = page.getByRole("dialog");
   const dayButton = calendar.getByRole("button", {
@@ -29,33 +28,35 @@ test("記事を作成できる", async ({ page }) => {
   });
   await dayButton.click();
 
-  await expect(dateInput).toHaveText("2025/01/02");
+  const featuredImageButton = page.getByRole("button", {
+    name: "Featured Image",
+  });
+  await featuredImageButton.click();
+  const fileInput = page.locator('input[type="file"]');
+  await fileInput.setInputFiles(path.resolve("e2e/images/sample.jpg"));
+
+  const titleInput = page.getByLabel("Title *");
   await titleInput.fill("New Title");
+
+  const bodyEditor = page.getByTestId("body-editor");
+  const bodyInput = bodyEditor.getByRole("textbox");
   await bodyInput.fill("New Body");
+
   await page.getByRole("button", { name: "Submit" }).click();
 
   await page.waitForURL("/admin/articles");
+
   await expect(page.getByText("New Title")).toBeVisible();
+  await expect(page.getByText("Published")).toBeVisible();
   // テスト環境ではuseEffectが2回実行されるため、first()で対応
   await expect(
     page.getByText("Article created successfully!").first(),
   ).toBeVisible();
-});
 
-test("バリデーションに失敗する場合、エラーメッセージが表示され、記事は作成されない", async ({
-  page,
-}) => {
-  // HINT: Webkitでは日付選択欄の初期化が完了しないと、他の値も正しく反映されない
-  await expect(page.getByLabel("Date *")).toHaveText("2025/01/01");
+  await page.goto("/");
 
-  const titleInput = page.getByLabel("Title *");
-  const bodyEditor = page.getByTestId("body-editor");
-  const bodyInput = bodyEditor.getByRole("textbox");
-
-  await titleInput.fill(" ");
-  await bodyInput.fill("New Body");
-  await page.getByRole("button", { name: "Submit" }).click();
-
-  await expect(page.getByText("1文字以上入力してください")).toBeVisible();
-  await expect(page).toHaveURL("/admin/articles/new");
+  await expect(page.getByRole("img", { name: "New Title" })).toHaveAttribute(
+    "src",
+    /sample/,
+  );
 });

@@ -3,7 +3,7 @@ import { ArticleParams } from "@/features/articles/model";
 import prisma from "@/lib/database";
 
 async function createArticle(articleParams?: Partial<ArticleParams>) {
-  const { title, body, date, status } = articleParams ?? {};
+  const { title, body, date, status, featuredImageUrl } = articleParams ?? {};
 
   const count = await prisma.article.count();
   await prisma.article.create({
@@ -12,6 +12,7 @@ async function createArticle(articleParams?: Partial<ArticleParams>) {
       body: body ?? `body${count + 1}`,
       date: date ?? new Date("2025-01-01"),
       status: status ?? Status.PUBLISHED,
+      featuredImageUrl,
     },
   });
 }
@@ -31,12 +32,16 @@ export async function seedArticles({
 
   for (let i = 0; i < count; i++) {
     const article = articles?.[i];
-    const { title, body, date, status } = article ?? {};
+    const { title, body, date, status, featuredImageUrl } = article ?? {};
+    const defaultDate = new Date(baseDate);
+    defaultDate.setDate(baseDate.getDate() + i);
+
     await createArticle({
       title,
       body,
-      date: date ?? new Date(baseDate.setDate(baseDate.getDate() + i)),
-      status: status ?? Status.PUBLISHED,
+      date: date ?? defaultDate,
+      status,
+      featuredImageUrl,
     });
   }
 }

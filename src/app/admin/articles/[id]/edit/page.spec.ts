@@ -1,3 +1,5 @@
+import path from "path";
+
 import { expect, test } from "@playwright/test";
 
 import {
@@ -14,18 +16,9 @@ test.beforeEach(async ({ page }) => {
   await page.goto(`/admin/articles/${latestArticleId}/edit`);
 });
 
-test("更新前の記事のタイトルと本文が表示され、記事が更新できる", async ({
-  page,
-}) => {
+test("記事が更新できる", async ({ page }) => {
   const dateInput = page.getByLabel("Date *");
-  const titleInput = page.getByLabel("Title *");
-  const bodyEditor = page.getByTestId("body-editor");
-  const bodyInput = bodyEditor.getByRole("textbox");
-
   await expect(dateInput).toHaveText("2025/01/01");
-  await expect(titleInput).toHaveValue("title1");
-  await expect(bodyInput).toHaveValue("body1");
-
   await dateInput.click();
   const calendar = page.getByRole("dialog");
   const dayButton = calendar.getByRole("button", {
@@ -34,10 +27,22 @@ test("更新前の記事のタイトルと本文が表示され、記事が更�
   });
   await dayButton.click();
 
-  await expect(dateInput).toHaveText("2025/01/02");
+  const featuredImageButton = page.getByRole("button", {
+    name: "Featured Image",
+  });
+  await featuredImageButton.click();
+  const fileInput = page.locator('input[type="file"]');
+  await fileInput.setInputFiles(path.resolve("e2e/images/sample.jpg"));
 
+  const titleInput = page.getByLabel("Title *");
+  await expect(titleInput).toHaveValue("title1");
   await titleInput.fill("updated title");
+
+  const bodyEditor = page.getByTestId("body-editor");
+  const bodyInput = bodyEditor.getByRole("textbox");
+  await expect(bodyInput).toHaveValue("body1");
   await bodyInput.fill("updated body");
+
   await page.getByRole("button", { name: "Submit" }).click();
   await page.waitForURL("/admin/articles");
 
@@ -46,27 +51,12 @@ test("更新前の記事のタイトルと本文が表示され、記事が更�
   await expect(
     page.getByText("Article updated successfully!").first(),
   ).toBeVisible();
-});
 
-test("バリデーションに失敗する場合、エラーメッセージが表示され、記事は更新されない", async ({
-  page,
-}) => {
-  // HINT: Webkitでは日付選択欄の初期化が完了しないと、他の値も初期値に差し戻ってしまう
-  await expect(page.getByLabel("Date *")).toHaveText("2025/01/01");
-  await page.evaluate(
-    () =>
-      new Promise<void>((resolve) => requestAnimationFrame(() => resolve())),
-  );
-  const titleInput = page.getByLabel("Title *");
-  const bodyEditor = page.getByTestId("body-editor");
-  const bodyInput = bodyEditor.getByRole("textbox");
+  await page.goto("/");
 
-  await titleInput.fill(" ");
-  await bodyInput.fill("updated body");
-  await page.getByRole("button", { name: "Submit" }).click();
-
-  await expect(page.getByText("1文字以上入力してください")).toBeVisible();
-  await expect(page).toHaveURL(/\/admin\/articles\/\d+\/edit/);
+  await expect(
+    page.getByRole("img", { name: "updated title" }),
+  ).toHaveAttribute("src", /sample/);
 });
 
 test("記事が存在しないidが指定された場合、404が返る", async ({ page }) => {

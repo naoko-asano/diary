@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
   eslint: {
     dirs: ["src", "e2e", "testing"],
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: process.env.REMOTE_IMAGE_HOST || "",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

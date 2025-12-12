@@ -29,7 +29,7 @@ export default async function Page(props: Props) {
           </GridCol>
         ))}
       </Grid>
-      <Center>
+      <Center mt="md">
         <Pagination activePage={page} total={totalPage} />
       </Center>
     </>

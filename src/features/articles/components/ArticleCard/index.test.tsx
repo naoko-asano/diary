@@ -9,6 +9,7 @@ const article = {
   id: 1,
   title: "example title",
   body: "example body",
+  featuredImageUrl: "/image.jpg",
   date: new Date("2025-01-01"),
   status: Status.PUBLISHED,
   createdAt: new Date(),
@@ -29,5 +30,13 @@ describe("ArticleCard", () => {
   it("日付が正しく表示される", () => {
     render(<ArticleCard article={article} />);
     expect(screen.getByText("2025/01/01")).toBeVisible();
+  });
+
+  it("アイキャッチ画像が表示される", () => {
+    render(<ArticleCard article={article} />);
+    expect(screen.getByRole("img", { name: /example title/i })).toHaveAttribute(
+      "src",
+      expect.stringContaining("image.jpg"),
+    );
   });
 });

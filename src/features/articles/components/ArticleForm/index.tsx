@@ -1,11 +1,18 @@
 "use client";
 
-import { Box, Button, NativeSelect, Text, TextInput } from "@mantine/core";
+import {
+  Box,
+  Button,
+  FileInput,
+  NativeSelect,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import MDEditor from "@uiw/react-md-editor";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { startTransition, useActionState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import rehypeSanitize from "rehype-sanitize";
 
 import { BackButton } from "@/components/BackButton";
@@ -17,7 +24,9 @@ import {
   articleScheme,
   Status,
 } from "@/features/articles/model";
+import { FlashMessageTypes, showFlashMessage } from "@/utils/flashMessage";
 import { FormState } from "@/utils/formState";
+import { uploadImage } from "@/utils/image";
 
 import "./styles.css";
 
@@ -34,15 +43,22 @@ const statusOptions = [
   { value: Status.PUBLISHED, label: "Publish" },
 ];
 
-export function ArticleForm({ article, onSubmitAction }: Props) {
+export function ArticleForm(props: Props) {
+  const { article, onSubmitAction } = props;
+  const [featuredImage, setFeaturedImage] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
   const [formState, formAction, isPending] = useActionState(onSubmitAction, {
     result: null,
   });
+  const canSubmit = !(uploading || isPending);
+
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
       title: article?.title ?? "",
       body: article?.body ?? "",
+      featuredImageUrl: article?.featuredImageUrl ?? null,
       date: article?.date ?? new Date(),
       status: article?.status ?? Status.DRAFT,
     },
@@ -53,19 +69,34 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
     }),
   });
 
+  const handleSubmit = form.onSubmit(async (values) => {
+    if (!canSubmit) return;
+    if (featuredImage) {
+      setUploading(true);
+      try {
+        values.featuredImageUrl = (await uploadImage(featuredImage)).url;
+      } catch (_error) {
+        showFlashMessage({
+          type: FlashMessageTypes.ERROR,
+          message: "Failed to upload image.\nPlease try again later.",
+        });
+        return;
+      } finally {
+        setUploading(false);
+      }
+    }
+    startTransition(() => {
+      formAction(values);
+    });
+  });
+
   return (
     <>
       <FlashMessageNotifier
         formState={formState}
         message={"Failed to submit the form.\nPlease try again later."}
       />
-      <form
-        onSubmit={form.onSubmit(async (values) => {
-          startTransition(() => {
-            formAction(values);
-          });
-        })}
-      >
+      <form onSubmit={handleSubmit}>
         <NativeSelect
           label="Status"
           data={statusOptions}
@@ -84,6 +115,11 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
             },
             weekday: { fontSize: "var(--mantine-font-size-xs)" },
           }}
+        />
+        <FileInput
+          label="Featured Image"
+          value={featuredImage}
+          onChange={setFeaturedImage}
         />
         <TextInput
           label="Title"
@@ -114,7 +150,7 @@ export function ArticleForm({ article, onSubmitAction }: Props) {
             mr="sm"
             aria-label="Back to Article List"
           />
-          <Button type="submit" loading={isPending}>
+          <Button type="submit" loading={!canSubmit}>
             <Text size="sm">Submit</Text>
           </Button>
         </Box>

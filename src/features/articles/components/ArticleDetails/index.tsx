@@ -1,4 +1,5 @@
 import { Box, Divider, Text, Title } from "@mantine/core";
+import Image from "next/image";
 import Markdown from "react-markdown";
 
 import { Article } from "@/features/articles/model";
@@ -13,7 +14,17 @@ type Props = {
 export function ArticleDetails(props: Props) {
   const { article } = props;
   return (
-    <div>
+    <>
+      {article.featuredImageUrl && (
+        <Box mb="sm" ta="center">
+          <Image
+            src={article.featuredImageUrl}
+            alt={article.title}
+            width={400}
+            height={400}
+          />
+        </Box>
+      )}
       <Title order={2} size={"md"}>
         {article.title}
       </Title>
@@ -24,6 +35,6 @@ export function ArticleDetails(props: Props) {
       <Box fz="sm" className={styles.markdown} mt="sm">
         <Markdown>{article.body}</Markdown>
       </Box>
-    </div>
+    </>
   );
 }

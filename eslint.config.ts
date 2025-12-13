@@ -1,21 +1,40 @@
-import { FlatCompat } from "@eslint/eslintrc";
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
+import pluginImport from "eslint-plugin-import";
+import tseslint from "typescript-eslint";
 
-const compat = new FlatCompat({
-  baseDirectory: import.meta.dirname,
-});
-
-const eslintConfig = [
-  ...compat.config({
-    extends: ["next/core-web-vitals", "next/typescript"],
-  }),
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
   eslintConfigPrettier,
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    "coverage/**",
+    "src/generated/**/*",
+  ]),
   {
+    plugins: {
+      import: pluginImport,
+      "@typescript-eslint": tseslint.plugin,
+    },
     rules: {
       "@typescript-eslint/no-unused-expressions": [
         "warn",
         {
           allowShortCircuit: true,
+        },
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
         },
       ],
       "import/order": [
@@ -43,7 +62,6 @@ const eslintConfig = [
       ],
     },
   },
-  { ignores: ["src/generated/**/*"] },
-];
+]);
 
 export default eslintConfig;

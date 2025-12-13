@@ -12,7 +12,7 @@
     "start": "next start",
     "db:migrate": "dotenv -e .env.development.local -- prisma migrate dev",
     "check:type": "tsc --noEmit",
-    "lint": "next lint",
+    "lint": "eslint .",
     "format": "prettier --check .",
     "test": "vitest --coverage",
     "e2e": "playwright test",

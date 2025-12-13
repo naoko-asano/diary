@@ -11,12 +11,13 @@ import styles from "./styles.module.css";
 
 type Props = {
   article: Article;
+  imageProps?: Pick<React.ComponentProps<typeof Image>, "loading">;
 };
 
 const contentWidth = 180;
 
 export function ArticleCard(props: Props) {
-  const { article } = props;
+  const { article, imageProps } = props;
 
   return (
     <Paper
@@ -37,8 +38,10 @@ export function ArticleCard(props: Props) {
         alt={article.title}
         width={contentWidth}
         height={contentWidth}
+        style={{ objectFit: "cover" }}
+        {...imageProps}
       />
-      <Box style={{ width: contentWidth, textAlign: "left" }}>
+      <Box w={contentWidth} style={{ textAlign: "left" }}>
         <Text size="sm" truncate>
           {article.title}
         </Text>

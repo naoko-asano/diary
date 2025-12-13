@@ -39,4 +39,12 @@ describe("ArticleCard", () => {
       expect.stringContaining("image.jpg"),
     );
   });
+
+  it("imagePropsでloading属性を指定できる", () => {
+    render(<ArticleCard article={article} imageProps={{ loading: "eager" }} />);
+    expect(screen.getByRole("img", { name: /example title/i })).toHaveAttribute(
+      "loading",
+      "eager",
+    );
+  });
 });

@@ -23,9 +23,12 @@ export default async function Page(props: Props) {
   return (
     <>
       <Grid style={{ flex: 1 }}>
-        {articles.map((article) => (
+        {articles.map((article, index) => (
           <GridCol key={article.id} span={{ base: 12, xs: 6, sm: 4, lg: 3 }}>
-            <ArticleCard article={article} />
+            <ArticleCard
+              article={article}
+              imageProps={{ loading: index === 0 ? "eager" : "lazy" }}
+            />
           </GridCol>
         ))}
       </Grid>

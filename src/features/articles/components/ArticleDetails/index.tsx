@@ -16,12 +16,14 @@ export function ArticleDetails(props: Props) {
   return (
     <>
       {article.featuredImageUrl && (
-        <Box mb="sm" ta="center">
+        <Box mb="sm" ta="center" pos="relative" h={400}>
           <Image
             src={article.featuredImageUrl}
             alt={article.title}
-            width={400}
-            height={400}
+            fill
+            style={{ objectFit: "contain" }}
+            loading="eager"
+            sizes="80vw "
           />
         </Box>
       )}

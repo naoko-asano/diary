@@ -17,7 +17,6 @@ import rehypeSanitize from "rehype-sanitize";
 
 import { BackButton } from "@/components/BackButton";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import { FlashMessageNotifier } from "@/components/FlashMessageNotifier";
 import {
   Article,
   ArticleParams,
@@ -90,71 +89,74 @@ export function ArticleForm(props: Props) {
     });
   });
 
+  useEffect(() => {
+    if (formState.result === "error") {
+      showFlashMessage({
+        type: FlashMessageTypes.ERROR,
+        message: "Failed to submit the form.\nPlease try again later.",
+      });
+    }
+  }, [formState]);
+
   return (
-    <>
-      <FlashMessageNotifier
-        formState={formState}
-        message={"Failed to submit the form.\nPlease try again later."}
+    <form onSubmit={handleSubmit}>
+      <NativeSelect
+        label="Status"
+        data={statusOptions}
+        {...form.getInputProps("status")}
       />
-      <form onSubmit={handleSubmit}>
-        <NativeSelect
-          label="Status"
-          data={statusOptions}
-          {...form.getInputProps("status")}
+      <DatePickerInput
+        label="Date"
+        key={form.key("date")}
+        {...form.getInputProps("date")}
+        required
+        firstDayOfWeek={0}
+        valueFormat="YYYY/MM/DD"
+        styles={{
+          calendarHeaderLevel: {
+            fontSize: "var(--mantine-font-size-xs)",
+          },
+          weekday: { fontSize: "var(--mantine-font-size-xs)" },
+        }}
+      />
+      <FileInput
+        label="Featured Image"
+        value={featuredImage}
+        onChange={setFeaturedImage}
+      />
+      <TextInput
+        label="Title"
+        key={form.key("title")}
+        {...form.getInputProps("title")}
+        required
+      />
+      <Text size="sm" my={6}>
+        Body
+      </Text>
+      <MDEditor
+        value={form.values.body}
+        onChange={(value) => form.setFieldValue("body", value ?? "")}
+        previewOptions={{
+          rehypePlugins: [[rehypeSanitize]],
+        }}
+        data-testid="body-editor"
+      />
+      <ErrorMessage size="xs" mt={4}>
+        {form.errors.body}
+      </ErrorMessage>
+      <Box
+        mt="var(--mantine-spacing-sm)"
+        style={{ display: "flex", justifyContent: "flex-end" }}
+      >
+        <BackButton
+          href="/admin/articles"
+          mr="sm"
+          aria-label="Back to Article List"
         />
-        <DatePickerInput
-          label="Date"
-          key={form.key("date")}
-          {...form.getInputProps("date")}
-          required
-          firstDayOfWeek={0}
-          valueFormat="YYYY/MM/DD"
-          styles={{
-            calendarHeaderLevel: {
-              fontSize: "var(--mantine-font-size-xs)",
-            },
-            weekday: { fontSize: "var(--mantine-font-size-xs)" },
-          }}
-        />
-        <FileInput
-          label="Featured Image"
-          value={featuredImage}
-          onChange={setFeaturedImage}
-        />
-        <TextInput
-          label="Title"
-          key={form.key("title")}
-          {...form.getInputProps("title")}
-          required
-        />
-        <Text size="sm" my={6}>
-          Body
-        </Text>
-        <MDEditor
-          value={form.values.body}
-          onChange={(value) => form.setFieldValue("body", value ?? "")}
-          previewOptions={{
-            rehypePlugins: [[rehypeSanitize]],
-          }}
-          data-testid="body-editor"
-        />
-        <ErrorMessage size="xs" mt={4}>
-          {form.errors.body}
-        </ErrorMessage>
-        <Box
-          mt="var(--mantine-spacing-sm)"
-          style={{ display: "flex", justifyContent: "flex-end" }}
-        >
-          <BackButton
-            href="/admin/articles"
-            mr="sm"
-            aria-label="Back to Article List"
-          />
-          <Button type="submit" loading={!canSubmit}>
-            <Text size="sm">Submit</Text>
-          </Button>
-        </Box>
-      </form>
-    </>
+        <Button type="submit" loading={!canSubmit}>
+          <Text size="sm">Submit</Text>
+        </Button>
+      </Box>
+    </form>
   );
 }

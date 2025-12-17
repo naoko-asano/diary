@@ -75,9 +75,7 @@ describe("resolveFlashMessageContent", () => {
         value: cookieValue,
       });
       expect(flashMessageContent).toEqual({
-        formState: {
-          result: type,
-        },
+        type,
         message: "message",
       });
     },

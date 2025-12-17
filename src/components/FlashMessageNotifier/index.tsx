@@ -2,19 +2,17 @@
 
 import { useEffect } from "react";
 
-import { showFlashMessage } from "@/utils/flashMessage";
-import { FormState } from "@/utils/formState";
+import { FlashMessageType, showFlashMessage } from "@/utils/flashMessage";
 
 interface Props {
-  formState: FormState;
+  type: FlashMessageType;
   message: string;
 }
 
 export function FlashMessageNotifier(props: Props) {
-  const { formState, message } = props;
+  const { type, message } = props;
   useEffect(() => {
-    if (!formState.result) return;
-    showFlashMessage({ type: formState.result, message });
-  }, [formState, message]);
+    showFlashMessage({ type, message });
+  }, [type, message]);
   return null;
 }

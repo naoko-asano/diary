@@ -12,7 +12,7 @@ import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import MDEditor from "@uiw/react-md-editor";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { startTransition, useActionState, useState } from "react";
+import { startTransition, useActionState, useEffect, useState } from "react";
 import rehypeSanitize from "rehype-sanitize";
 
 import { BackButton } from "@/components/BackButton";

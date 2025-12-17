@@ -12,12 +12,7 @@ beforeEach(() => {
 
 describe("FlashMessageNotifier", () => {
   it("渡されたmessageとformStateに合ったtitleのフラッシュメッセージが表示されること", () => {
-    render(
-      <FlashMessageNotifier
-        formState={{ result: FormResult.SUCCESS }}
-        message="message"
-      />,
-    );
+    render(<FlashMessageNotifier type="success" message="message" />);
     expect(screen.getByText("Success")).toBeInTheDocument();
     expect(screen.getByText("message")).toBeInTheDocument();
   });

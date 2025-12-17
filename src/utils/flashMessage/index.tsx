@@ -9,7 +9,7 @@ export const FlashMessageTypes = {
   ERROR: "error",
 } as const;
 
-type FlashMessageType =
+export type FlashMessageType =
   (typeof FlashMessageTypes)[keyof typeof FlashMessageTypes];
 
 export function showFlashMessage(props: {
@@ -56,7 +56,7 @@ export function resolveFlashMessageContent(cookie?: { value: string }) {
       throw new Error("Cookie is not for flash Message");
     }
     return {
-      formState: { result: parsedCookieValue.type },
+      type: parsedCookieValue.type,
       message: parsedCookieValue.message,
     };
   } catch {

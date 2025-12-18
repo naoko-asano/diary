@@ -2,16 +2,16 @@ import { Box, Center } from "@mantine/core";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
-import { FlashMessageNotifier } from "@/components/FlashMessageNotifier";
 import { Pagination } from "@/components/Pagination";
 import { PlusButton } from "@/components/PlusButton";
 import { ArticleList } from "@/features/articles/components/ArticleList";
 import { deleteArticle } from "@/features/articles/services";
 import { getPaginatedArticles } from "@/features/articles/services";
+import { FlashMessageNotifier } from "@/features/flashMessage/components/FlashMessageNotifier";
 import {
   FLASH_MESSAGE_COOKIE_NAME,
   resolveFlashMessageContent,
-} from "@/utils/flashMessage";
+} from "@/features/flashMessage/model";
 import { parsePageParam } from "@/utils/parsePageParam";
 
 type Props = {

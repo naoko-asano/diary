@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 
-import { FlashMessageType, showFlashMessage } from "@/utils/flashMessage";
+import { FlashMessageType } from "@/features/flashMessage/model";
+import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 
 interface Props {
   type: FlashMessageType;

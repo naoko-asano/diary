@@ -23,7 +23,8 @@ import {
   articleScheme,
   Status,
 } from "@/features/articles/model";
-import { FlashMessageTypes, showFlashMessage } from "@/utils/flashMessage";
+import { FlashMessageTypes } from "@/features/flashMessage/model";
+import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 import { FormState } from "@/utils/formState";
 import { uploadImage } from "@/utils/image";
 

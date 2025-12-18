@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
 import { ArticleParams } from "@/features/articles/model";
 import { createArticle } from "@/features/articles/services";
-import { createFlashMessageCookieConfig } from "@/utils/flashMessage";
+import { createFlashMessageCookieConfig } from "@/features/flashMessage/model";
 import { FormResult, FormState } from "@/utils/formState";
 
 async function setFlashMessageCookie() {

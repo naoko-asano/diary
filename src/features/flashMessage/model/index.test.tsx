@@ -29,7 +29,7 @@ describe("createFlashMessageCookieConfig", () => {
 
 describe("resolveFlashMessageContent", () => {
   it.each(["success", "error"])(
-    "cookie.valueのkeyにtypeとmessageが存在し、かつ typeが%sの場合、formStateとmessageが返る",
+    "cookie.valueのkeyにtypeとmessageが存在し、かつ typeが%sの場合、typeとmessageが返る",
     (type) => {
       const cookieValue = JSON.stringify({
         type,

@@ -23,7 +23,8 @@
       "@/*": ["./src/*"],
       "@e2e/*": ["./e2e/*"],
       "@testing/*": ["./testing/*"]
-    }
+    },
+    "types": ["vitest/globals"]
   },
   "include": [
     "next-env.d.ts",

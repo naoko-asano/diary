@@ -19,5 +19,6 @@ export default defineConfig({
         "src/**/__mocks__/",
       ],
     },
+    globals: true,
   },
 });

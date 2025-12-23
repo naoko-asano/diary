@@ -2,18 +2,11 @@
 
 import { useEffect } from "react";
 
-import { FlashMessageType } from "@/features/flashMessage/model";
-import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
+import { consumeFlashMessage } from "@/features/flashMessage/model/consumeFlashMessage";
 
-interface Props {
-  type: FlashMessageType;
-  message: string;
-}
-
-export function FlashMessageNotifier(props: Props) {
-  const { type, message } = props;
+export function FlashMessageNotifier() {
   useEffect(() => {
-    showFlashMessage({ type, message });
-  }, [type, message]);
+    consumeFlashMessage();
+  }, []);
   return null;
 }

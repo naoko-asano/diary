@@ -9,8 +9,10 @@ import {
 export async function GET() {
   const cookieStore = await cookies();
   const flashMessageCookie = cookieStore.get(FLASH_MESSAGE_COOKIE_NAME);
+  if (!flashMessageCookie) return NextResponse.json(null);
+
   const content = resolveFlashMessageContent(flashMessageCookie);
-  if (flashMessageCookie) cookieStore.delete(FLASH_MESSAGE_COOKIE_NAME);
+  cookieStore.delete(FLASH_MESSAGE_COOKIE_NAME);
 
   return NextResponse.json(content);
 }

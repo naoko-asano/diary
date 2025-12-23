@@ -13,7 +13,7 @@ describe("fetchFlashMessageContent", () => {
 
     const result = await fetchFlashMessageContent();
 
-    expect(global.fetch).toHaveBeenCalledWith("/api/flash-message");
+    expect(global.fetch).toHaveBeenCalledWith("/api/flashMessageContent");
     expect(result).toEqual({ type: "success", message: "message" });
   });
 

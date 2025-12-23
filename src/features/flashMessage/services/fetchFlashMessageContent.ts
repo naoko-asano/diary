@@ -1,5 +1,5 @@
 export async function fetchFlashMessageContent() {
-  const response = await fetch("/api/flash-message");
+  const response = await fetch("/api/flashMessageContent");
   if (!response.ok) {
     throw new Error("Failed to fetch flash message content");
   }

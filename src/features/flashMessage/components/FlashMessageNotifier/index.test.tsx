@@ -1,6 +1,7 @@
 import { notifications } from "@mantine/notifications";
 
-import { render, screen } from "@testing/utils";
+import { consumeFlashMessage } from "@/features/flashMessage/model/consumeFlashMessage";
+import { render } from "@testing/utils";
 
 import { FlashMessageNotifier } from ".";
 
@@ -8,10 +9,12 @@ beforeEach(() => {
   notifications.clean();
 });
 
+vi.mock("@/features/flashMessage/model/consumeFlashMessage");
+const mockedConsumeFlashMessage = vi.mocked(consumeFlashMessage);
+
 describe("FlashMessageNotifier", () => {
-  it("渡されたmessageとtypeに合ったtitleのフラッシュメッセージが表示されること", () => {
-    render(<FlashMessageNotifier type="success" message="message" />);
-    expect(screen.getByText("Success")).toBeInTheDocument();
-    expect(screen.getByText("message")).toBeInTheDocument();
+  it("consumeFlashMessageを呼び出すこと", () => {
+    render(<FlashMessageNotifier />);
+    expect(mockedConsumeFlashMessage).toHaveBeenCalled();
   });
 });

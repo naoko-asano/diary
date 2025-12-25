@@ -7,6 +7,7 @@ import { ArticleList } from "@/features/articles/components/ArticleList";
 import { deleteArticle } from "@/features/articles/services";
 import { getPaginatedArticles } from "@/features/articles/services";
 import { FlashMessageNotifier } from "@/features/flashMessage/components/FlashMessageNotifier";
+import { flashMessageCookie } from "@/features/flashMessage/gateway/flashMessageCookie";
 import { parsePageParam } from "@/utils/parsePageParam";
 
 type Props = {
@@ -19,6 +20,7 @@ export default async function Page(props: Props) {
   const searchParams = await props.searchParams;
   const page = parsePageParam(searchParams.page);
   const { articles, totalPage } = await getPaginatedArticles({ page });
+  const hasFlashMessage = !!(await flashMessageCookie());
 
   async function handleDelete(id: number) {
     "use server";
@@ -28,7 +30,7 @@ export default async function Page(props: Props) {
 
   return (
     <>
-      <FlashMessageNotifier />
+      {hasFlashMessage && <FlashMessageNotifier />}
       <Box style={{ flex: 1 }}>
         <ArticleList articles={articles} onDeleteAction={handleDelete} />
       </Box>

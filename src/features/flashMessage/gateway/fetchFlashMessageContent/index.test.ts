@@ -1,4 +1,4 @@
-import { fetchFlashMessageContent } from "./fetchFlashMessageContent";
+import { fetchFlashMessageContent } from ".";
 
 describe("fetchFlashMessageContent", () => {
   it("指定URLにリクエストし、jsonを返す", async () => {

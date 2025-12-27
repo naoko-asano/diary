@@ -5,10 +5,10 @@ export const FlashMessageTypes = {
   ERROR: "error",
 } as const;
 
-export type FlashMessageType =
+type FlashMessageType =
   (typeof FlashMessageTypes)[keyof typeof FlashMessageTypes];
 
-interface FlashMessage {
+export interface FlashMessage {
   type: FlashMessageType;
   message: string;
 }

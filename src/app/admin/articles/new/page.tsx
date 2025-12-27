@@ -1,19 +1,11 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
 import { ArticleParams } from "@/features/articles/model";
 import { createArticle } from "@/features/articles/services";
-import { createFlashMessageCookieConfig } from "@/features/flashMessage/model";
+import { createFlashMessageCookieComposed } from "@/features/flashMessage/composition/createFlashMessageCookieComposed";
+import { FlashMessageTypes } from "@/features/flashMessage/model";
 import { FormResult, FormState } from "@/utils/formState";
-
-async function setFlashMessageCookie() {
-  const config = createFlashMessageCookieConfig({
-    type: FormResult.SUCCESS,
-    message: "Article created successfully!",
-  });
-  (await cookies()).set(config);
-}
 
 export default function Page() {
   const handleSubmit = async (_prevState: FormState, values: ArticleParams) => {
@@ -29,7 +21,10 @@ export default function Page() {
     }
 
     if (formState.result === FormResult.SUCCESS) {
-      await setFlashMessageCookie();
+      await createFlashMessageCookieComposed({
+        type: FlashMessageTypes.SUCCESS,
+        message: "Article created successfully!",
+      });
       redirect("/admin/articles");
     }
     return formState;

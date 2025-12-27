@@ -1,10 +1,3 @@
-export const FLASH_MESSAGE_COOKIE_NAME = "flash-message";
-
-export const FlashMessageTypes = {
-  SUCCESS: "success",
-  ERROR: "error",
-} as const;
-
 type FlashMessageType =
   (typeof FlashMessageTypes)[keyof typeof FlashMessageTypes];
 
@@ -12,6 +5,17 @@ export interface FlashMessage {
   type: FlashMessageType;
   message: string;
 }
+
+export type FlashMessageCookieConfig = ReturnType<
+  typeof createFlashMessageCookieConfig
+>;
+
+export const FLASH_MESSAGE_COOKIE_NAME = "flash-message";
+
+export const FlashMessageTypes = {
+  SUCCESS: "success",
+  ERROR: "error",
+} as const;
 
 export function assertFlashMessage(
   value: any, // eslint-disable-line @typescript-eslint/no-explicit-any

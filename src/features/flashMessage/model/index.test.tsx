@@ -1,12 +1,48 @@
 import {
+  assertFlashMessage,
   createFlashMessageCookieConfig,
   FlashMessageTypes,
-  resolveFlashMessageContent,
-} from "./index";
+  parseFlashMessageCookie,
+} from ".";
+
+describe("assertFlashMessage", () => {
+  it.each([FlashMessageTypes.SUCCESS, FlashMessageTypes.ERROR])(
+    "typeとmessageが存在し、かつ typeが %s の場合、エラーが発生しない",
+    (type) => {
+      expect(() =>
+        assertFlashMessage({ type, message: "message" }),
+      ).not.toThrow();
+    },
+  );
+
+  it.each([
+    ["null", null],
+    ["undefined", undefined],
+    ["string", "foo"],
+    ["number", 123],
+  ])("引数が %s 型の場合、エラーが発生する", (_, value) => {
+    expect(() => assertFlashMessage(value)).toThrow("Invalid flash message");
+  });
+
+  it("typeまたはmessageが存在しない場合、エラーが発生する", () => {
+    expect(() =>
+      assertFlashMessage({ type: FlashMessageTypes.SUCCESS }),
+    ).toThrow("Invalid flash message");
+    expect(() => assertFlashMessage({ message: "message" })).toThrow(
+      "Invalid flash message",
+    );
+  });
+
+  it("typeがFlashMessageTypesでない場合、エラーが発生する", () => {
+    expect(() =>
+      assertFlashMessage({ type: "invalid", message: "message" }),
+    ).toThrow("Invalid flash message");
+  });
+});
 
 describe("createFlashMessageCookieConfig", () => {
   it.each([FlashMessageTypes.SUCCESS, FlashMessageTypes.ERROR])(
-    "typeとmessageで渡された値がvalueにセットされて返る",
+    "typeが %s の場合、typeとmessageがvalueにセットされて返る",
     (type) => {
       const config = createFlashMessageCookieConfig({
         type,
@@ -25,15 +61,15 @@ describe("createFlashMessageCookieConfig", () => {
   );
 });
 
-describe("resolveFlashMessageContent", () => {
-  it.each(["success", "error"])(
-    "cookie.valueのkeyにtypeとmessageが存在し、かつ typeが%sの場合、typeとmessageが返る",
+describe("parseFlashMessageCookie", () => {
+  it.each([FlashMessageTypes.SUCCESS, FlashMessageTypes.ERROR])(
+    "cookie.valueをJSON.parseした結果がFlashMessage型である場合、FlashMessageが返る",
     (type) => {
       const cookieValue = JSON.stringify({
         type,
         message: "message",
       });
-      const flashMessageContent = resolveFlashMessageContent({
+      const flashMessageContent = parseFlashMessageCookie({
         value: cookieValue,
       });
       expect(flashMessageContent).toEqual({
@@ -44,24 +80,18 @@ describe("resolveFlashMessageContent", () => {
   );
 
   it("cookieがundefinedの場合、nullが返る", () => {
-    expect(resolveFlashMessageContent()).toBeNull();
+    expect(parseFlashMessageCookie()).toBeNull();
   });
 
-  it("cookie.valueのkeyにtypeが存在しない場合、エラーが発生する", () => {
+  it("cookie.valueがJSON.parseできない場合、nullが返る", () => {
+    expect(parseFlashMessageCookie({ value: "foo" })).toBeNull();
+  });
+
+  it("cookie.valueをJSON.parseした結果がFlashMessage型でない場合、nullが返る", () => {
     const cookieValue = JSON.stringify({
+      type: "invalid",
       message: "message",
     });
-    expect(resolveFlashMessageContent({ value: cookieValue })).toBeNull();
-  });
-
-  it("cookie.valueのkeyにmessageが存在しない場合、エラーが発生する", () => {
-    const cookieValue = JSON.stringify({
-      type: "success",
-    });
-    expect(resolveFlashMessageContent({ value: cookieValue })).toBeNull();
-  });
-
-  it("cookie.valueがJSON.parseできない場合、エラーが発生する", () => {
-    expect(resolveFlashMessageContent({ value: "foo" })).toBeNull();
+    expect(parseFlashMessageCookie({ value: cookieValue })).toBeNull();
   });
 });

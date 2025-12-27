@@ -4,7 +4,10 @@ import { notFound, redirect } from "next/navigation";
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
 import { ArticleParams } from "@/features/articles/model";
 import { findArticleById, updateArticle } from "@/features/articles/services";
-import { createFlashMessageCookieConfig } from "@/features/flashMessage/model";
+import {
+  createFlashMessageCookieConfig,
+  FlashMessageTypes,
+} from "@/features/flashMessage/model";
 import { FormResult, FormState } from "@/utils/formState";
 import { parseIdParam } from "@/utils/parseIdParam";
 
@@ -16,7 +19,7 @@ type Params = { id: string };
 
 async function setFlashMessageCookie() {
   const config = createFlashMessageCookieConfig({
-    type: FormResult.SUCCESS,
+    type: FlashMessageTypes.SUCCESS,
     message: "Article updated successfully!",
   });
   (await cookies()).set(config);

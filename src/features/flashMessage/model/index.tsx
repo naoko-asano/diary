@@ -8,35 +8,46 @@ export const FlashMessageTypes = {
 export type FlashMessageType =
   (typeof FlashMessageTypes)[keyof typeof FlashMessageTypes];
 
-export function createFlashMessageCookieConfig({
-  type,
-  message,
-}: {
+interface FlashMessage {
   type: FlashMessageType;
   message: string;
-}) {
+}
+
+export function assertFlashMessage(
+  value: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+): asserts value is FlashMessage {
+  if (
+    value &&
+    value.type &&
+    value.message &&
+    Object.values(FlashMessageTypes).includes(value.type)
+  ) {
+    return;
+  }
+
+  throw new Error("Invalid flash message");
+}
+
+export function createFlashMessageCookieConfig(flashMessage: FlashMessage) {
   return {
     name: FLASH_MESSAGE_COOKIE_NAME,
     value: JSON.stringify({
-      type,
-      message,
+      type: flashMessage.type,
+      message: flashMessage.message,
     }),
     httpOnly: false,
     maxAge: 1,
   };
 }
 
-export function resolveFlashMessageContent(cookie?: { value: string }) {
+export function parseFlashMessageCookie(cookie?: {
+  value: string;
+}): FlashMessage | null {
   if (!cookie) return null;
   try {
     const parsedCookieValue = JSON.parse(cookie.value);
-    if (!parsedCookieValue.type || !parsedCookieValue.message) {
-      throw new Error("Cookie is not for flash Message");
-    }
-    return {
-      type: parsedCookieValue.type,
-      message: parsedCookieValue.message,
-    };
+    assertFlashMessage(parsedCookieValue);
+    return parsedCookieValue;
   } catch {
     return null;
   }

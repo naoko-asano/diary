@@ -1,19 +1,14 @@
-import { fetchFlashMessageContent } from "@/features/flashMessage/gateway/fetchFlashMessageContent";
-import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
+import { FlashMessageFetcher } from "@/features/flashMessage/usecases/interfaces/FlashMessageFetcher";
+import { FlashMessagePresenter } from "@/features/flashMessage/usecases/interfaces/FlashMessagePresenter";
 
-interface Props {
-  fetchContent?: typeof fetchFlashMessageContent;
-  show?: typeof showFlashMessage;
-}
-
-export async function consumeFlashMessage({
-  fetchContent = fetchFlashMessageContent,
-  show = showFlashMessage,
-}: Props = {}) {
+export async function consumeFlashMessage(
+  FlashMessageFetcher: FlashMessageFetcher,
+  FlashMessagePresenter: FlashMessagePresenter,
+) {
   try {
-    const content = await fetchContent();
+    const content = await FlashMessageFetcher.fetch();
     if (!content) return;
-    show(content);
+    FlashMessagePresenter.show(content);
   } catch {
     console.error("Failed to consume flash message");
   }

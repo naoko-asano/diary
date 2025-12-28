@@ -1,20 +1,17 @@
-import { notifications } from "@mantine/notifications";
-
-import { consumeFlashMessage } from "@/features/flashMessage/usecases/consumeFlashMessage";
 import { render } from "@testing/utils";
+
+import { consumeFlashMessageComposed } from "../../composition/consumeFlashMessageComposed";
 
 import { FlashMessageNotifier } from ".";
 
-beforeEach(() => {
-  notifications.clean();
-});
-
-vi.mock("@/features/flashMessage/usecases/consumeFlashMessage");
-const mockedConsumeFlashMessage = vi.mocked(consumeFlashMessage);
+vi.mock("../../composition/consumeFlashMessageComposed");
+const mockedConsumeFlashMessageComposed = vi.mocked(
+  consumeFlashMessageComposed,
+);
 
 describe("FlashMessageNotifier", () => {
   it("consumeFlashMessageを呼び出すこと", () => {
     render(<FlashMessageNotifier />);
-    expect(mockedConsumeFlashMessage).toHaveBeenCalled();
+    expect(mockedConsumeFlashMessageComposed).toHaveBeenCalled();
   });
 });

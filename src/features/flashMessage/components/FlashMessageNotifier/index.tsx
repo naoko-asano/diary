@@ -2,11 +2,11 @@
 
 import { useEffect } from "react";
 
-import { consumeFlashMessage } from "@/features/flashMessage/usecases/consumeFlashMessage";
+import { consumeFlashMessageComposed } from "../../composition/consumeFlashMessageComposed";
 
 export function FlashMessageNotifier() {
   useEffect(() => {
-    consumeFlashMessage();
+    consumeFlashMessageComposed();
   }, []);
   return null;
 }

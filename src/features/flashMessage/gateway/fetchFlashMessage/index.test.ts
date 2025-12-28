@@ -1,6 +1,6 @@
-import { fetchFlashMessageContent } from ".";
+import { fetchFlashMessage } from ".";
 
-describe("fetchFlashMessageContent", () => {
+describe("fetchFlashMessage", () => {
   it("指定URLにリクエストし、jsonを返す", async () => {
     const mockedJson = { type: "success", message: "message" };
     const mockedResponse = {
@@ -11,7 +11,7 @@ describe("fetchFlashMessageContent", () => {
       .fn()
       .mockResolvedValue(mockedResponse as unknown as Response);
 
-    const result = await fetchFlashMessageContent();
+    const result = await fetchFlashMessage();
 
     expect(global.fetch).toHaveBeenCalledWith("/api/flashMessageContent");
     expect(result).toEqual({ type: "success", message: "message" });
@@ -20,7 +20,7 @@ describe("fetchFlashMessageContent", () => {
   it("fetchが失敗した場合、エラーをスローする", async () => {
     global.fetch = vi.fn().mockResolvedValue({ ok: false });
 
-    await expect(fetchFlashMessageContent()).rejects.toThrow(
+    await expect(fetchFlashMessage()).rejects.toThrow(
       "Failed to fetch flash message content",
     );
   });

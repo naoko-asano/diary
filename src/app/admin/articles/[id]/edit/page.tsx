@@ -1,10 +1,10 @@
-import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
 import { ArticleParams } from "@/features/articles/model";
 import { findArticleById, updateArticle } from "@/features/articles/services";
-import { createFlashMessageCookieConfig } from "@/utils/flashMessage";
+import { createFlashMessageCookieComposed } from "@/features/flashMessage/composition/createFlashMessageCookieComposed";
+import { FlashMessageTypes } from "@/features/flashMessage/model";
 import { FormResult, FormState } from "@/utils/formState";
 import { parseIdParam } from "@/utils/parseIdParam";
 
@@ -13,14 +13,6 @@ type Props = {
 };
 
 type Params = { id: string };
-
-async function setFlashMessageCookie() {
-  const config = createFlashMessageCookieConfig({
-    type: FormResult.SUCCESS,
-    message: "Article updated successfully!",
-  });
-  (await cookies()).set(config);
-}
 
 export default async function Page(props: Props) {
   const { id: idParam } = await props.params;
@@ -50,7 +42,10 @@ export default async function Page(props: Props) {
     }
 
     if (formState.result === FormResult.SUCCESS) {
-      await setFlashMessageCookie();
+      await createFlashMessageCookieComposed({
+        type: FlashMessageTypes.SUCCESS,
+        message: "Article updated successfully!",
+      });
       redirect("/admin/articles");
     }
     return formState;

@@ -15,9 +15,10 @@ import { useState } from "react";
 import { ConfirmationModal } from "@/components/ConfirmationModal";
 import { EditButton } from "@/components/EditButton";
 import { TrashButton } from "@/components/TrashButton";
+import { FlashMessageTypes } from "@/features/flashMessage/model";
+import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 import { Article } from "@/generated/prisma";
 import { formatDate } from "@/utils/date";
-import { FlashMessageTypes, showFlashMessage } from "@/utils/flashMessage";
 import { capitalize } from "@/utils/string";
 
 import styles from "./styles.module.css";

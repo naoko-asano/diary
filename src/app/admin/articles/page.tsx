@@ -1,17 +1,13 @@
 import { Box, Center } from "@mantine/core";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 
-import { FlashMessageNotifier } from "@/components/FlashMessageNotifier";
 import { Pagination } from "@/components/Pagination";
 import { PlusButton } from "@/components/PlusButton";
 import { ArticleList } from "@/features/articles/components/ArticleList";
 import { deleteArticle } from "@/features/articles/services";
 import { getPaginatedArticles } from "@/features/articles/services";
-import {
-  FLASH_MESSAGE_COOKIE_NAME,
-  resolveFlashMessageContent,
-} from "@/utils/flashMessage";
+import { FlashMessageNotifier } from "@/features/flashMessage/components/FlashMessageNotifier";
+import { flashMessageCookie } from "@/features/flashMessage/gateway/flashMessageCookie";
 import { parsePageParam } from "@/utils/parsePageParam";
 
 type Props = {
@@ -24,9 +20,7 @@ export default async function Page(props: Props) {
   const searchParams = await props.searchParams;
   const page = parsePageParam(searchParams.page);
   const { articles, totalPage } = await getPaginatedArticles({ page });
-
-  const flashMessageCookie = (await cookies()).get(FLASH_MESSAGE_COOKIE_NAME);
-  const flashMessageContent = resolveFlashMessageContent(flashMessageCookie);
+  const hasFlashMessage = !!(await flashMessageCookie());
 
   async function handleDelete(id: number) {
     "use server";
@@ -36,7 +30,7 @@ export default async function Page(props: Props) {
 
   return (
     <>
-      {flashMessageContent && <FlashMessageNotifier {...flashMessageContent} />}
+      {hasFlashMessage && <FlashMessageNotifier />}
       <Box style={{ flex: 1 }}>
         <ArticleList articles={articles} onDeleteAction={handleDelete} />
       </Box>

@@ -6,7 +6,7 @@ import {
 import { createFlashMessageCookie } from ".";
 
 describe("createFlashMessageCookie", () => {
-  it("フラッシュメッセージ用のCookieが作成される", () => {
+  it("フラッシュメッセージ用のCookieが追加される", () => {
     const writer = {
       write: vi.fn(),
     };

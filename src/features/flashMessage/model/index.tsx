@@ -40,7 +40,7 @@ export function createFlashMessageCookieConfig(flashMessage: FlashMessage) {
       message: flashMessage.message,
     }),
     httpOnly: false,
-    maxAge: 1,
+    maxAge: 30,
   };
 }
 

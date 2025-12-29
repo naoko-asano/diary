@@ -55,7 +55,7 @@ describe("createFlashMessageCookieConfig", () => {
           message: "message",
         }),
         httpOnly: false,
-        maxAge: 1,
+        maxAge: 30,
       });
     },
   );

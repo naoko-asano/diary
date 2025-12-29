@@ -2,15 +2,12 @@ import { fetchFlashMessage } from ".";
 
 describe("fetchFlashMessage", () => {
   it("指定URLにリクエストし、jsonを返す", async () => {
-    const mockedJson = { type: "success", message: "message" };
-    const mockedResponse = {
+    const flashMessage = { type: "success", message: "message" };
+    const response = {
       ok: true,
-      json: vi.fn().mockResolvedValue(mockedJson),
+      json: vi.fn().mockResolvedValue(flashMessage),
     };
-    global.fetch = vi
-      .fn()
-      .mockResolvedValue(mockedResponse as unknown as Response);
-
+    global.fetch = vi.fn().mockResolvedValue(response as unknown as Response);
     const result = await fetchFlashMessage();
 
     expect(global.fetch).toHaveBeenCalledWith("/api/flashMessageContent");

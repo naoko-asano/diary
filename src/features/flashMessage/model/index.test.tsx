@@ -69,10 +69,10 @@ describe("parseFlashMessageCookie", () => {
         type,
         message: "message",
       });
-      const flashMessageContent = parseFlashMessageCookie({
+      const flashMessage = parseFlashMessageCookie({
         value: cookieValue,
       });
-      expect(flashMessageContent).toEqual({
+      expect(flashMessage).toEqual({
         type,
         message: "message",
       });

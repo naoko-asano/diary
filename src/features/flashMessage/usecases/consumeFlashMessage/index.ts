@@ -6,9 +6,9 @@ export async function consumeFlashMessage(
   FlashMessagePresenter: FlashMessagePresenter,
 ) {
   try {
-    const content = await FlashMessageFetcher.fetch();
-    if (!content) return;
-    FlashMessagePresenter.show(content);
+    const flashMessage = await FlashMessageFetcher.fetch();
+    if (!flashMessage) return;
+    FlashMessagePresenter.show(flashMessage);
   } catch {
     console.error("Failed to consume flash message");
   }

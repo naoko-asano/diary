@@ -1,7 +1,7 @@
 import { consumeFlashMessage } from ".";
 
 describe("consumeFlashMessage", () => {
-  it("fetchContentの戻り値が存在する場合、showを呼び出す", async () => {
+  it("FlashMessageFetcher.fetchの戻り値が存在する場合、showを呼び出す", async () => {
     const flashMessage = { type: "success", message: "Test message" };
     const fetchFlashMessage = vi.fn().mockResolvedValue(flashMessage);
     const show = vi.fn();
@@ -19,7 +19,7 @@ describe("consumeFlashMessage", () => {
     expect(show).toHaveBeenCalledWith(flashMessage);
   });
 
-  it("fetchContentの戻り値がnullの場合、showを呼び出さない", async () => {
+  it("FlashMessageFetcher.fetchの戻り値がnullの場合、showを呼び出さない", async () => {
     const fetchFlashMessage = vi.fn().mockResolvedValue(null);
     const show = vi.fn();
 

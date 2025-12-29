@@ -10,7 +10,7 @@ describe("fetchFlashMessage", () => {
     global.fetch = vi.fn().mockResolvedValue(response as unknown as Response);
     const result = await fetchFlashMessage();
 
-    expect(global.fetch).toHaveBeenCalledWith("/api/flashMessageContent");
+    expect(global.fetch).toHaveBeenCalledWith("/api/flashMessage");
     expect(result).toEqual({ type: "success", message: "message" });
   });
 
@@ -18,7 +18,7 @@ describe("fetchFlashMessage", () => {
     global.fetch = vi.fn().mockResolvedValue({ ok: false });
 
     await expect(fetchFlashMessage()).rejects.toThrow(
-      "Failed to fetch flash message content",
+      "Failed to fetch flash message",
     );
   });
 });

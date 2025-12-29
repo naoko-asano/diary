@@ -1,10 +1,9 @@
+import { consumeFlashMessageComposed } from "@/features/flashMessage/composition/consumeFlashMessageComposed";
 import { render } from "@testing/utils";
-
-import { consumeFlashMessageComposed } from "../../composition/consumeFlashMessageComposed";
 
 import { FlashMessageNotifier } from ".";
 
-vi.mock("../../composition/consumeFlashMessageComposed");
+vi.mock("@/features/flashMessage/composition/consumeFlashMessageComposed");
 const mockedConsumeFlashMessageComposed = vi.mocked(
   consumeFlashMessageComposed,
 );

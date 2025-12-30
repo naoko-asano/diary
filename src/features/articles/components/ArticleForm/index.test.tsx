@@ -1,8 +1,8 @@
 import { notifications } from "@mantine/notifications";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { ActionResultStatuses } from "@/features/actionResult/model";
 import { Status } from "@/features/articles/model";
-import { FormResult } from "@/utils/formState";
 import { uploadImage } from "@/utils/image";
 import { render, screen, userEvent, waitFor, within } from "@testing/utils";
 
@@ -89,7 +89,7 @@ describe("ArticleForm", () => {
     vi.setSystemTime(new Date("2025-02-01"));
 
     const mockedOnSubmitAction = vi.fn(() =>
-      Promise.resolve({ result: FormResult.SUCCESS }),
+      Promise.resolve({ status: ActionResultStatuses.SUCCESS }),
     );
 
     render(<ArticleForm onSubmitAction={mockedOnSubmitAction} />);
@@ -122,7 +122,7 @@ describe("ArticleForm", () => {
 
     expect(mockedOnSubmitAction).toHaveBeenCalledTimes(1);
     expect(mockedOnSubmitAction).toHaveBeenCalledWith(
-      { result: null },
+      { status: ActionResultStatuses.IDLE },
       {
         date: new Date("2025-02-02"),
         title: "Test Title",
@@ -138,7 +138,7 @@ describe("ArticleForm", () => {
 
   it("アイキャッチ画像が登録された場合、submitボタン押下でonSubmitActionに渡された関数とuploadImageが呼ばれる", async () => {
     const mockedSubmitAction = vi.fn(() =>
-      Promise.resolve({ result: FormResult.SUCCESS }),
+      Promise.resolve({ status: ActionResultStatuses.SUCCESS }),
     );
 
     render(<ArticleForm onSubmitAction={mockedSubmitAction} />);
@@ -252,7 +252,7 @@ describe("ArticleForm", () => {
 
   it("onSubmitActionでエラー発生時、エラーメッセージが表示され、フォームの値は保持される", async () => {
     const mockedOnSubmitAction = vi.fn(() =>
-      Promise.resolve({ result: FormResult.ERROR }),
+      Promise.resolve({ status: ActionResultStatuses.ERROR }),
     );
 
     render(<ArticleForm onSubmitAction={mockedOnSubmitAction} />);

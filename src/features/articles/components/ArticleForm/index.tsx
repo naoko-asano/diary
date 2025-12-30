@@ -18,6 +18,10 @@ import rehypeSanitize from "rehype-sanitize";
 import { BackButton } from "@/components/BackButton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import {
+  ActionResult,
+  ActionResultStatuses,
+} from "@/features/actionResult/model";
+import {
   Article,
   ArticleParams,
   articleScheme,
@@ -25,7 +29,6 @@ import {
 } from "@/features/articles/model";
 import { FlashMessageTypes } from "@/features/flashMessage/model";
 import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
-import { FormState } from "@/utils/formState";
 import { uploadImage } from "@/utils/image";
 
 import "./styles.css";
@@ -33,9 +36,9 @@ import "./styles.css";
 type Props = {
   article?: Article;
   onSubmitAction: (
-    _prevState: FormState,
+    _prevResult: ActionResult,
     values: ArticleParams,
-  ) => Promise<FormState>;
+  ) => Promise<ActionResult>;
 };
 
 const statusOptions = [
@@ -48,8 +51,8 @@ export function ArticleForm(props: Props) {
   const [featuredImage, setFeaturedImage] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  const [formState, formAction, isPending] = useActionState(onSubmitAction, {
-    result: null,
+  const [actionResult, formAction, isPending] = useActionState(onSubmitAction, {
+    status: "idle",
   });
   const canSubmit = !(uploading || isPending);
 
@@ -91,13 +94,13 @@ export function ArticleForm(props: Props) {
   });
 
   useEffect(() => {
-    if (formState.result === "error") {
+    if (actionResult.status === ActionResultStatuses.ERROR) {
       showFlashMessage({
         type: FlashMessageTypes.ERROR,
         message: "Failed to submit the form.\nPlease try again later.",
       });
     }
-  }, [formState]);
+  }, [actionResult]);
 
   return (
     <form onSubmit={handleSubmit}>

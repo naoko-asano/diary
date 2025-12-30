@@ -1,33 +1,45 @@
 import { redirect } from "next/navigation";
 
+import {
+  ActionResult,
+  ActionResultStatuses,
+} from "@/features/actionResult/model";
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
 import { ArticleParams } from "@/features/articles/model";
 import { createArticle } from "@/features/articles/services";
 import { createFlashMessageCookieComposed } from "@/features/flashMessage/composition/createFlashMessageCookieComposed";
 import { FlashMessageTypes } from "@/features/flashMessage/model";
-import { FormResult, FormState } from "@/utils/formState";
 
 export default function Page() {
-  const handleSubmit = async (_prevState: FormState, values: ArticleParams) => {
+  const handleSubmit = async (
+    _prevResult: ActionResult,
+    values: ArticleParams,
+  ) => {
     "use server";
-    let formState: FormState;
+    let actionResult: ActionResult;
 
     try {
       await createArticle(values);
-      formState = { result: FormResult.SUCCESS };
+      actionResult = {
+        status: ActionResultStatuses.SUCCESS,
+        message: "Article created successfully!",
+      };
     } catch (error) {
       console.error(error);
-      formState = { result: FormResult.ERROR };
+      actionResult = {
+        status: ActionResultStatuses.ERROR,
+        message: "Failed to submit the form.\nPlease try again later.",
+      };
     }
 
-    if (formState.result === FormResult.SUCCESS) {
+    if (actionResult.status === ActionResultStatuses.SUCCESS) {
       await createFlashMessageCookieComposed({
         type: FlashMessageTypes.SUCCESS,
-        message: "Article created successfully!",
+        message: actionResult.message!,
       });
       redirect("/admin/articles");
     }
-    return formState;
+    return actionResult;
   };
   return <ArticleForm onSubmitAction={handleSubmit} />;
 }

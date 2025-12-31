@@ -3,7 +3,7 @@ export interface ActionResult {
   message?: string;
 }
 
-type ActionResultStatus =
+export type ActionResultStatus =
   (typeof ActionResultStatuses)[keyof typeof ActionResultStatuses];
 
 export const ActionResultStatuses = {

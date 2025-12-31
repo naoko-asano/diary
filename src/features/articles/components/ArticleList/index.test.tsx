@@ -1,9 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { Status } from "@/features/articles/model";
+import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 import { render, screen, userEvent, waitFor, within } from "@testing/utils";
 
 import { ArticleList } from ".";
+
+vi.mock("@/features/flashMessage/ui/showFlashMessage");
+const mockedShowFlashMessage = vi.mocked(showFlashMessage);
 
 const articles = [
   {
@@ -71,7 +75,7 @@ describe("ArticleList", () => {
     expect(editLinks[1]).toHaveAttribute("href", "/admin/articles/2/edit");
   });
 
-  it("削除ボタン押下時に確認モーダルが開き、承諾するとonDeleteActionに渡した関数が呼ばれ、フラッシュメッセージが表示される", async () => {
+  it("削除ボタン押下時に確認モーダルが開き、承諾するとonDeleteActionに渡した関数が呼ばれ、showFlashMessageが呼ばれる", async () => {
     const mockDeleteAction = vi.fn();
     render(
       <ArticleList articles={articles} onDeleteAction={mockDeleteAction} />,
@@ -97,13 +101,15 @@ describe("ArticleList", () => {
 
     expect(mockDeleteAction).toHaveBeenCalledTimes(1);
     expect(mockDeleteAction).toHaveBeenCalledWith(1);
-
     await waitFor(() =>
-      expect(screen.getByText("Article deleted successfully!")).toBeVisible(),
+      expect(mockedShowFlashMessage).toHaveBeenCalledWith({
+        type: "success",
+        message: "Article deleted successfully!",
+      }),
     );
   });
 
-  it("onDeleteActionでエラーが発生した場合、フラッシュメッセージでエラーが表示される", async () => {
+  it("onDeleteActionでエラーが発生した場合、showFlashMessageが呼ばれる", async () => {
     const mockDeleteAction = vi.fn().mockRejectedValue(new Error("Failed"));
     render(
       <ArticleList articles={articles} onDeleteAction={mockDeleteAction} />,
@@ -125,11 +131,11 @@ describe("ArticleList", () => {
 
     expect(mockDeleteAction).toHaveBeenCalledTimes(1);
     expect(mockDeleteAction).toHaveBeenCalledWith(1);
-
     await waitFor(() =>
-      expect(
-        screen.getByText("Failed to delete article. Please try again later."),
-      ).toBeVisible(),
+      expect(mockedShowFlashMessage).toHaveBeenCalledWith({
+        type: "error",
+        message: "Failed to delete article.\nPlease try again later.",
+      }),
     );
   });
 });

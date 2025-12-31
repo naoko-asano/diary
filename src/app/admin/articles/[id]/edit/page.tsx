@@ -8,7 +8,6 @@ import { ArticleForm } from "@/features/articles/components/ArticleForm";
 import { ArticleParams } from "@/features/articles/model";
 import { findArticleById, updateArticle } from "@/features/articles/services";
 import { createFlashMessageCookieComposed } from "@/features/flashMessage/composition/createFlashMessageCookieComposed";
-import { FlashMessageTypes } from "@/features/flashMessage/model";
 import { parseIdParam } from "@/utils/parseIdParam";
 
 type Props = {
@@ -41,16 +40,22 @@ export default async function Page(props: Props) {
 
     try {
       await updateArticle({ id, ...values });
-      actionResult = { status: ActionResultStatuses.SUCCESS };
+      actionResult = {
+        status: ActionResultStatuses.SUCCESS,
+        message: "Article updated successfully!",
+      };
     } catch (error) {
       console.error(error);
-      actionResult = { status: ActionResultStatuses.ERROR };
+      actionResult = {
+        status: ActionResultStatuses.ERROR,
+        message: "Failed to submit the form.\nPlease try again later.",
+      };
     }
 
     if (actionResult.status === ActionResultStatuses.SUCCESS) {
       await createFlashMessageCookieComposed({
-        type: FlashMessageTypes.SUCCESS,
-        message: "Article updated successfully!",
+        type: actionResult.status,
+        message: actionResult.message!,
       });
       redirect("/admin/articles");
     }

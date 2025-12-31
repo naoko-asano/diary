@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ActionResultStatuses } from "@/features/actionResult/model";
 import { Status } from "@/features/articles/model";
+import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 import { uploadImage } from "@/utils/image";
 import { render, screen, userEvent, waitFor, within } from "@testing/utils";
 
@@ -17,6 +18,9 @@ mockedUploadImage.mockResolvedValue({
   contentType: "image/jpeg",
   contentDisposition: "inline",
 });
+
+vi.mock("@/features/flashMessage/ui/showFlashMessage");
+const mockedShowFlashMessage = vi.mocked(showFlashMessage);
 
 beforeEach(() => {
   notifications.clean();
@@ -84,7 +88,7 @@ describe("ArticleForm", () => {
     vi.useRealTimers();
   });
 
-  it("アイキャッチ画像を登録していない場合、submitボタン押下でonSubmitActionで渡された関数が呼ばれる", async () => {
+  it("submitボタン押下でonSubmitActionで渡された関数が呼ばれる", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2025-02-01"));
 
@@ -134,6 +138,37 @@ describe("ArticleForm", () => {
     expect(mockedUploadImage).not.toHaveBeenCalled();
 
     vi.useRealTimers();
+  });
+
+  it("onSubmitActionでエラー発生時、showFlashMessageが呼ばれ、フォームの値は保持される", async () => {
+    const mockedOnSubmitAction = vi.fn(() =>
+      Promise.resolve({
+        status: ActionResultStatuses.ERROR,
+        message: "Some Error Message",
+      }),
+    );
+
+    render(<ArticleForm onSubmitAction={mockedOnSubmitAction} />);
+
+    const titleInput = screen.getByLabelText("Title *");
+    const bodyEditor = screen.getByTestId("body-editor");
+    const bodyInput = bodyEditor.querySelector(
+      "textarea",
+    ) as HTMLTextAreaElement;
+
+    await userEvent.type(titleInput, "Test Title");
+    await userEvent.type(bodyInput, "Test Body");
+    await userEvent.click(screen.getByRole("button", { name: "Submit" }));
+
+    expect(mockedOnSubmitAction).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockedShowFlashMessage).toHaveBeenCalledWith({
+        type: "error",
+        message: "Some Error Message",
+      });
+    });
+    expect(titleInput).toHaveValue("Test Title");
+    expect(bodyInput).toHaveValue("Test Body");
   });
 
   it("アイキャッチ画像が登録された場合、submitボタン押下でonSubmitActionに渡された関数とuploadImageが呼ばれる", async () => {
@@ -207,9 +242,10 @@ describe("ArticleForm", () => {
     expect(mockedUploadImage).toHaveBeenCalledTimes(1);
     expect(mockedOnSubmitAction).not.toHaveBeenCalled();
     await waitFor(() =>
-      expect(
-        screen.getByText("Failed to upload image. Please try again later."),
-      ).toBeVisible(),
+      expect(mockedShowFlashMessage).toHaveBeenCalledWith({
+        type: "error",
+        message: "Failed to upload image.\nPlease try again later.",
+      }),
     );
     expect(submitButton).toBeEnabled();
   });
@@ -248,39 +284,6 @@ describe("ArticleForm", () => {
 
     expect(screen.getByText("1文字以上入力してください")).toBeInTheDocument();
     expect(mockedOnSubmitAction).not.toHaveBeenCalled();
-  });
-
-  it("onSubmitActionでエラー発生時、エラーメッセージが表示され、フォームの値は保持される", async () => {
-    const mockedOnSubmitAction = vi.fn(() =>
-      Promise.resolve({ status: ActionResultStatuses.ERROR }),
-    );
-
-    render(<ArticleForm onSubmitAction={mockedOnSubmitAction} />);
-
-    const titleInput = screen.getByLabelText("Title *");
-    const bodyEditor = screen.getByTestId("body-editor");
-    const bodyInput = bodyEditor.querySelector(
-      "textarea",
-    ) as HTMLTextAreaElement;
-
-    await userEvent.type(titleInput, "Test Title");
-    await userEvent.type(bodyInput, "Test Body");
-
-    expect(
-      screen.queryByText("Failed to submit the form. Please try again later."),
-    ).toBeNull();
-
-    await userEvent.click(screen.getByRole("button", { name: "Submit" }));
-
-    expect(mockedOnSubmitAction).toHaveBeenCalledTimes(1);
-    await waitFor(() =>
-      expect(
-        screen.getByText("Failed to submit the form. Please try again later."),
-      ).toBeVisible(),
-    );
-
-    expect(titleInput).toHaveValue("Test Title");
-    expect(bodyInput).toHaveValue("Test Body");
   });
 
   it("戻るボタンのhref属性が記事一覧ページである", () => {

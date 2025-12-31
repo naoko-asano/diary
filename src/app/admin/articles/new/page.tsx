@@ -8,7 +8,6 @@ import { ArticleForm } from "@/features/articles/components/ArticleForm";
 import { ArticleParams } from "@/features/articles/model";
 import { createArticle } from "@/features/articles/services";
 import { createFlashMessageCookieComposed } from "@/features/flashMessage/composition/createFlashMessageCookieComposed";
-import { FlashMessageTypes } from "@/features/flashMessage/model";
 
 export default function Page() {
   const handleSubmit = async (
@@ -34,7 +33,7 @@ export default function Page() {
 
     if (actionResult.status === ActionResultStatuses.SUCCESS) {
       await createFlashMessageCookieComposed({
-        type: FlashMessageTypes.SUCCESS,
+        type: actionResult.status,
         message: actionResult.message!,
       });
       redirect("/admin/articles");

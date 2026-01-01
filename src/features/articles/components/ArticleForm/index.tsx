@@ -42,7 +42,7 @@ interface Props {
 }
 
 type UploadError = ActionResult & {
-  status: Omit<ActionResultStatus, "success">;
+  status: Omit<ActionResultStatus, typeof ActionResultStatuses.SUCCESS>;
 };
 
 const statusOptions = [

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { Status } from "@/features/articles/model";
+import { FlashMessageTypes } from "@/features/flashMessage/model";
 import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 import { render, screen, userEvent, waitFor, within } from "@testing/utils";
 
@@ -103,7 +104,7 @@ describe("ArticleList", () => {
     expect(mockDeleteAction).toHaveBeenCalledWith(1);
     await waitFor(() =>
       expect(mockedShowFlashMessage).toHaveBeenCalledWith({
-        type: "success",
+        type: FlashMessageTypes.SUCCESS,
         message: "Article deleted successfully!",
       }),
     );
@@ -133,7 +134,7 @@ describe("ArticleList", () => {
     expect(mockDeleteAction).toHaveBeenCalledWith(1);
     await waitFor(() =>
       expect(mockedShowFlashMessage).toHaveBeenCalledWith({
-        type: "error",
+        type: FlashMessageTypes.ERROR,
         message: "Failed to delete article.\nPlease try again later.",
       }),
     );

@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ActionResultStatuses } from "@/features/actionResult/model";
 import { Status } from "@/features/articles/model";
+import { FlashMessageTypes } from "@/features/flashMessage/model";
 import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 import { uploadImage } from "@/utils/image";
 import { render, screen, userEvent, waitFor, within } from "@testing/utils";
@@ -166,7 +167,7 @@ describe("ArticleForm", () => {
     expect(mockedOnSubmitAction).toHaveBeenCalledTimes(1);
     await waitFor(() => {
       expect(mockedShowFlashMessage).toHaveBeenCalledWith({
-        type: "error",
+        type: FlashMessageTypes.ERROR,
         message: "Some Error Message",
       });
     });
@@ -249,7 +250,7 @@ describe("ArticleForm", () => {
     expect(mockedOnSubmitAction).not.toHaveBeenCalled();
     await waitFor(() =>
       expect(mockedShowFlashMessage).toHaveBeenCalledWith({
-        type: "error",
+        type: FlashMessageTypes.ERROR,
         message: "Failed to upload image.\nPlease try again later.",
       }),
     );

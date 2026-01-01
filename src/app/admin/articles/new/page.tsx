@@ -34,7 +34,7 @@ export default function Page() {
     if (actionResult.status === ActionResultStatuses.SUCCESS) {
       await createFlashMessageCookieComposed({
         type: actionResult.status,
-        message: actionResult.message!,
+        message: actionResult.message,
       });
       redirect("/admin/articles");
     }

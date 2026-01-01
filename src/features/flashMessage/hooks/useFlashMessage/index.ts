@@ -8,11 +8,7 @@ import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 
 export function useFlashMessage(actionResult: ActionResult) {
   useEffect(() => {
-    if (
-      actionResult.status === ActionResultStatuses.IDLE ||
-      !actionResult.message
-    )
-      return;
+    if (actionResult.status === ActionResultStatuses.IDLE) return;
 
     showFlashMessage({
       type: actionResult.status,

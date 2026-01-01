@@ -55,7 +55,7 @@ export default async function Page(props: Props) {
     if (actionResult.status === ActionResultStatuses.SUCCESS) {
       await createFlashMessageCookieComposed({
         type: actionResult.status,
-        message: actionResult.message!,
+        message: actionResult.message,
       });
       redirect("/admin/articles");
     }

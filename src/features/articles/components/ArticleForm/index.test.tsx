@@ -93,7 +93,10 @@ describe("ArticleForm", () => {
     vi.setSystemTime(new Date("2025-02-01"));
 
     const mockedOnSubmitAction = vi.fn(() =>
-      Promise.resolve({ status: ActionResultStatuses.SUCCESS }),
+      Promise.resolve({
+        status: ActionResultStatuses.SUCCESS,
+        message: "Some Success Message",
+      }),
     );
 
     render(<ArticleForm onSubmitAction={mockedOnSubmitAction} />);
@@ -173,7 +176,10 @@ describe("ArticleForm", () => {
 
   it("アイキャッチ画像が登録された場合、submitボタン押下でonSubmitActionに渡された関数とuploadImageが呼ばれる", async () => {
     const mockedSubmitAction = vi.fn(() =>
-      Promise.resolve({ status: ActionResultStatuses.SUCCESS }),
+      Promise.resolve({
+        status: ActionResultStatuses.SUCCESS,
+        message: "Some Success Message",
+      }),
     );
 
     render(<ArticleForm onSubmitAction={mockedSubmitAction} />);

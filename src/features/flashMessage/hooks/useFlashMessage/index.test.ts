@@ -44,13 +44,4 @@ describe("useFlashMessage", () => {
     );
     expect(mockedShowFlashMessage).not.toHaveBeenCalled();
   });
-
-  it("actionResult.messageがない場合、showFlashMessageは呼び出されない", () => {
-    renderHook(() =>
-      useFlashMessage({
-        status: ActionResultStatuses.SUCCESS,
-      }),
-    );
-    expect(mockedShowFlashMessage).not.toHaveBeenCalled();
-  });
 });

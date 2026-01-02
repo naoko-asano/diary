@@ -1,8 +1,13 @@
+import { FlashMessageTypes } from "@/features/flashMessage/model";
+
 import { consumeFlashMessage } from ".";
 
 describe("consumeFlashMessage", () => {
   it("FlashMessageFetcher.fetchの戻り値が存在する場合、showを呼び出す", async () => {
-    const flashMessage = { type: "success", message: "Test message" };
+    const flashMessage = {
+      type: FlashMessageTypes.SUCCESS,
+      message: "Test message",
+    };
     const fetchFlashMessage = vi.fn().mockResolvedValue(flashMessage);
     const show = vi.fn();
 

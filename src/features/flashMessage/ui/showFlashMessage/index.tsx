@@ -4,8 +4,8 @@ import { IconCheck, IconX } from "@tabler/icons-react";
 
 import { FlashMessage, FlashMessageTypes } from "@/features/flashMessage/model";
 
-export function showFlashMessage(props: FlashMessage) {
-  const { type, message } = props;
+export function showFlashMessage(flashMessage: FlashMessage) {
+  const { type, message } = flashMessage;
   const isSuccessful = type === FlashMessageTypes.SUCCESS;
 
   notifications.show({

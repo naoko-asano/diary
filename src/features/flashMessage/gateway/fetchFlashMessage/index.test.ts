@@ -1,8 +1,13 @@
+import { FlashMessageTypes } from "@/features/flashMessage/model";
+
 import { fetchFlashMessage } from ".";
 
 describe("fetchFlashMessage", () => {
   it("指定URLにリクエストし、jsonを返す", async () => {
-    const flashMessage = { type: "success", message: "message" };
+    const flashMessage = {
+      type: FlashMessageTypes.SUCCESS,
+      message: "message",
+    };
     const response = {
       ok: true,
       json: vi.fn().mockResolvedValue(flashMessage),
@@ -11,7 +16,10 @@ describe("fetchFlashMessage", () => {
     const result = await fetchFlashMessage();
 
     expect(global.fetch).toHaveBeenCalledWith("/api/flashMessage");
-    expect(result).toEqual({ type: "success", message: "message" });
+    expect(result).toEqual({
+      type: FlashMessageTypes.SUCCESS,
+      message: "message",
+    });
   });
 
   it("fetchが失敗した場合、エラーをスローする", async () => {

@@ -12,30 +12,37 @@ import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import MDEditor from "@uiw/react-md-editor";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import rehypeSanitize from "rehype-sanitize";
 
 import { BackButton } from "@/components/BackButton";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import {
+  ActionResult,
+  ActionResultStatus,
+  ActionResultStatuses,
+} from "@/features/actionResult/model";
 import {
   Article,
   ArticleParams,
   articleScheme,
   Status,
 } from "@/features/articles/model";
-import { FlashMessageTypes } from "@/features/flashMessage/model";
-import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
-import { FormState } from "@/utils/formState";
+import { useFlashMessage } from "@/features/flashMessage/hooks/useFlashMessage";
 import { uploadImage } from "@/utils/image";
 
 import "./styles.css";
 
-type Props = {
+interface Props {
   article?: Article;
   onSubmitAction: (
-    _prevState: FormState,
+    _prevResult: ActionResult,
     values: ArticleParams,
-  ) => Promise<FormState>;
+  ) => Promise<ActionResult>;
+}
+
+type UploadError = ActionResult & {
+  status: Omit<ActionResultStatus, typeof ActionResultStatuses.SUCCESS>;
 };
 
 const statusOptions = [
@@ -47,9 +54,12 @@ export function ArticleForm(props: Props) {
   const { article, onSubmitAction } = props;
   const [featuredImage, setFeaturedImage] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<UploadError>({
+    status: ActionResultStatuses.IDLE,
+  });
 
-  const [formState, formAction, isPending] = useActionState(onSubmitAction, {
-    result: null,
+  const [actionResult, formAction, isPending] = useActionState(onSubmitAction, {
+    status: ActionResultStatuses.IDLE,
   });
   const canSubmit = !(uploading || isPending);
 
@@ -76,8 +86,8 @@ export function ArticleForm(props: Props) {
       try {
         values.featuredImageUrl = (await uploadImage(featuredImage)).url;
       } catch (_error) {
-        showFlashMessage({
-          type: FlashMessageTypes.ERROR,
+        setUploadError({
+          status: ActionResultStatuses.ERROR,
           message: "Failed to upload image.\nPlease try again later.",
         });
         return;
@@ -90,14 +100,8 @@ export function ArticleForm(props: Props) {
     });
   });
 
-  useEffect(() => {
-    if (formState.result === "error") {
-      showFlashMessage({
-        type: FlashMessageTypes.ERROR,
-        message: "Failed to submit the form.\nPlease try again later.",
-      });
-    }
-  }, [formState]);
+  useFlashMessage(actionResult);
+  useFlashMessage(uploadError);
 
   return (
     <form onSubmit={handleSubmit}>

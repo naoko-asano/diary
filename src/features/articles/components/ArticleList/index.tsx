@@ -15,8 +15,11 @@ import { useState } from "react";
 import { ConfirmationModal } from "@/components/ConfirmationModal";
 import { EditButton } from "@/components/EditButton";
 import { TrashButton } from "@/components/TrashButton";
-import { FlashMessageTypes } from "@/features/flashMessage/model";
-import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
+import {
+  ActionResult,
+  ActionResultStatuses,
+} from "@/features/actionResult/model";
+import { useFlashMessage } from "@/features/flashMessage/hooks/useFlashMessage";
 import { Article } from "@/generated/prisma";
 import { formatDate } from "@/utils/date";
 import { capitalize } from "@/utils/string";
@@ -29,6 +32,10 @@ type Props = {
 };
 
 export function ArticleList({ articles, onDeleteAction }: Props) {
+  const [deleteResult, setDeleteResult] = useState<ActionResult>({
+    status: ActionResultStatuses.IDLE,
+  });
+  useFlashMessage(deleteResult);
   const [deleteModalOpened, setDeleteModalOpened] = useState<{
     opened: boolean;
     articleId: number | null;
@@ -41,13 +48,13 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
     if (!deleteModalOpened.articleId) return;
     try {
       await onDeleteAction(deleteModalOpened.articleId);
-      showFlashMessage({
-        type: FlashMessageTypes.SUCCESS,
+      setDeleteResult({
+        status: ActionResultStatuses.SUCCESS,
         message: "Article deleted successfully!",
       });
     } catch {
-      showFlashMessage({
-        type: FlashMessageTypes.ERROR,
+      setDeleteResult({
+        status: ActionResultStatuses.ERROR,
         message: "Failed to delete article.\nPlease try again later.",
       });
     }

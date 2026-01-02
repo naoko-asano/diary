@@ -1,4 +1,4 @@
-import { FlashMessageTypes } from "../../model";
+import { FlashMessageTypes } from "@/features/flashMessage/model";
 
 import { fetchFlashMessage } from ".";
 

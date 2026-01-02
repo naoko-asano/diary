@@ -1,8 +1,7 @@
 import { renderHook } from "@testing-library/react";
 
 import { ActionResultStatuses } from "@/features/actionResult/model";
-
-import { showFlashMessage } from "../../ui/showFlashMessage";
+import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 
 import { useFlashMessage } from ".";
 

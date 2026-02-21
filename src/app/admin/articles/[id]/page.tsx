@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { ArticleDetails } from "@/features/articles/components/ArticleDetails";
-import { findArticleById } from "@/features/articles/services";
+import { findArticleById } from "@/features/articles/gateway";
 import { parseIdParam } from "@/utils/parseIdParam";
 
 export default async function Page({

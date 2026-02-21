@@ -1,12 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { Status } from "@/features/articles/model";
+import { Statuses as ArticleStatuses } from "@/features/articles/model";
 import { FlashMessageTypes } from "@/features/flashMessage/model";
 import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 import { render, screen, userEvent, waitFor, within } from "@testing/utils";
 
 import { ArticleList } from ".";
-
 vi.mock("@/features/flashMessage/ui/showFlashMessage");
 const mockedShowFlashMessage = vi.mocked(showFlashMessage);
 
@@ -17,7 +16,7 @@ const articles = [
     body: "This is the first article.",
     featuredImageUrl: null,
     date: new Date("2025-01-02"),
-    status: Status.DRAFT,
+    status: ArticleStatuses.DRAFT,
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -27,7 +26,7 @@ const articles = [
     body: "This is the second article.",
     featuredImageUrl: null,
     date: new Date("2025-01-01"),
-    status: Status.PUBLISHED,
+    status: ArticleStatuses.PUBLISHED,
     createdAt: new Date(),
     updatedAt: new Date(),
   },

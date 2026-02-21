@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { Status } from "@/features/articles/model";
+import { Statuses as ArticleStatuses } from "@/features/articles/model";
 import { render, screen } from "@testing/utils";
 
 import { ArticleCard } from ".";
@@ -11,7 +11,7 @@ const article = {
   body: "example body",
   featuredImageUrl: "/image.jpg",
   date: new Date("2025-01-01"),
-  status: Status.PUBLISHED,
+  status: ArticleStatuses.PUBLISHED,
   createdAt: new Date(),
   updatedAt: new Date(),
 };

@@ -5,8 +5,8 @@ import {
   ActionResultStatuses,
 } from "@/features/actionResult/model";
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
+import { findArticleById, updateArticle } from "@/features/articles/gateway";
 import { ArticleParams } from "@/features/articles/model";
-import { findArticleById, updateArticle } from "@/features/articles/services";
 import { createFlashMessageCookieComposed } from "@/features/flashMessage/composition/createFlashMessageCookieComposed";
 import { parseIdParam } from "@/utils/parseIdParam";
 

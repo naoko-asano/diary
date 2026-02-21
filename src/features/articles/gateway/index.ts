@@ -1,6 +1,6 @@
 "use server";
 
-import { ArticleParams, validateArticle } from "@/features/articles/model";
+import { ArticleParams } from "@/features/articles/model";
 import prisma from "@/lib/database";
 
 export async function getPaginatedArticles(params: {
@@ -24,53 +24,35 @@ export async function getPaginatedArticles(params: {
 }
 
 export async function findArticleById(id: number) {
-  try {
-    return await prisma.article.findUnique({
-      where: { id },
-    });
-  } catch (error) {
-    throw new Error("Failed to find article\n" + error);
-  }
+  return await prisma.article.findUnique({
+    where: { id },
+  });
 }
 
 export async function createArticle(params: ArticleParams) {
-  try {
-    validateArticle(params);
-    return await prisma.article.create({
-      data: {
-        ...params,
-      },
-    });
-  } catch (error) {
-    throw new Error("Failed to create article\n" + error);
-  }
+  return await prisma.article.create({
+    data: {
+      ...params,
+    },
+  });
 }
 
 export async function updateArticle(params: { id: number } & ArticleParams) {
   const { id, title, body, featuredImageUrl, date, status } = params;
-  validateArticle(params);
-  try {
-    return await prisma.article.update({
-      where: { id },
-      data: {
-        title,
-        body,
-        featuredImageUrl,
-        date,
-        status,
-      },
-    });
-  } catch (error) {
-    throw new Error("Failed to update article\n" + error);
-  }
+  return await prisma.article.update({
+    where: { id },
+    data: {
+      title,
+      body,
+      featuredImageUrl,
+      date,
+      status,
+    },
+  });
 }
 
 export async function deleteArticle(id: number) {
-  try {
-    return await prisma.article.delete({
-      where: { id },
-    });
-  } catch (error) {
-    throw new Error("Failed to delete article\n" + error);
-  }
+  return await prisma.article.delete({
+    where: { id },
+  });
 }

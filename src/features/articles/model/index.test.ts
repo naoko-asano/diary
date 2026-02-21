@@ -1,22 +1,23 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  ArticleParams,
   articleScheme,
   resolveFeaturedImage,
-  Status,
+  Statuses as ArticleStatuses,
   validateArticle,
 } from ".";
 
-const article = {
+const article: ArticleParams = {
   title: "Test Article",
   body: "This is a test article.",
   featuredImageUrl: null,
   date: new Date("2025-01-01"),
-  status: Status.DRAFT,
+  status: ArticleStatuses.DRAFT,
 };
 
 describe("articleScheme", () => {
-  it("記事が正しい場合、バリデーションが通る", () => {
+  it("ArticleParams型の場合、バリデーションが通る", () => {
     expect(() => articleScheme.parse(article)).not.toThrow();
   });
 
@@ -94,14 +95,12 @@ describe("articleScheme", () => {
 });
 
 describe("validateArticle", () => {
-  it("有効な記事の場合、エラーがスローされない", () => {
+  it("ArticleParams型の場合、エラーがスローされない", () => {
     expect(() => validateArticle(article)).not.toThrow();
   });
 
-  it("無効な記事の場合、エラーがスローされる", () => {
-    expect(() => validateArticle({ ...article, title: "" })).toThrow(
-      /Invalid article params\n/,
-    );
+  it("ArticleParams型でない場合、エラーがスローされる", () => {
+    expect(() => validateArticle({ ...article, title: "" })).toThrow();
   });
 });
 

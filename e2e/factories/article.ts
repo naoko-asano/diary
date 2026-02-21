@@ -1,5 +1,7 @@
-import { Status } from "@/features/articles/model";
-import { ArticleParams } from "@/features/articles/model";
+import {
+  ArticleParams,
+  Statuses as ArticleStatuses,
+} from "@/features/articles/model";
 import prisma from "@/lib/database";
 
 async function createArticle(articleParams?: Partial<ArticleParams>) {
@@ -11,7 +13,7 @@ async function createArticle(articleParams?: Partial<ArticleParams>) {
       title: title ?? `title${count + 1}`,
       body: body ?? `body${count + 1}`,
       date: date ?? new Date("2025-01-01"),
-      status: status ?? Status.PUBLISHED,
+      status: status ?? ArticleStatuses.PUBLISHED,
       featuredImageUrl,
     },
   });

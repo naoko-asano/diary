@@ -5,8 +5,8 @@ import {
   ActionResultStatuses,
 } from "@/features/actionResult/model";
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
+import { createArticle } from "@/features/articles/gateway";
 import { ArticleParams } from "@/features/articles/model";
-import { createArticle } from "@/features/articles/services";
 import { createFlashMessageCookieComposed } from "@/features/flashMessage/composition/createFlashMessageCookieComposed";
 
 export default function Page() {

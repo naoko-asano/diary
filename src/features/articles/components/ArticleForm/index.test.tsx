@@ -2,7 +2,7 @@ import { notifications } from "@mantine/notifications";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ActionResultStatuses } from "@/features/actionResult/model";
-import { Status } from "@/features/articles/model";
+import { Statuses as ArticleStatuses } from "@/features/articles/model";
 import { FlashMessageTypes } from "@/features/flashMessage/model";
 import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 import { uploadImage } from "@/utils/image";
@@ -33,7 +33,7 @@ const article = {
   body: "example body",
   featuredImageUrl: "https://example.com/image.jpg",
   date: new Date("2025-01-01"),
-  status: Status.PUBLISHED,
+  status: ArticleStatuses.PUBLISHED,
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -136,7 +136,7 @@ describe("ArticleForm", () => {
         title: "Test Title",
         body: "Test Body",
         featuredImageUrl: null,
-        status: Status.PUBLISHED,
+        status: ArticleStatuses.PUBLISHED,
       },
     );
     expect(mockedUploadImage).not.toHaveBeenCalled();

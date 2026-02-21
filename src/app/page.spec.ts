@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { Status } from "@/features/articles/model";
+import { Statuses as ArticleStatuses } from "@/features/articles/model";
 import { resetArticles, seedArticles } from "@e2e/factories/article";
 
 test.beforeEach(async () => {
@@ -10,7 +10,10 @@ test.beforeEach(async () => {
 test("公開された記事のみが表示されている", async ({ page }) => {
   await seedArticles({
     count: 2,
-    articles: [{ status: Status.PUBLISHED }, { status: Status.DRAFT }],
+    articles: [
+      { status: ArticleStatuses.PUBLISHED },
+      { status: ArticleStatuses.DRAFT },
+    ],
   });
   await page.goto("/");
 
@@ -40,8 +43,10 @@ test("1ページにつき15記事が表示される", async ({ page }) => {
 test("公開された記事の数にあったページネーションが表示される", async ({
   page,
 }) => {
-  const draftArticle = Array(15).fill({ status: Status.DRAFT });
-  const publishedArticle = Array(1).fill({ status: Status.PUBLISHED });
+  const draftArticle = Array(15).fill({ status: ArticleStatuses.DRAFT });
+  const publishedArticle = Array(1).fill({
+    status: ArticleStatuses.PUBLISHED,
+  });
 
   await seedArticles({
     count: 16,

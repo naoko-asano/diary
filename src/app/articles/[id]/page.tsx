@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { ArticleDetails } from "@/features/articles/components/ArticleDetails";
-import { findArticleById } from "@/features/articles/services";
-import { Status } from "@/generated/prisma";
+import { findArticleById } from "@/features/articles/gateway";
+import { Statuses as ArticleStatuses } from "@/features/articles/model";
 import { parseIdParam } from "@/utils/parseIdParam";
 
 export default async function Page({
@@ -19,7 +19,7 @@ export default async function Page({
   }
 
   const article = await findArticleById(id);
-  if (!article || article.status === Status.DRAFT) {
+  if (!article || article.status === ArticleStatuses.DRAFT) {
     notFound();
   }
 

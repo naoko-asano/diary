@@ -1,8 +1,21 @@
 import { z } from "zod";
+export interface Article {
+  title: string;
+  body: string;
+  date: Date;
+  status: (typeof Statuses)[keyof typeof Statuses];
+  featuredImageUrl: string | null;
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-import { $Enums, Article as OriginalArticle } from "@/generated/prisma";
+export type ArticleParams = z.infer<typeof articleScheme>;
 
-export const Status = $Enums.Status;
+export const Statuses = {
+  DRAFT: "DRAFT",
+  PUBLISHED: "PUBLISHED",
+} as const;
 
 export const articleScheme = z.object({
   title: z
@@ -12,7 +25,7 @@ export const articleScheme = z.object({
     .max(255, { message: "255文字以内で入力してください" }),
   body: z.string().trim().min(1, { message: "1文字以上入力してください" }),
   date: z.coerce.date("日付を選択してください"),
-  status: z.enum(Status),
+  status: z.enum(Statuses),
   featuredImageUrl: z.string().nullable(),
 });
 
@@ -23,9 +36,6 @@ export function validateArticle(params: ArticleParams) {
     throw new Error("Invalid article params\n" + error);
   }
 }
-
-export type Article = OriginalArticle;
-export type ArticleParams = z.infer<typeof articleScheme>;
 
 export function resolveFeaturedImage(article: Article): string {
   return article.featuredImageUrl || "/images/default-featured-image.jpg";

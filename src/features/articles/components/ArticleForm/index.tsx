@@ -26,7 +26,7 @@ import {
   Article,
   ArticleParams,
   articleScheme,
-  Status,
+  Statuses as ArticleStatuses,
 } from "@/features/articles/model";
 import { useFlashMessage } from "@/features/flashMessage/hooks/useFlashMessage";
 import { uploadImage } from "@/utils/image";
@@ -46,8 +46,8 @@ type UploadError = ActionResult & {
 };
 
 const statusOptions = [
-  { value: Status.DRAFT, label: "Draft" },
-  { value: Status.PUBLISHED, label: "Publish" },
+  { value: ArticleStatuses.DRAFT, label: "Draft" },
+  { value: ArticleStatuses.PUBLISHED, label: "Publish" },
 ];
 
 export function ArticleForm(props: Props) {
@@ -70,7 +70,7 @@ export function ArticleForm(props: Props) {
       body: article?.body ?? "",
       featuredImageUrl: article?.featuredImageUrl ?? null,
       date: article?.date ?? new Date(),
-      status: article?.status ?? Status.DRAFT,
+      status: article?.status ?? ArticleStatuses.DRAFT,
     },
     validate: zod4Resolver(articleScheme),
     transformValues: (values) => ({

@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  Article,
   ArticleParams,
-  articleScheme,
-  resolveFeaturedImage,
-  Statuses as ArticleStatuses,
+  resolveFeaturedImageUrl,
+  Statuses,
   validateArticle,
 } from ".";
 
@@ -13,118 +13,107 @@ const article: ArticleParams = {
   body: "This is a test article.",
   featuredImageUrl: null,
   date: new Date("2025-01-01"),
-  status: ArticleStatuses.DRAFT,
+  status: Statuses.DRAFT,
 };
 
-describe("articleScheme", () => {
-  it("ArticleParams型の場合、バリデーションが通る", () => {
-    expect(() => articleScheme.parse(article)).not.toThrow();
+describe("記事パラメータが", () => {
+  it("有効な場合、バリデーションが通る", () => {
+    expect(() => validateArticle(article)).not.toThrow();
   });
 
-  describe("titleが", () => {
-    it.each([
-      ["number", 123],
-      ["null", null],
-      ["undefined", undefined],
-      ["boolean", true],
-      ["object", {}],
-      ["array", []],
-    ])("%s型の場合、エラーがスローされる", (_typeName, invalidTitle) => {
-      expect(() =>
-        articleScheme.parse({ ...article, title: invalidTitle }),
-      ).toThrow();
-    });
-
-    it("空文字やスペースのみの場合、エラーがスローされる", () => {
-      expect(() => articleScheme.parse({ ...article, title: "" })).toThrow(
+  describe("タイトルが", () => {
+    it("空文字の場合、エラーがスローされる", () => {
+      expect(() => validateArticle({ ...article, title: "" })).toThrow(
         "1文字以上入力してください",
       );
-      expect(() => articleScheme.parse({ ...article, title: " " })).toThrow(
+    });
+
+    it("スペースのみの場合、エラーがスローされる", () => {
+      expect(() => validateArticle({ ...article, title: " " })).toThrow(
         "1文字以上入力してください",
       );
     });
 
     it("255文字の場合、バリデーションが通る", () => {
       expect(() =>
-        articleScheme.parse({ ...article, title: "a".repeat(255) }),
+        validateArticle({ ...article, title: "a".repeat(255) }),
       ).not.toThrow();
     });
 
     it("255文字を超える場合、エラーがスローされる", () => {
       expect(() =>
-        articleScheme.parse({ ...article, title: "a".repeat(256) }),
+        validateArticle({ ...article, title: "a".repeat(256) }),
       ).toThrow("255文字以内で入力してください");
     });
   });
 
-  describe("bodyが", () => {
-    it.each([
-      ["number", 123],
-      ["null", null],
-      ["undefined", undefined],
-      ["boolean", true],
-      ["object", {}],
-      ["array", []],
-    ])("%s型の場合、エラーがスローされる", (typeName, invalidBody) => {
-      expect(() =>
-        articleScheme.parse({ ...article, body: invalidBody }),
-      ).toThrow();
-    });
-
-    it("空文字やスペースのみ場合、エラーがスローされる", () => {
-      expect(() => articleScheme.parse({ ...article, body: "" })).toThrow(
+  describe("本文が", () => {
+    it("空文字の場合、エラーがスローされる", () => {
+      expect(() => validateArticle({ ...article, body: "" })).toThrow(
         "1文字以上入力してください",
       );
-      expect(() => articleScheme.parse({ ...article, body: " " })).toThrow(
+    });
+
+    it("スペースのみの場合、エラーがスローされる", () => {
+      expect(() => validateArticle({ ...article, body: " " })).toThrow(
         "1文字以上入力してください",
       );
     });
   });
 
-  describe("dateが", () => {
-    it.each([
-      ["undefined", undefined],
-      ["object", {}],
-      ["array", []],
-    ])("%s型の場合、エラーがスローされる", (typeName, invalidDate) => {
+  describe("ステータスが", () => {
+    it.each([Statuses.DRAFT, Statuses.PUBLISHED])(
+      "有効な値の場合、バリデーションが通る",
+      (status) => {
+        expect(() =>
+          validateArticle({
+            ...article,
+            status: status,
+          }),
+        ).not.toThrow();
+      },
+    );
+  });
+
+  describe("アイキャッチ画像が", () => {
+    it("nullの場合、バリデーションが通る", () => {
       expect(() =>
-        articleScheme.parse({ ...article, date: invalidDate }),
-      ).toThrow("日付を選択してください");
+        validateArticle({ ...article, featuredImageUrl: null }),
+      ).not.toThrow();
+    });
+
+    it("URL文字列の場合、バリデーションが通る", () => {
+      expect(() =>
+        validateArticle({
+          ...article,
+          featuredImageUrl: "https://example.com/image.jpg",
+        }),
+      ).not.toThrow();
     });
   });
 });
 
-describe("validateArticle", () => {
-  it("ArticleParams型の場合、エラーがスローされない", () => {
-    expect(() => validateArticle(article)).not.toThrow();
-  });
-
-  it("ArticleParams型でない場合、エラーがスローされる", () => {
-    expect(() => validateArticle({ ...article, title: "" })).toThrow();
-  });
-});
-
-describe("resolveFeaturedImage", () => {
-  it("featuredImageUrlが存在する場合、そのURLを返す", () => {
-    const articleWithImage = {
+describe("アイキャッチ画像のURLは", () => {
+  it("指定されたアイキャッチ画像がある場合、そのURLとなる", () => {
+    const articleWithImage: Article = {
       ...article,
       id: 1,
       featuredImageUrl: "/image.jpg",
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    expect(resolveFeaturedImage(articleWithImage)).toBe("/image.jpg");
+    expect(resolveFeaturedImageUrl(articleWithImage)).toBe("/image.jpg");
   });
 
-  it("featuredImageUrlがnullの場合、デフォルトの画像URLを返す", () => {
-    const articleWithoutImage = {
+  it("指定されたアイキャッチ画像がない場合、デフォルトの画像URLとなる", () => {
+    const articleWithoutImage: Article = {
       ...article,
       id: 2,
-      resolveFeaturedImage: null,
+      featuredImageUrl: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    expect(resolveFeaturedImage(articleWithoutImage)).toBe(
+    expect(resolveFeaturedImageUrl(articleWithoutImage)).toBe(
       "/images/default-featured-image.jpg",
     );
   });

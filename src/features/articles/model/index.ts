@@ -1,14 +1,10 @@
 import { z } from "zod";
-export interface Article {
-  title: string;
-  body: string;
-  date: Date;
-  status: (typeof Statuses)[keyof typeof Statuses];
-  featuredImageUrl: string | null;
+
+export type Article = ArticleParams & {
   id: number;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 export type ArticleParams = z.infer<typeof articleScheme>;
 
@@ -37,6 +33,6 @@ export function validateArticle(params: ArticleParams) {
   }
 }
 
-export function resolveFeaturedImage(article: Article): string {
+export function resolveFeaturedImageUrl(article: Article): string {
   return article.featuredImageUrl || "/images/default-featured-image.jpg";
 }

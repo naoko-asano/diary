@@ -2,6 +2,19 @@ import { Statuses } from "@/features/articles/model";
 
 import { createArticle, deleteArticle, findArticle, updateArticle } from ".";
 
+const validArticleParams = {
+  title: "title",
+  body: "body",
+  date: new Date(),
+  status: Statuses.DRAFT,
+  featuredImageUrl: null,
+};
+
+const baseArticle = {
+  id: 1,
+  ...validArticleParams,
+};
+
 const baseRepository = {
   find: async () => {},
   create: async () => {},
@@ -13,12 +26,7 @@ describe("記事の取得", () => {
   it("記事が存在する場合、記事を返す", async () => {
     const params = { id: 1 };
     const storedArticle = {
-      id: 1,
-      title: "title",
-      body: "body",
-      date: new Date(),
-      status: Statuses.DRAFT,
-      featuredImageUrl: null,
+      ...baseArticle,
     };
     const repository = {
       ...baseRepository,
@@ -48,11 +56,7 @@ describe("記事の取得", () => {
 describe("記事の登録", () => {
   it("記事として有効なパラメータが渡された場合、登録される", async () => {
     const params = {
-      title: "title",
-      body: "body",
-      date: new Date(),
-      status: Statuses.DRAFT,
-      featuredImageUrl: null,
+      ...validArticleParams,
     };
     const repository = {
       ...baseRepository,
@@ -68,11 +72,8 @@ describe("記事の登録", () => {
 
   it("記事として無効なパラメータが渡された場合、エラーになる", async () => {
     const params = {
+      ...validArticleParams,
       title: "",
-      body: "body",
-      date: new Date(),
-      status: Statuses.DRAFT,
-      featuredImageUrl: null,
     };
     const repository = {
       ...baseRepository,
@@ -88,21 +89,13 @@ describe("記事の登録", () => {
 describe("記事の更新", () => {
   it("記事として有効なパラメータが渡された場合、更新される", async () => {
     const params = {
+      ...validArticleParams,
       id: 1,
       title: "updated title",
       body: "updated body",
-      date: new Date(),
-      status: Statuses.DRAFT,
-      featuredImageUrl: null,
     };
-
     const storedArticle = {
-      id: 1,
-      title: "title",
-      body: "body",
-      date: new Date(),
-      status: Statuses.DRAFT,
-      featuredImageUrl: null,
+      ...baseArticle,
     };
     const repository = {
       ...baseRepository,
@@ -118,12 +111,10 @@ describe("記事の更新", () => {
 
   it("記事が存在しない場合、エラーをスローする", async () => {
     const params = {
+      ...validArticleParams,
       id: 1,
       title: "updated title",
       body: "updated body",
-      date: new Date(),
-      status: Statuses.DRAFT,
-      featuredImageUrl: null,
     };
     const repository = {
       ...baseRepository,
@@ -137,20 +128,12 @@ describe("記事の更新", () => {
 
   it("記事として無効なパラメータが渡された場合、エラーをスローする", async () => {
     const params = {
+      ...validArticleParams,
       id: 1,
       title: "",
-      body: "updated body",
-      date: new Date(),
-      status: Statuses.DRAFT,
-      featuredImageUrl: null,
     };
     const storedArticle = {
-      id: 1,
-      title: "title",
-      body: "body",
-      date: new Date(),
-      status: Statuses.DRAFT,
-      featuredImageUrl: null,
+      ...baseArticle,
     };
     const repository = {
       ...baseRepository,
@@ -167,12 +150,7 @@ describe("記事の削除", () => {
   it("記事が存在する場合、削除される", async () => {
     const params = { id: 1 };
     const storedArticle = {
-      id: 1,
-      title: "title",
-      body: "body",
-      date: new Date(),
-      status: Statuses.DRAFT,
-      featuredImageUrl: null,
+      ...baseArticle,
     };
     const repository = {
       ...baseRepository,

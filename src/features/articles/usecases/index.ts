@@ -1,4 +1,6 @@
-import { ArticleParams, validateArticle } from "../model";
+import { OrderByParams, OrderByValues } from "@/utils/orderBy";
+
+import { Article, ArticleParams, validateArticle } from "../model";
 
 import { ArticleRepository } from "./types/repository";
 
@@ -11,6 +13,27 @@ export async function findArticle(
   repository: ArticleRepository,
 ) {
   return await repository.find(params.id);
+}
+
+export async function findPaginatedArticles(
+  params: {
+    currentPage: number;
+    perPage: number;
+    orderBy?: OrderByParams<Article>;
+    conditions?: Partial<ArticleParams>;
+  },
+  repository: ArticleRepository,
+) {
+  const {
+    currentPage = 1,
+    orderBy = { date: OrderByValues.DESC },
+    ...otherParams
+  } = params;
+  return await repository.listWithCount({
+    currentPage,
+    orderBy,
+    ...otherParams,
+  });
 }
 
 export async function createArticle(

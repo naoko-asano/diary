@@ -1,6 +1,15 @@
 import { Statuses } from "@/features/articles/model";
+import { OrderByValues } from "@/utils/orderBy";
 
-import { createArticle, deleteArticle, findArticle, updateArticle } from ".";
+import { ArticleRepository } from "./types/repository";
+
+import {
+  createArticle,
+  deleteArticle,
+  findArticle,
+  findPaginatedArticles,
+  updateArticle,
+} from ".";
 
 const validArticleParams = {
   title: "title",
@@ -15,8 +24,9 @@ const baseArticle = {
   ...validArticleParams,
 };
 
-const baseRepository = {
-  find: async () => {},
+const baseRepository: ArticleRepository = {
+  find: async () => null,
+  listWithCount: async () => ({ articles: [], totalCount: 0 }),
   create: async () => {},
   update: async () => {},
   remove: async () => {},
@@ -50,6 +60,91 @@ describe("記事の取得", () => {
     await expect(findArticle(params, repository)).resolves.toBeNull();
     expect(repository.find).toHaveBeenCalledTimes(1);
     expect(repository.find).toHaveBeenCalledWith(params.id);
+  });
+});
+
+describe("記事の一覧取得", () => {
+  it("条件に合致した記事と記事数が取得できる", async () => {
+    const params = {
+      currentPage: 1,
+      perPage: 10,
+      orderBy: { date: OrderByValues.ASC },
+      conditions: { title: "title" },
+    };
+    const storedArticle = {
+      ...baseArticle,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const repository = {
+      ...baseRepository,
+      listWithCount: vi.fn(() =>
+        Promise.resolve({ articles: [storedArticle], totalCount: 1 }),
+      ),
+    };
+
+    const result = await findPaginatedArticles(params, repository);
+
+    expect(result).toEqual({ articles: [storedArticle], totalCount: 1 });
+    expect(repository.listWithCount).toHaveBeenCalledTimes(1);
+    expect(repository.listWithCount).toHaveBeenCalledWith({
+      ...params,
+      orderBy: { date: "asc" },
+    });
+  });
+
+  it("orderByが指定されていない場合、日付の降順で取得する", async () => {
+    const params = {
+      currentPage: 1,
+      perPage: 10,
+      conditions: { title: "title" },
+    };
+    const storedArticle = {
+      ...baseArticle,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const repository = {
+      ...baseRepository,
+      listWithCount: vi.fn(() =>
+        Promise.resolve({ articles: [storedArticle], totalCount: 1 }),
+      ),
+    };
+
+    await findPaginatedArticles(params, repository);
+
+    expect(repository.listWithCount).toHaveBeenCalledTimes(1);
+    expect(repository.listWithCount).toHaveBeenCalledWith({
+      ...params,
+      orderBy: { date: "desc" },
+    });
+  });
+
+  it("conditionsが指定されていない場合、undefinedが渡される", async () => {
+    const params = {
+      currentPage: 1,
+      perPage: 10,
+    };
+    const storedArticle = {
+      ...baseArticle,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const repository = {
+      ...baseRepository,
+      listWithCount: vi.fn(() =>
+        Promise.resolve({ articles: [storedArticle], totalCount: 1 }),
+      ),
+    };
+
+    await findPaginatedArticles(params, repository);
+
+    expect(repository.listWithCount).toHaveBeenCalledTimes(1);
+    expect(repository.listWithCount).toHaveBeenCalledWith({
+      ...params,
+      orderBy: { date: "desc" },
+      conditions: undefined,
+    });
   });
 });
 

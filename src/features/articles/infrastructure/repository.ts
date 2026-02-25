@@ -1,27 +1,31 @@
-import { ArticleParams } from "@/features/articles/model";
+import { Article, ArticleParams } from "@/features/articles/model";
 import prisma from "@/lib/database";
+import { OrderByParams } from "@/utils/orderBy";
 
 async function find(id: number) {
   return await prisma.article.findUnique({
     where: { id },
   });
 }
-async function findManyWithPagination(params: {
+
+export async function listWithCount(params: {
   currentPage: number;
   perPage: number;
-  orderBy?: { [key in keyof ArticleParams]?: "asc" | "desc" };
+  orderBy?: OrderByParams<Article>;
   conditions?: Partial<ArticleParams>;
 }) {
   const { currentPage, perPage, orderBy, conditions } = params;
-  const articles = await prisma.article.findMany({
-    skip: (currentPage - 1) * perPage,
-    take: perPage,
-    orderBy,
-    where: { ...conditions },
-  });
-  const totalCount = await prisma.article.count({
-    where: { ...conditions },
-  });
+  const [articles, totalCount] = await prisma.$transaction([
+    prisma.article.findMany({
+      skip: (currentPage - 1) * perPage,
+      take: perPage,
+      orderBy,
+      where: { ...conditions },
+    }),
+    prisma.article.count({
+      where: { ...conditions },
+    }),
+  ]);
   return { articles, totalCount };
 }
 
@@ -51,7 +55,7 @@ export async function remove(id: number) {
 
 export const articleRepository = {
   find,
-  findManyWithPagination,
+  listWithCount,
   create,
   update,
   remove,

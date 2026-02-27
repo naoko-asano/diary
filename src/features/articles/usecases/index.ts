@@ -4,7 +4,7 @@ import { Article, ArticleParams, validateArticle } from "../model";
 
 import { ArticleRepository } from "./types/repository";
 
-interface updateParams extends ArticleParams {
+interface UpdateParams extends ArticleParams {
   id: number;
 }
 
@@ -45,7 +45,7 @@ export async function createArticle(
 }
 
 export async function updateArticle(
-  params: updateParams,
+  params: UpdateParams,
   repository: ArticleRepository,
 ) {
   const article = await findArticle({ id: params.id }, repository);

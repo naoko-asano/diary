@@ -9,7 +9,7 @@ import {
   validateArticle,
 } from ".";
 
-const article: ArticleParams = {
+const validArticleParams: ArticleParams = {
   title: "Test Article",
   body: "This is a test article.",
   featuredImageUrl: null,
@@ -17,46 +17,58 @@ const article: ArticleParams = {
   status: STATUSES.DRAFT,
 };
 
-describe("記事パラメータが", () => {
-  it("有効な場合、バリデーションが通る", () => {
-    expect(() => validateArticle(article)).not.toThrow();
+const baseArticle: Article = {
+  id: 1,
+  ...validArticleParams,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+describe("記事パラメータが有効か検証するメソッド", () => {
+  it("記事パラメータが有効な場合、バリデーションが通る", () => {
+    const params = { ...validArticleParams };
+    expect(() => validateArticle(params)).not.toThrow();
   });
 
   describe("タイトルが", () => {
     it("空文字の場合、エラーがスローされる", () => {
-      expect(() => validateArticle({ ...article, title: "" })).toThrow(
+      const params = { ...validArticleParams, title: "" };
+      expect(() => validateArticle(params)).toThrow(
         "1文字以上入力してください",
       );
     });
 
     it("スペースのみの場合、エラーがスローされる", () => {
-      expect(() => validateArticle({ ...article, title: " " })).toThrow(
+      const params = { ...validArticleParams, title: " " };
+      expect(() => validateArticle(params)).toThrow(
         "1文字以上入力してください",
       );
     });
 
     it("255文字の場合、バリデーションが通る", () => {
-      expect(() =>
-        validateArticle({ ...article, title: "a".repeat(255) }),
-      ).not.toThrow();
+      const params = { ...validArticleParams, title: "a".repeat(255) };
+      expect(() => validateArticle(params)).not.toThrow();
     });
 
     it("255文字を超える場合、エラーがスローされる", () => {
-      expect(() =>
-        validateArticle({ ...article, title: "a".repeat(256) }),
-      ).toThrow("255文字以内で入力してください");
+      const params = { ...validArticleParams, title: "a".repeat(256) };
+      expect(() => validateArticle(params)).toThrow(
+        "255文字以内で入力してください",
+      );
     });
   });
 
   describe("本文が", () => {
     it("空文字の場合、エラーがスローされる", () => {
-      expect(() => validateArticle({ ...article, body: "" })).toThrow(
+      const params = { ...validArticleParams, body: "" };
+      expect(() => validateArticle(params)).toThrow(
         "1文字以上入力してください",
       );
     });
 
     it("スペースのみの場合、エラーがスローされる", () => {
-      expect(() => validateArticle({ ...article, body: " " })).toThrow(
+      const params = { ...validArticleParams, body: " " };
+      expect(() => validateArticle(params)).toThrow(
         "1文字以上入力してください",
       );
     });
@@ -66,77 +78,60 @@ describe("記事パラメータが", () => {
     it.each([STATUSES.DRAFT, STATUSES.PUBLISHED])(
       "有効な値の場合、バリデーションが通る",
       (status) => {
-        expect(() =>
-          validateArticle({
-            ...article,
-            status: status,
-          }),
-        ).not.toThrow();
+        const params = { ...validArticleParams, status };
+        expect(() => validateArticle(params)).not.toThrow();
       },
     );
   });
 
   describe("アイキャッチ画像が", () => {
     it("nullの場合、バリデーションが通る", () => {
-      expect(() =>
-        validateArticle({ ...article, featuredImageUrl: null }),
-      ).not.toThrow();
+      const params = { ...validArticleParams, featuredImageUrl: null };
+      expect(() => validateArticle(params)).not.toThrow();
     });
 
     it("URL文字列の場合、バリデーションが通る", () => {
-      expect(() =>
-        validateArticle({
-          ...article,
-          featuredImageUrl: "https://example.com/image.jpg",
-        }),
-      ).not.toThrow();
+      const params = {
+        ...validArticleParams,
+        featuredImageUrl: "https://example.com/image.jpg",
+      };
+      expect(() => validateArticle(params)).not.toThrow();
     });
   });
 });
 
-describe("記事が下書き状態かを判定するメソッド", () => {
-  it("公開されている場合", () => {
-    const publishedArticle: Article = {
-      ...article,
-      id: 1,
-      status: STATUSES.PUBLISHED,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    expect(isDraft(publishedArticle)).toBe(false);
-  });
-
-  it("下書き状態の場合", () => {
+describe("記事が下書き状態か判定するメソッド", () => {
+  it("下書きの場合", () => {
     const draftArticle: Article = {
-      ...article,
-      id: 2,
+      ...baseArticle,
       status: STATUSES.DRAFT,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
     expect(isDraft(draftArticle)).toBe(true);
+  });
+
+  it("公開されている場合", () => {
+    const publishedArticle: Article = {
+      ...baseArticle,
+      status: STATUSES.PUBLISHED,
+    };
+    expect(isDraft(publishedArticle)).toBe(false);
   });
 });
 
 describe("アイキャッチ画像のURLは", () => {
   it("指定されたアイキャッチ画像がある場合、そのURLとなる", () => {
     const articleWithImage: Article = {
-      ...article,
-      id: 1,
+      ...baseArticle,
       featuredImageUrl: "/image.jpg",
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
     expect(resolveFeaturedImageUrl(articleWithImage)).toBe("/image.jpg");
   });
 
   it("指定されたアイキャッチ画像がない場合、デフォルトの画像URLとなる", () => {
     const articleWithoutImage: Article = {
-      ...article,
+      ...baseArticle,
       id: 2,
       featuredImageUrl: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
     expect(resolveFeaturedImageUrl(articleWithoutImage)).toBe(
       "/images/default-featured-image.jpg",

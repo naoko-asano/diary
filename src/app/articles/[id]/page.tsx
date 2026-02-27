@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 
 import { ArticleDetails } from "@/features/articles/components/ArticleDetails";
-import { findArticleById } from "@/features/articles/gateway";
+import { articleRepository } from "@/features/articles/infrastructure/repository";
 import { Statuses as ArticleStatuses } from "@/features/articles/model";
+import { findArticle } from "@/features/articles/usecases";
 import { parseIdParam } from "@/utils/parseIdParam";
 
 export default async function Page({
@@ -18,7 +19,7 @@ export default async function Page({
     notFound();
   }
 
-  const article = await findArticleById(id);
+  const article = await findArticle({ id }, articleRepository);
   if (!article || article.status === ArticleStatuses.DRAFT) {
     notFound();
   }

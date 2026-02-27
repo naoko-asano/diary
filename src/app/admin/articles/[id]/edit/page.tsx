@@ -5,8 +5,9 @@ import {
   ActionResultStatuses,
 } from "@/features/actionResult/model";
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
-import { findArticleById, updateArticle } from "@/features/articles/gateway";
+import { articleRepository } from "@/features/articles/infrastructure/repository";
 import { ArticleParams } from "@/features/articles/model";
+import { findArticle, updateArticle } from "@/features/articles/usecases";
 import { createFlashMessageCookieComposed } from "@/features/flashMessage/composition/createFlashMessageCookieComposed";
 import { parseIdParam } from "@/utils/parseIdParam";
 
@@ -26,7 +27,7 @@ export default async function Page(props: Props) {
     notFound();
   }
 
-  const article = await findArticleById(id);
+  const article = await findArticle({ id }, articleRepository);
   if (!article) {
     notFound();
   }
@@ -39,7 +40,7 @@ export default async function Page(props: Props) {
     let actionResult: ActionResult;
 
     try {
-      await updateArticle({ id, ...values });
+      await updateArticle({ id, ...values }, articleRepository);
       actionResult = {
         status: ActionResultStatuses.SUCCESS,
         message: "Article updated successfully!",

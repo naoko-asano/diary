@@ -10,7 +10,7 @@ export interface ArticleRepository {
     orderBy?: OrderByParams<Article>;
     conditions?: Partial<ArticleParams>;
   }) => Promise<{ articles: Article[]; totalCount: number }>;
-  create: (params: ArticleParams) => Promise<void>;
-  update: (params: ArticleParams & { id: number }) => Promise<void>;
-  remove: (id: number) => Promise<void>;
+  create: (params: ArticleParams) => Promise<Article>;
+  update: (params: ArticleParams & { id: number }) => Promise<Article>;
+  remove: (id: number) => Promise<Article>;
 }

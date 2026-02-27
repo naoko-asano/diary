@@ -22,14 +22,16 @@ const validArticleParams = {
 const baseArticle = {
   id: 1,
   ...validArticleParams,
+  createdAt: new Date(),
+  updatedAt: new Date(),
 };
 
 const baseRepository: ArticleRepository = {
   find: async () => null,
   listWithCount: async () => ({ articles: [], totalCount: 0 }),
-  create: async () => {},
-  update: async () => {},
-  remove: async () => {},
+  create: async () => ({ ...baseArticle }),
+  update: async () => ({ ...baseArticle }),
+  remove: async () => ({ ...baseArticle }),
 };
 
 describe("記事の取得", () => {
@@ -73,8 +75,6 @@ describe("記事の一覧取得", () => {
     };
     const storedArticle = {
       ...baseArticle,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
     const repository = {
       ...baseRepository,
@@ -101,8 +101,6 @@ describe("記事の一覧取得", () => {
     };
     const storedArticle = {
       ...baseArticle,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
     const repository = {
       ...baseRepository,
@@ -127,8 +125,6 @@ describe("記事の一覧取得", () => {
     };
     const storedArticle = {
       ...baseArticle,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
     const repository = {
       ...baseRepository,

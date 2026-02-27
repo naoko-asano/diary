@@ -49,7 +49,7 @@ describe("記事の取得", () => {
 
     expect(article).toEqual(storedArticle);
     expect(repository.find).toHaveBeenCalledTimes(1);
-    expect(repository.find).toHaveBeenCalledWith(params.id);
+    expect(repository.find).toHaveBeenCalledWith(1);
   });
 
   it("記事が存在しない場合、nullを返す", async () => {
@@ -61,7 +61,7 @@ describe("記事の取得", () => {
 
     await expect(findArticle(params, repository)).resolves.toBeNull();
     expect(repository.find).toHaveBeenCalledTimes(1);
-    expect(repository.find).toHaveBeenCalledWith(params.id);
+    expect(repository.find).toHaveBeenCalledWith(1);
   });
 });
 
@@ -252,7 +252,7 @@ describe("記事の削除", () => {
     await deleteArticle(params, repository);
 
     expect(repository.remove).toHaveBeenCalledTimes(1);
-    expect(repository.remove).toHaveBeenCalledWith(params.id);
+    expect(repository.remove).toHaveBeenCalledWith(1);
   });
 
   it("記事が存在しない場合、エラーをスローする", async () => {

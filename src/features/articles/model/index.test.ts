@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   Article,
   ArticleParams,
+  isDraft,
   resolveFeaturedImageUrl,
   Statuses,
   validateArticle,
@@ -90,6 +91,30 @@ describe("記事パラメータが", () => {
         }),
       ).not.toThrow();
     });
+  });
+});
+
+describe("記事が下書き状態かを判定するメソッド", () => {
+  it("公開されている場合", () => {
+    const publishedArticle: Article = {
+      ...article,
+      id: 1,
+      status: Statuses.PUBLISHED,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    expect(isDraft(publishedArticle)).toBe(false);
+  });
+
+  it("下書き状態の場合", () => {
+    const draftArticle: Article = {
+      ...article,
+      id: 2,
+      status: Statuses.DRAFT,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    expect(isDraft(draftArticle)).toBe(true);
   });
 });
 

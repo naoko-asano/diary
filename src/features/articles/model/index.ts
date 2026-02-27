@@ -33,6 +33,10 @@ export function validateArticle(params: ArticleParams) {
   }
 }
 
+export function isDraft(article: Article): boolean {
+  return article.status === Statuses.DRAFT;
+}
+
 export function resolveFeaturedImageUrl(article: Article): string {
   return article.featuredImageUrl || "/images/default-featured-image.jpg";
 }

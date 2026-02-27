@@ -2,10 +2,7 @@ import { notFound } from "next/navigation";
 
 import { ArticleDetails } from "@/features/articles/components/ArticleDetails";
 import { articleRepository } from "@/features/articles/infrastructure/repository";
-import {
-  isDraft,
-  Statuses as ArticleStatuses,
-} from "@/features/articles/model";
+import { isDraft } from "@/features/articles/model";
 import { findArticle } from "@/features/articles/usecases";
 import { parseIdParam } from "@/utils/parseIdParam";
 

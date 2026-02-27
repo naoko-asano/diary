@@ -25,6 +25,8 @@ export const articleScheme = z.object({
   featuredImageUrl: z.string().nullable(),
 });
 
+const defaultFeaturedImageUrl = "/images/default-featured-image.jpg";
+
 export function validateArticle(params: ArticleParams) {
   try {
     articleScheme.parse(params);
@@ -38,5 +40,5 @@ export function isDraft(article: Article): boolean {
 }
 
 export function resolveFeaturedImageUrl(article: Article): string {
-  return article.featuredImageUrl || "/images/default-featured-image.jpg";
+  return article.featuredImageUrl || defaultFeaturedImageUrl;
 }

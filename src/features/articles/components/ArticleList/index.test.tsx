@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { Statuses as ArticleStatuses } from "@/features/articles/model";
+import { STATUSES as ArticleStatuses } from "@/features/articles/model";
 import { FlashMessageTypes } from "@/features/flashMessage/model";
 import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 import { render, screen, userEvent, waitFor, within } from "@testing/utils";

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { Statuses as ArticleStatuses } from "@/features/articles/model";
+import { STATUSES as ArticleStatuses } from "@/features/articles/model";
 import { render, screen } from "@testing/utils";
 
 import { ArticleCard } from ".";

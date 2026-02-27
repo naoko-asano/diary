@@ -3,7 +3,7 @@ import { Center, Grid, GridCol } from "@mantine/core";
 import { Pagination } from "@/components/Pagination";
 import { ArticleCard } from "@/features/articles/components/ArticleCard";
 import { articleRepository } from "@/features/articles/infrastructure/repository";
-import { Statuses as ArticleStatuses } from "@/features/articles/model";
+import { STATUSES as ArticleStatuses } from "@/features/articles/model";
 import { findPaginatedArticles } from "@/features/articles/usecases";
 import { computeTotalPages } from "@/utils/page";
 import { parsePageParam } from "@/utils/parsePageParam";

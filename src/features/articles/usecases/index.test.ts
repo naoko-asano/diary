@@ -1,4 +1,4 @@
-import { Statuses } from "@/features/articles/model";
+import { STATUSES } from "@/features/articles/model";
 import { OrderByValues } from "@/utils/orderBy";
 
 import { ArticleRepository } from "./types/repository";
@@ -15,7 +15,7 @@ const validArticleParams = {
   title: "title",
   body: "body",
   date: new Date(),
-  status: Statuses.DRAFT,
+  status: STATUSES.DRAFT,
   featuredImageUrl: null,
 };
 

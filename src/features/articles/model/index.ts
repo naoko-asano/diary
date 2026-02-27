@@ -8,7 +8,7 @@ export type Article = ArticleParams & {
 
 export type ArticleParams = z.infer<typeof articleScheme>;
 
-export const Statuses = {
+export const STATUSES = {
   DRAFT: "DRAFT",
   PUBLISHED: "PUBLISHED",
 } as const;
@@ -21,11 +21,11 @@ export const articleScheme = z.object({
     .max(255, { message: "255文字以内で入力してください" }),
   body: z.string().trim().min(1, { message: "1文字以上入力してください" }),
   date: z.coerce.date("日付を選択してください"),
-  status: z.enum(Statuses),
+  status: z.enum(STATUSES),
   featuredImageUrl: z.string().nullable(),
 });
 
-const defaultFeaturedImageUrl = "/images/default-featured-image.jpg";
+const DEFAULT_FEATURED_IMAGE_URL = "/images/default-featured-image.jpg";
 
 export function validateArticle(params: ArticleParams) {
   try {
@@ -36,9 +36,9 @@ export function validateArticle(params: ArticleParams) {
 }
 
 export function isDraft(article: Article): boolean {
-  return article.status === Statuses.DRAFT;
+  return article.status === STATUSES.DRAFT;
 }
 
 export function resolveFeaturedImageUrl(article: Article): string {
-  return article.featuredImageUrl || defaultFeaturedImageUrl;
+  return article.featuredImageUrl || DEFAULT_FEATURED_IMAGE_URL;
 }

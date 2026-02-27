@@ -5,7 +5,7 @@ import {
   ArticleParams,
   isDraft,
   resolveFeaturedImageUrl,
-  Statuses,
+  STATUSES,
   validateArticle,
 } from ".";
 
@@ -14,7 +14,7 @@ const article: ArticleParams = {
   body: "This is a test article.",
   featuredImageUrl: null,
   date: new Date("2025-01-01"),
-  status: Statuses.DRAFT,
+  status: STATUSES.DRAFT,
 };
 
 describe("記事パラメータが", () => {
@@ -63,7 +63,7 @@ describe("記事パラメータが", () => {
   });
 
   describe("ステータスが", () => {
-    it.each([Statuses.DRAFT, Statuses.PUBLISHED])(
+    it.each([STATUSES.DRAFT, STATUSES.PUBLISHED])(
       "有効な値の場合、バリデーションが通る",
       (status) => {
         expect(() =>
@@ -99,7 +99,7 @@ describe("記事が下書き状態かを判定するメソッド", () => {
     const publishedArticle: Article = {
       ...article,
       id: 1,
-      status: Statuses.PUBLISHED,
+      status: STATUSES.PUBLISHED,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -110,7 +110,7 @@ describe("記事が下書き状態かを判定するメソッド", () => {
     const draftArticle: Article = {
       ...article,
       id: 2,
-      status: Statuses.DRAFT,
+      status: STATUSES.DRAFT,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

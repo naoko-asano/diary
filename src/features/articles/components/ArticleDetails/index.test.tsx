@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { STATUSES as ArticleStatuses } from "@/features/articles/model";
-import { render, screen } from "@testing/utils";
+import { render, screen, within } from "@testing/utils";
 
 import { ArticleDetails } from ".";
 
@@ -35,7 +35,23 @@ describe("ArticleDetails", () => {
   });
 
   it("アイキャッチ画像が設定されていない場合、画像が表示されない", () => {
-    render(<ArticleDetails article={article} />);
+    const articleWithoutImage = {
+      ...article,
+      featuredImageUrl: null,
+    };
+    render(<ArticleDetails article={articleWithoutImage} />);
     expect(screen.queryByRole("img")).toBeNull();
+  });
+
+  it("Markdown形式の本文が正しく表示される", () => {
+    const articleWithMarkdown = {
+      ...article,
+      body: "# Heading\n\n- list item",
+    };
+    render(<ArticleDetails article={articleWithMarkdown} />);
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Heading" }),
+    ).toBeInTheDocument();
+    within(screen.getByRole("listitem")).getByText("list item");
   });
 });

@@ -40,6 +40,15 @@ describe("ArticleCard", () => {
     );
   });
 
+  it("アイキャッチ画像がない記事の場合、デフォルトの画像が表示される", () => {
+    const articleWithoutImage = { ...article, featuredImageUrl: null };
+    render(<ArticleCard article={articleWithoutImage} />);
+    expect(screen.getByRole("img", { name: /example title/i })).toHaveAttribute(
+      "src",
+      expect.stringContaining("default-featured-image.jpg"),
+    );
+  });
+
   it("imagePropsでloading属性を指定できる", () => {
     render(<ArticleCard article={article} imageProps={{ loading: "eager" }} />);
     expect(screen.getByRole("img", { name: /example title/i })).toHaveAttribute(

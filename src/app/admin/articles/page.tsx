@@ -41,7 +41,7 @@ export default async function Page(props: Props) {
     <>
       {hasFlashMessage && <FlashMessageNotifier />}
       <Box style={{ flex: 1 }}>
-        <ArticleList articles={articles} onDeleteAction={handleDelete} />
+        <ArticleList articles={articles} deleteAction={handleDelete} />
       </Box>
       <Box ta="right">
         <PlusButton

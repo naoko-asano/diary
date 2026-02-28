@@ -31,6 +31,22 @@ describe("記事パラメータが有効か検証するメソッド", () => {
   });
 
   describe("タイトルが", () => {
+    it.each([
+      ["number", 123],
+      ["null", null],
+      ["undefined", undefined],
+      ["boolean", true],
+      ["object", {}],
+      ["array", []],
+    ])("%s型の場合、エラーがスローされる", (_typeName, invalidTitle) => {
+      expect(() =>
+        validateArticle({
+          ...validArticleParams,
+          title: invalidTitle as unknown as string,
+        }),
+      ).toThrow();
+    });
+
     it("空文字の場合、エラーがスローされる", () => {
       const params = { ...validArticleParams, title: "" };
       expect(() => validateArticle(params)).toThrow(
@@ -59,6 +75,22 @@ describe("記事パラメータが有効か検証するメソッド", () => {
   });
 
   describe("本文が", () => {
+    it.each([
+      ["number", 123],
+      ["null", null],
+      ["undefined", undefined],
+      ["boolean", true],
+      ["object", {}],
+      ["array", []],
+    ])("%s型の場合、エラーがスローされる", (_typeName, invalidBody) => {
+      expect(() =>
+        validateArticle({
+          ...validArticleParams,
+          body: invalidBody as unknown as string,
+        }),
+      ).toThrow();
+    });
+
     it("空文字の場合、エラーがスローされる", () => {
       const params = { ...validArticleParams, body: "" };
       expect(() => validateArticle(params)).toThrow(
@@ -74,6 +106,42 @@ describe("記事パラメータが有効か検証するメソッド", () => {
     });
   });
 
+  describe("日付が", () => {
+    it.each([
+      ["undefined", undefined],
+      ["object", {}],
+      ["array", []],
+    ])(
+      "日付に変換できない%s型の場合、エラーがスローされる",
+      (_typeName, invalidDate) => {
+        expect(() =>
+          validateArticle({
+            ...validArticleParams,
+            date: invalidDate as unknown as Date,
+          }),
+        ).toThrow("日付を選択してください");
+      },
+    );
+
+    it.each([
+      ["Date object", new Date("2025-01-01")],
+      ["string", "2025-01-01"],
+      ["number (timestamp)", new Date("2025-01-01").getTime()],
+      ["null", null],
+      ["boolean (true)", true],
+      ["boolean (false)", false],
+    ])(
+      "日付に変換できる%s型の場合、バリデーションが通る",
+      (_typeName, validDate) => {
+        const params = {
+          ...validArticleParams,
+          date: validDate as unknown as Date,
+        };
+        expect(() => validateArticle(params)).not.toThrow();
+      },
+    );
+  });
+
   describe("ステータスが", () => {
     it.each([STATUSES.DRAFT, STATUSES.PUBLISHED])(
       "有効な値の場合、バリデーションが通る",
@@ -82,6 +150,13 @@ describe("記事パラメータが有効か検証するメソッド", () => {
         expect(() => validateArticle(params)).not.toThrow();
       },
     );
+    it("無効な値の場合、エラーがスローされる", () => {
+      const params = {
+        ...validArticleParams,
+        status: "INVALID_STATUS" as (typeof STATUSES)[keyof typeof STATUSES],
+      };
+      expect(() => validateArticle(params)).toThrow();
+    });
   });
 
   describe("アイキャッチ画像が", () => {
@@ -96,6 +171,20 @@ describe("記事パラメータが有効か検証するメソッド", () => {
         featuredImageUrl: "https://example.com/image.jpg",
       };
       expect(() => validateArticle(params)).not.toThrow();
+    });
+
+    it.each([
+      ["number", 123],
+      ["undefined", undefined],
+      ["boolean", true],
+      ["object", {}],
+      ["array", []],
+    ])("%s型の場合、エラーがスローされる", (_typeName, invalidUrl) => {
+      const params = {
+        ...validArticleParams,
+        featuredImageUrl: invalidUrl as unknown as string,
+      };
+      expect(() => validateArticle(params)).toThrow();
     });
   });
 });

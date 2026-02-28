@@ -16,7 +16,7 @@ const article = {
   updatedAt: new Date(),
 };
 
-describe("ArticleCard", () => {
+describe("記事カードコンポーネント", () => {
   it("タイトルが正しく表示される", () => {
     render(<ArticleCard article={article} />);
     expect(screen.getByText("example title")).toBeVisible();

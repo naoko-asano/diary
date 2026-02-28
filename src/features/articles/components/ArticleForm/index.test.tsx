@@ -38,7 +38,7 @@ const article = {
   updatedAt: new Date(),
 };
 
-describe("ArticleForm", () => {
+describe("記事フォームコンポーネント", () => {
   it("フォームの要素が正しく表示される", () => {
     render(<ArticleForm onSubmitAction={vi.fn()} />);
 

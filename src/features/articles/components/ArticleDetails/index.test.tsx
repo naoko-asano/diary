@@ -16,7 +16,7 @@ const article = {
   updatedAt: new Date(),
 };
 
-describe("ArticleDetails", () => {
+describe("記事詳細コンポーネント", () => {
   it("タイトルと日付、本文が正しく表示される", () => {
     render(<ArticleDetails article={article} />);
     expect(screen.getByText("example title")).toBeInTheDocument();

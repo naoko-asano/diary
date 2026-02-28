@@ -1,4 +1,4 @@
-import { OrderByParams, OrderByValues } from "@/utils/orderBy";
+import { ORDER_BY_VALUES, OrderByParams } from "@/utils/orderBy";
 
 import { Article, ArticleParams, validateArticle } from "../model";
 
@@ -26,7 +26,7 @@ export async function findPaginatedArticles(
 ) {
   const {
     currentPage = 1,
-    orderBy = { date: OrderByValues.DESC },
+    orderBy = { date: ORDER_BY_VALUES.DESC },
     ...otherParams
   } = params;
   return await repository.listWithCount({

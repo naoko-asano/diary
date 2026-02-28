@@ -1,5 +1,5 @@
 import { STATUSES } from "@/features/articles/model";
-import { OrderByValues } from "@/utils/orderBy";
+import { ORDER_BY_VALUES } from "@/utils/orderBy";
 
 import { ArticleRepository } from "./types/repository";
 
@@ -70,7 +70,7 @@ describe("記事の一覧取得", () => {
     const params = {
       currentPage: 1,
       perPage: 10,
-      orderBy: { date: OrderByValues.ASC },
+      orderBy: { date: ORDER_BY_VALUES.ASC },
       conditions: { title: "title" },
     };
     const storedArticle = {

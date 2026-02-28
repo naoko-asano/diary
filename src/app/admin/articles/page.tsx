@@ -24,9 +24,9 @@ const ARTICLES_PER_PAGE = 15;
 
 export default async function Page(props: Props) {
   const searchParams = await props.searchParams;
-  const page = parsePageParam(searchParams.page);
+  const currentPage = parsePageParam(searchParams.page);
   const { articles, totalCount } = await findPaginatedArticles(
-    { currentPage: page, perPage: ARTICLES_PER_PAGE },
+    { currentPage, perPage: ARTICLES_PER_PAGE },
     articleRepository,
   );
   const hasFlashMessage = !!(await flashMessageCookie());
@@ -53,7 +53,7 @@ export default async function Page(props: Props) {
       </Box>
       <Center mt="auto">
         <Pagination
-          activePage={page}
+          activePage={currentPage}
           total={computeTotalPages({ totalCount, perPage: ARTICLES_PER_PAGE })}
         />
       </Center>

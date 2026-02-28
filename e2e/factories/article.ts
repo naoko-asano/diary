@@ -1,6 +1,6 @@
 import {
   ArticleParams,
-  Statuses as ArticleStatuses,
+  STATUSES as ArticleStatuses,
 } from "@/features/articles/model";
 import prisma from "@/lib/database";
 

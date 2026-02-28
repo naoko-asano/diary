@@ -1,18 +1,14 @@
 import { z } from "zod";
-export interface Article {
-  title: string;
-  body: string;
-  date: Date;
-  status: (typeof Statuses)[keyof typeof Statuses];
-  featuredImageUrl: string | null;
+
+export type Article = ArticleParams & {
   id: number;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 export type ArticleParams = z.infer<typeof articleScheme>;
 
-export const Statuses = {
+export const STATUSES = {
   DRAFT: "DRAFT",
   PUBLISHED: "PUBLISHED",
 } as const;
@@ -25,9 +21,11 @@ export const articleScheme = z.object({
     .max(255, { message: "255文字以内で入力してください" }),
   body: z.string().trim().min(1, { message: "1文字以上入力してください" }),
   date: z.coerce.date("日付を選択してください"),
-  status: z.enum(Statuses),
+  status: z.enum(STATUSES),
   featuredImageUrl: z.string().nullable(),
 });
+
+const DEFAULT_FEATURED_IMAGE_URL = "/images/default-featured-image.jpg";
 
 export function validateArticle(params: ArticleParams) {
   try {
@@ -37,6 +35,10 @@ export function validateArticle(params: ArticleParams) {
   }
 }
 
-export function resolveFeaturedImage(article: Article): string {
-  return article.featuredImageUrl || "/images/default-featured-image.jpg";
+export function isDraft(article: Article): boolean {
+  return article.status === STATUSES.DRAFT;
+}
+
+export function resolveFeaturedImageUrl(article: Article): string {
+  return article.featuredImageUrl || DEFAULT_FEATURED_IMAGE_URL;
 }

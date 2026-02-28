@@ -26,7 +26,7 @@ import {
   Article,
   ArticleParams,
   articleScheme,
-  Statuses as ArticleStatuses,
+  STATUSES as ArticleStatuses,
 } from "@/features/articles/model";
 import { useFlashMessage } from "@/features/flashMessage/hooks/useFlashMessage";
 import { uploadImage } from "@/utils/image";

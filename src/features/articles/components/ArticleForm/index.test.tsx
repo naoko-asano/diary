@@ -2,7 +2,7 @@ import { notifications } from "@mantine/notifications";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ActionResultStatuses } from "@/features/actionResult/model";
-import { Statuses as ArticleStatuses } from "@/features/articles/model";
+import { STATUSES as ArticleStatuses } from "@/features/articles/model";
 import { FlashMessageTypes } from "@/features/flashMessage/model";
 import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 import { uploadImage } from "@/utils/image";

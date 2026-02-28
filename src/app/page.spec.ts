@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { Statuses as ArticleStatuses } from "@/features/articles/model";
+import { STATUSES as ArticleStatuses } from "@/features/articles/model";
 import { resetArticles, seedArticles } from "@e2e/factories/article";
 
 test.beforeEach(async () => {

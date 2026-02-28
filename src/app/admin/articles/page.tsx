@@ -4,10 +4,14 @@ import { revalidatePath } from "next/cache";
 import { Pagination } from "@/components/Pagination";
 import { PlusButton } from "@/components/PlusButton";
 import { ArticleList } from "@/features/articles/components/ArticleList";
-import { deleteArticle } from "@/features/articles/gateway";
-import { getPaginatedArticles } from "@/features/articles/gateway";
+import { articleRepository } from "@/features/articles/infrastructure/repository";
+import {
+  deleteArticle,
+  findPaginatedArticles,
+} from "@/features/articles/usecases";
 import { FlashMessageNotifier } from "@/features/flashMessage/components/FlashMessageNotifier";
 import { flashMessageCookie } from "@/features/flashMessage/gateway/flashMessageCookie";
+import { computeTotalPages } from "@/utils/page";
 import { parsePageParam } from "@/utils/parsePageParam";
 
 type Props = {
@@ -16,15 +20,20 @@ type Props = {
   }>;
 };
 
+const ARTICLES_PER_PAGE = 15;
+
 export default async function Page(props: Props) {
   const searchParams = await props.searchParams;
-  const page = parsePageParam(searchParams.page);
-  const { articles, totalPage } = await getPaginatedArticles({ page });
+  const currentPage = parsePageParam(searchParams.page);
+  const { articles, totalCount } = await findPaginatedArticles(
+    { currentPage, perPage: ARTICLES_PER_PAGE },
+    articleRepository,
+  );
   const hasFlashMessage = !!(await flashMessageCookie());
 
   async function handleDelete(id: number) {
     "use server";
-    await deleteArticle(id);
+    await deleteArticle({ id }, articleRepository);
     revalidatePath("/admin/articles");
   }
 
@@ -43,7 +52,10 @@ export default async function Page(props: Props) {
         />
       </Box>
       <Center mt="auto">
-        <Pagination activePage={page} total={totalPage} />
+        <Pagination
+          activePage={currentPage}
+          total={computeTotalPages({ totalCount, perPage: ARTICLES_PER_PAGE })}
+        />
       </Center>
     </>
   );

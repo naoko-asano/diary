@@ -5,8 +5,9 @@ import {
   ActionResultStatuses,
 } from "@/features/actionResult/model";
 import { ArticleForm } from "@/features/articles/components/ArticleForm";
-import { createArticle } from "@/features/articles/gateway";
+import { articleRepository } from "@/features/articles/infrastructure/repository";
 import { ArticleParams } from "@/features/articles/model";
+import { createArticle } from "@/features/articles/usecases";
 import { createFlashMessageCookieComposed } from "@/features/flashMessage/composition/createFlashMessageCookieComposed";
 
 export default function Page() {
@@ -18,7 +19,7 @@ export default function Page() {
     let actionResult: ActionResult;
 
     try {
-      await createArticle(values);
+      await createArticle({ ...values }, articleRepository);
       actionResult = {
         status: ActionResultStatuses.SUCCESS,
         message: "Article created successfully!",

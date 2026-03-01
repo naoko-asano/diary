@@ -6,9 +6,10 @@ import {
 } from "@/features/actionResult/model";
 import { showFlashMessage } from "@/features/flashMessage/ui/showFlashMessage";
 
-export function useFlashMessage(actionResult: ActionResult) {
+export function useFlashMessage(actionResult: ActionResult | null) {
   useEffect(() => {
-    if (actionResult.status === ActionResultStatuses.IDLE) return;
+    if (!actionResult || actionResult.status === ActionResultStatuses.IDLE)
+      return;
 
     showFlashMessage({
       type: actionResult.status,

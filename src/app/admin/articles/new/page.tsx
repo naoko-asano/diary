@@ -41,5 +41,5 @@ export default function Page() {
     }
     return actionResult;
   };
-  return <ArticleForm onSubmitAction={handleSubmit} />;
+  return <ArticleForm submitAction={handleSubmit} />;
 }

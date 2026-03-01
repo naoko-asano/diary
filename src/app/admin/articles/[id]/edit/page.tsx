@@ -62,5 +62,5 @@ export default async function Page(props: Props) {
     }
     return actionResult;
   };
-  return <ArticleForm article={article} onSubmitAction={handleSubmit} />;
+  return <ArticleForm article={article} submitAction={handleSubmit} />;
 }

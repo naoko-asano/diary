@@ -81,7 +81,7 @@ describe("記事フォームコンポーネント", () => {
     vi.useRealTimers();
   });
 
-  it("titleにバリデーションエラーがある場合、エラーメッセージが表示され、submitActionで渡された関数は呼ばれない", async () => {
+  it("タイトルにバリデーションエラーがある場合、エラーメッセージが表示され、サブミットは実行されない", async () => {
     const submitAction = baseSubmitAction;
     render(<ArticleForm submitAction={submitAction} />);
 
@@ -99,7 +99,7 @@ describe("記事フォームコンポーネント", () => {
     expect(submitAction).not.toHaveBeenCalled();
   });
 
-  it("bodyにバリデーションエラーがある場合、エラーメッセージが表示され、submitActionで渡された関数は呼ばれない", async () => {
+  it("本文にバリデーションエラーがある場合、エラーメッセージが表示され、サブミットは実行されない", async () => {
     const submitAction = baseSubmitAction;
     render(<ArticleForm submitAction={submitAction} />);
 

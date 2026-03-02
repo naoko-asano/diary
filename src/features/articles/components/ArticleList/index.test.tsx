@@ -110,6 +110,7 @@ describe("記事一覧コンポーネント", () => {
   describe("削除ボタンを押下した場合", () => {
     it("表示された確認メッセージを承諾すると、削除アクションが実行され、成功メッセージが表示される", async () => {
       const deleteAction = baseDeleteAction;
+
       render(
         <ArticleList
           articles={[

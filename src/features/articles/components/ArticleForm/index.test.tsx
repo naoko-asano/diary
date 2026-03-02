@@ -81,6 +81,51 @@ describe("記事フォームコンポーネント", () => {
     vi.useRealTimers();
   });
 
+  it("titleにバリデーションエラーがある場合、エラーメッセージが表示され、submitActionで渡された関数は呼ばれない", async () => {
+    const submitAction = baseSubmitAction;
+    render(<ArticleForm submitAction={submitAction} />);
+
+    const titleInput = screen.getByLabelText("Title *");
+    const bodyEditor = screen.getByTestId("body-editor");
+    const bodyInput = bodyEditor.querySelector(
+      "textarea",
+    ) as HTMLTextAreaElement;
+
+    await userEvent.type(titleInput, " ");
+    await userEvent.type(bodyInput, "Test Body");
+    await userEvent.click(screen.getByRole("button", { name: "Submit" }));
+
+    expect(screen.getByText("1文字以上入力してください")).toBeInTheDocument();
+    expect(submitAction).not.toHaveBeenCalled();
+  });
+
+  it("bodyにバリデーションエラーがある場合、エラーメッセージが表示され、submitActionで渡された関数は呼ばれない", async () => {
+    const submitAction = baseSubmitAction;
+    render(<ArticleForm submitAction={submitAction} />);
+
+    const titleInput = screen.getByLabelText("Title *");
+    const bodyEditor = screen.getByTestId("body-editor");
+    const bodyInput = bodyEditor.querySelector(
+      "textarea",
+    ) as HTMLTextAreaElement;
+
+    await userEvent.type(titleInput, "Test Title");
+    await userEvent.type(bodyInput, " ");
+    await userEvent.click(screen.getByRole("button", { name: "Submit" }));
+
+    expect(screen.getByText("1文字以上入力してください")).toBeInTheDocument();
+    expect(submitAction).not.toHaveBeenCalled();
+  });
+
+  it("戻るボタンのhref属性が記事一覧ページである", () => {
+    render(<ArticleForm submitAction={baseSubmitAction} />);
+
+    const backButton = screen.getByRole("link", {
+      name: "Back to Article List",
+    });
+    expect(backButton).toHaveAttribute("href", "/admin/articles");
+  });
+
   describe("サブミットボタン押下時", () => {
     it("アイキャッチ画像が登録された場合、画像アップロードとサブミットが実行される", async () => {
       vi.useFakeTimers({ toFake: ["Date"] });
@@ -250,50 +295,5 @@ describe("記事フォームコンポーネント", () => {
       );
       expect(submitButton).toBeEnabled();
     });
-  });
-
-  it("titleにバリデーションエラーがある場合、エラーメッセージが表示され、submitActionで渡された関数は呼ばれない", async () => {
-    const submitAction = baseSubmitAction;
-    render(<ArticleForm submitAction={submitAction} />);
-
-    const titleInput = screen.getByLabelText("Title *");
-    const bodyEditor = screen.getByTestId("body-editor");
-    const bodyInput = bodyEditor.querySelector(
-      "textarea",
-    ) as HTMLTextAreaElement;
-
-    await userEvent.type(titleInput, " ");
-    await userEvent.type(bodyInput, "Test Body");
-    await userEvent.click(screen.getByRole("button", { name: "Submit" }));
-
-    expect(screen.getByText("1文字以上入力してください")).toBeInTheDocument();
-    expect(submitAction).not.toHaveBeenCalled();
-  });
-
-  it("bodyにバリデーションエラーがある場合、エラーメッセージが表示され、submitActionで渡された関数は呼ばれない", async () => {
-    const submitAction = baseSubmitAction;
-    render(<ArticleForm submitAction={submitAction} />);
-
-    const titleInput = screen.getByLabelText("Title *");
-    const bodyEditor = screen.getByTestId("body-editor");
-    const bodyInput = bodyEditor.querySelector(
-      "textarea",
-    ) as HTMLTextAreaElement;
-
-    await userEvent.type(titleInput, "Test Title");
-    await userEvent.type(bodyInput, " ");
-    await userEvent.click(screen.getByRole("button", { name: "Submit" }));
-
-    expect(screen.getByText("1文字以上入力してください")).toBeInTheDocument();
-    expect(submitAction).not.toHaveBeenCalled();
-  });
-
-  it("戻るボタンのhref属性が記事一覧ページである", () => {
-    render(<ArticleForm submitAction={baseSubmitAction} />);
-
-    const backButton = screen.getByRole("link", {
-      name: "Back to Article List",
-    });
-    expect(backButton).toHaveAttribute("href", "/admin/articles");
   });
 });

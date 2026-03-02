@@ -44,7 +44,7 @@ export function ArticleList({ articles, deleteAction }: Props) {
     articleId: null,
   });
 
-  const handleDelete = async (articleId: number | null) => {
+  const remove = async (articleId: number | null) => {
     if (!articleId) return;
     try {
       await deleteAction(articleId);
@@ -128,7 +128,7 @@ export function ArticleList({ articles, deleteAction }: Props) {
       </Table>
       <ConfirmationModal
         isOpened={deleteModalOpened.opened}
-        onAccept={() => handleDelete(deleteModalOpened.articleId)}
+        onAccept={() => remove(deleteModalOpened.articleId)}
         onClose={() => setDeleteModalOpened({ opened: false, articleId: null })}
         body={"記事を削除します。\nこの操作は元に戻せません。よろしいですか？"}
       />

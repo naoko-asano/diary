@@ -31,9 +31,9 @@ export default async function Page(props: Props) {
   );
   const hasFlashMessage = !!(await flashMessageCookie());
 
-  async function handleDelete(id: number) {
+  async function remove(articleId: number) {
     "use server";
-    await deleteArticle({ id }, articleRepository);
+    await deleteArticle({ id: articleId }, articleRepository);
     revalidatePath("/admin/articles");
   }
 
@@ -41,7 +41,7 @@ export default async function Page(props: Props) {
     <>
       {hasFlashMessage && <FlashMessageNotifier />}
       <Box style={{ flex: 1 }}>
-        <ArticleList articles={articles} deleteAction={handleDelete} />
+        <ArticleList articles={articles} deleteAction={remove} />
       </Box>
       <Box ta="right">
         <PlusButton

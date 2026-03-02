@@ -32,10 +32,7 @@ export default async function Page(props: Props) {
     notFound();
   }
 
-  const handleSubmit = async (
-    _prevResult: ActionResult,
-    values: ArticleParams,
-  ) => {
+  const submit = async (_prevResult: ActionResult, values: ArticleParams) => {
     "use server";
     let actionResult: ActionResult;
 
@@ -62,5 +59,5 @@ export default async function Page(props: Props) {
     }
     return actionResult;
   };
-  return <ArticleForm article={article} submitAction={handleSubmit} />;
+  return <ArticleForm article={article} submitAction={submit} />;
 }

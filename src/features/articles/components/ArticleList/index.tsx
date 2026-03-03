@@ -22,16 +22,16 @@ import {
 import { useFlashMessage } from "@/features/flashMessage/hooks/useFlashMessage";
 import { Article } from "@/generated/prisma";
 import { formatDate } from "@/utils/date";
-import { capitalize } from "@/utils/string";
+import { toSentenceCase } from "@/utils/string";
 
 import styles from "./styles.module.css";
 
 type Props = {
   articles: Article[];
-  onDeleteAction: (id: number) => Promise<void>;
+  deleteAction: (id: number) => Promise<void>;
 };
 
-export function ArticleList({ articles, onDeleteAction }: Props) {
+export function ArticleList({ articles, deleteAction }: Props) {
   const [deleteResult, setDeleteResult] = useState<ActionResult>({
     status: ActionResultStatuses.IDLE,
   });
@@ -44,10 +44,10 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
     articleId: null,
   });
 
-  const handleDelete = async () => {
-    if (!deleteModalOpened.articleId) return;
+  const remove = async (articleId: number | null) => {
+    if (!articleId) return;
     try {
-      await onDeleteAction(deleteModalOpened.articleId);
+      await deleteAction(articleId);
       setDeleteResult({
         status: ActionResultStatuses.SUCCESS,
         message: "Article deleted successfully!",
@@ -101,7 +101,7 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
                 </Text>
               </TableTd>
               <TableTd>
-                <Text size="sm">{capitalize(article.status)}</Text>
+                <Text size="sm">{toSentenceCase(article.status)}</Text>
               </TableTd>
               <TableTd
                 style={{ display: "flex", gap: "var(--mantine-spacing-xs)" }}
@@ -128,7 +128,7 @@ export function ArticleList({ articles, onDeleteAction }: Props) {
       </Table>
       <ConfirmationModal
         isOpened={deleteModalOpened.opened}
-        onAccept={handleDelete}
+        onAccept={() => remove(deleteModalOpened.articleId)}
         onClose={() => setDeleteModalOpened({ opened: false, articleId: null })}
         body={"記事を削除します。\nこの操作は元に戻せません。よろしいですか？"}
       />

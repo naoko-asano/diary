@@ -19,7 +19,6 @@ import { BackButton } from "@/components/BackButton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import {
   ActionResult,
-  ActionResultStatus,
   ActionResultStatuses,
 } from "@/features/actionResult/model";
 import {
@@ -30,38 +29,43 @@ import {
 } from "@/features/articles/model";
 import { useFlashMessage } from "@/features/flashMessage/hooks/useFlashMessage";
 import { uploadImage } from "@/utils/image";
+import { toSentenceCase } from "@/utils/string";
 
 import "./styles.css";
 
 interface Props {
   article?: Article;
-  onSubmitAction: (
+  submitAction: (
     _prevResult: ActionResult,
     values: ArticleParams,
   ) => Promise<ActionResult>;
 }
 
-type UploadError = ActionResult & {
-  status: Omit<ActionResultStatus, typeof ActionResultStatuses.SUCCESS>;
-};
+type UploadError = {
+  status: typeof ActionResultStatuses.ERROR;
+  message: string;
+} | null;
 
 const statusOptions = [
-  { value: ArticleStatuses.DRAFT, label: "Draft" },
-  { value: ArticleStatuses.PUBLISHED, label: "Publish" },
+  {
+    value: ArticleStatuses.DRAFT,
+    label: toSentenceCase(ArticleStatuses.DRAFT),
+  },
+  {
+    value: ArticleStatuses.PUBLISHED,
+    label: "Publish",
+  },
 ];
 
 export function ArticleForm(props: Props) {
-  const { article, onSubmitAction } = props;
+  const { article, submitAction } = props;
   const [featuredImage, setFeaturedImage] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<UploadError>({
+  const [uploadError, setUploadError] = useState<UploadError>(null);
+  const [submitResult, formAction, pending] = useActionState(submitAction, {
     status: ActionResultStatuses.IDLE,
   });
-
-  const [actionResult, formAction, isPending] = useActionState(onSubmitAction, {
-    status: ActionResultStatuses.IDLE,
-  });
-  const canSubmit = !(uploading || isPending);
+  const submitting = uploading || pending;
 
   const form = useForm({
     mode: "uncontrolled",
@@ -80,7 +84,7 @@ export function ArticleForm(props: Props) {
   });
 
   const handleSubmit = form.onSubmit(async (values) => {
-    if (!canSubmit) return;
+    if (submitting) return;
     if (featuredImage) {
       setUploading(true);
       try {
@@ -100,7 +104,7 @@ export function ArticleForm(props: Props) {
     });
   });
 
-  useFlashMessage(actionResult);
+  useFlashMessage(submitResult);
   useFlashMessage(uploadError);
 
   return (
@@ -158,7 +162,7 @@ export function ArticleForm(props: Props) {
           mr="sm"
           aria-label="Back to Article List"
         />
-        <Button type="submit" loading={!canSubmit}>
+        <Button type="submit" loading={submitting} aria-label="Submit">
           <Text size="sm">Submit</Text>
         </Button>
       </Box>

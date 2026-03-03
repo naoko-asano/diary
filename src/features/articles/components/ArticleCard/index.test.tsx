@@ -16,7 +16,7 @@ const article = {
   updatedAt: new Date(),
 };
 
-describe("ArticleCard", () => {
+describe("記事カードコンポーネント", () => {
   it("タイトルが正しく表示される", () => {
     render(<ArticleCard article={article} />);
     expect(screen.getByText("example title")).toBeVisible();
@@ -37,6 +37,15 @@ describe("ArticleCard", () => {
     expect(screen.getByRole("img", { name: /example title/i })).toHaveAttribute(
       "src",
       expect.stringContaining("image.jpg"),
+    );
+  });
+
+  it("アイキャッチ画像がない記事の場合、デフォルトの画像が表示される", () => {
+    const articleWithoutImage = { ...article, featuredImageUrl: null };
+    render(<ArticleCard article={articleWithoutImage} />);
+    expect(screen.getByRole("img", { name: /example title/i })).toHaveAttribute(
+      "src",
+      expect.stringContaining("default-featured-image.jpg"),
     );
   });
 

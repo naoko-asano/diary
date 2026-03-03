@@ -11,10 +11,7 @@ import { createArticle } from "@/features/articles/usecases";
 import { createFlashMessageCookieComposed } from "@/features/flashMessage/composition/createFlashMessageCookieComposed";
 
 export default function Page() {
-  const handleSubmit = async (
-    _prevResult: ActionResult,
-    values: ArticleParams,
-  ) => {
+  const submit = async (_prevResult: ActionResult, values: ArticleParams) => {
     "use server";
     let actionResult: ActionResult;
 
@@ -41,5 +38,5 @@ export default function Page() {
     }
     return actionResult;
   };
-  return <ArticleForm onSubmitAction={handleSubmit} />;
+  return <ArticleForm submitAction={submit} />;
 }

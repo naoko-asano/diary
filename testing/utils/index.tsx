@@ -1,3 +1,8 @@
+import { userEvent } from "@testing-library/user-event";
+
 export * from "@testing-library/react";
-export { userEvent } from "@testing-library/user-event";
 export { render } from "./render";
+
+export function createUser() {
+  return userEvent.setup();
+}

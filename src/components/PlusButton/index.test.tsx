@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { render, screen, userEvent } from "@testing/utils";
+import { createUser, render, screen } from "@testing/utils";
 
 import { PlusButton } from "./index";
 
@@ -8,10 +8,11 @@ describe("PlusButton", () => {
   describe("roleに渡されたのがbuttonの場合", () => {
     it("クリックすると、onClickで渡された関数が実行される", async () => {
       const handleClick = vi.fn();
+      const user = createUser();
 
       render(<PlusButton onClick={handleClick} />);
       const plusButton = screen.getByRole("button");
-      await userEvent.click(plusButton);
+      await user.click(plusButton);
 
       expect(handleClick).toHaveBeenCalled();
     });

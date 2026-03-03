@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { STATUSES as ArticleStatuses } from "@/features/articles/model";
-import { render, screen, userEvent, waitFor, within } from "@testing/utils";
+import { createUser, render, screen, waitFor, within } from "@testing/utils";
 
 import { ArticleList } from ".";
 
@@ -110,6 +110,7 @@ describe("記事一覧コンポーネント", () => {
   describe("削除ボタンを押下した場合", () => {
     it("表示された確認メッセージを承諾すると、削除アクションが実行され、成功メッセージが表示される", async () => {
       const deleteAction = baseDeleteAction;
+      const user = createUser();
 
       render(
         <ArticleList
@@ -124,7 +125,7 @@ describe("記事一覧コンポーネント", () => {
       const deleteButton = screen.getAllByRole("button", {
         name: "Delete Article",
       })[0];
-      await userEvent.click(deleteButton);
+      await user.click(deleteButton);
 
       await waitFor(() =>
         expect(
@@ -135,7 +136,7 @@ describe("記事一覧コンポーネント", () => {
       );
 
       const acceptButton = screen.getByRole("button", { name: "Accept" });
-      await userEvent.click(acceptButton);
+      await user.click(acceptButton);
 
       expect(deleteAction).toHaveBeenCalledTimes(1);
       expect(deleteAction).toHaveBeenCalledWith(11);
@@ -148,6 +149,7 @@ describe("記事一覧コンポーネント", () => {
 
     it("削除アクションでエラーが発生した場合、エラーメッセージが表示される", async () => {
       const deleteAction = vi.fn().mockRejectedValue(new Error("Failed"));
+      const user = createUser();
 
       render(
         <ArticleList
@@ -162,9 +164,9 @@ describe("記事一覧コンポーネント", () => {
       const deleteButton = screen.getAllByRole("button", {
         name: "Delete Article",
       })[0];
-      await userEvent.click(deleteButton);
+      await user.click(deleteButton);
       const acceptButton = screen.getByRole("button", { name: "Accept" });
-      await userEvent.click(acceptButton);
+      await user.click(acceptButton);
 
       await waitFor(() =>
         expect(

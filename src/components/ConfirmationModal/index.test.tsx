@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { render, screen, userEvent } from "@testing/utils";
+import { createUser, render, screen } from "@testing/utils";
 
 import { ConfirmationModal } from ".";
 
@@ -36,6 +36,7 @@ describe("ConfirmationModal", () => {
   it("Acceptボタン押下でonAcceptとonCloseが呼ばれる", async () => {
     const mockedOnAccept = vi.fn();
     const mockedOnClose = vi.fn();
+    const user = createUser();
 
     render(
       <ConfirmationModal
@@ -46,7 +47,7 @@ describe("ConfirmationModal", () => {
       />,
     );
     const acceptButton = screen.getByRole("button", { name: "Accept" });
-    await userEvent.click(acceptButton);
+    await user.click(acceptButton);
 
     expect(mockedOnAccept).toHaveBeenCalledTimes(1);
     expect(mockedOnClose).toHaveBeenCalledTimes(1);
@@ -54,6 +55,7 @@ describe("ConfirmationModal", () => {
 
   it("x印クリックでonCloseが呼ばれる", async () => {
     const mockedOnClose = vi.fn();
+    const user = createUser();
     render(
       <ConfirmationModal
         isOpened={true}
@@ -63,7 +65,7 @@ describe("ConfirmationModal", () => {
       />,
     );
     const closingButton = screen.getAllByRole("button")[0];
-    await userEvent.click(closingButton);
+    await user.click(closingButton);
 
     expect(mockedOnClose).toHaveBeenCalledTimes(1);
   });

@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionResultStatuses } from "@/features/actionResult/model";
 import { STATUSES as ArticleStatuses } from "@/features/articles/model";
 import { uploadImage } from "@/utils/image";
-import { render, screen, userEvent, waitFor, within } from "@testing/utils";
+import { createUser, render, screen, waitFor, within } from "@testing/utils";
 
 import { ArticleForm } from ".";
 
@@ -83,6 +83,7 @@ describe("記事フォームコンポーネント", () => {
 
   it("タイトルにバリデーションエラーがある場合、エラーメッセージが表示され、サブミットは実行されない", async () => {
     const submitAction = baseSubmitAction;
+    const user = createUser();
 
     render(<ArticleForm submitAction={submitAction} />);
 
@@ -92,9 +93,9 @@ describe("記事フォームコンポーネント", () => {
       "textarea",
     ) as HTMLTextAreaElement;
 
-    await userEvent.type(titleInput, " ");
-    await userEvent.type(bodyInput, "Test Body");
-    await userEvent.click(screen.getByRole("button", { name: "Submit" }));
+    await user.type(titleInput, " ");
+    await user.type(bodyInput, "Test Body");
+    await user.click(screen.getByRole("button", { name: "Submit" }));
 
     expect(screen.getByText("1文字以上入力してください")).toBeInTheDocument();
     expect(submitAction).not.toHaveBeenCalled();
@@ -102,6 +103,7 @@ describe("記事フォームコンポーネント", () => {
 
   it("本文にバリデーションエラーがある場合、エラーメッセージが表示され、サブミットは実行されない", async () => {
     const submitAction = baseSubmitAction;
+    const user = createUser();
 
     render(<ArticleForm submitAction={submitAction} />);
 
@@ -111,9 +113,9 @@ describe("記事フォームコンポーネント", () => {
       "textarea",
     ) as HTMLTextAreaElement;
 
-    await userEvent.type(titleInput, "Test Title");
-    await userEvent.type(bodyInput, " ");
-    await userEvent.click(screen.getByRole("button", { name: "Submit" }));
+    await user.type(titleInput, "Test Title");
+    await user.type(bodyInput, " ");
+    await user.click(screen.getByRole("button", { name: "Submit" }));
 
     expect(screen.getByText("1文字以上入力してください")).toBeInTheDocument();
     expect(submitAction).not.toHaveBeenCalled();
@@ -133,6 +135,7 @@ describe("記事フォームコンポーネント", () => {
       vi.useFakeTimers({ toFake: ["Date"] });
       vi.setSystemTime(new Date("2025-02-01"));
       const submitAction = baseSubmitAction;
+      const user = createUser();
       mockedUploadImage.mockResolvedValue({
         url: "https://example.com/example.jpg",
         downloadUrl: "https://example.com/example.jpg",
@@ -150,15 +153,15 @@ describe("記事フォームコンポーネント", () => {
       const bodyInput = bodyEditor.querySelector(
         "textarea",
       ) as HTMLTextAreaElement;
-      await userEvent.selectOptions(statusSelector, "Publish");
-      await userEvent.click(dateInput);
+      await user.selectOptions(statusSelector, "Publish");
+      await user.click(dateInput);
       const calendar = screen.getByRole("dialog");
       const dayButton = within(calendar).getByRole("button", {
         name: "2 February 2025",
       });
-      await userEvent.click(dayButton);
-      await userEvent.type(titleInput, "Typed title");
-      await userEvent.type(bodyInput, "Typed body");
+      await user.click(dayButton);
+      await user.type(titleInput, "Typed title");
+      await user.type(bodyInput, "Typed body");
 
       expect(statusSelector).toHaveTextContent("Publish");
       expect(dateInput).toHaveTextContent("2025/02/02");
@@ -172,14 +175,14 @@ describe("記事フォームコンポーネント", () => {
       const fileInput = document.querySelector(
         'input[type="file"]',
       ) as HTMLInputElement;
-      await userEvent.upload(fileInput, file);
+      await user.upload(fileInput, file);
 
       await waitFor(() => expect(fileButton).toHaveTextContent("example.jpg"));
       expect(fileInput.files).toHaveLength(1);
       expect(fileInput.files?.[0]).toStrictEqual(file);
 
       const submitButton = screen.getByRole("button", { name: "Submit" });
-      await userEvent.click(submitButton);
+      await user.click(submitButton);
 
       expect(submitAction).toHaveBeenCalledTimes(1);
       expect(submitAction).toHaveBeenCalledWith(
@@ -203,6 +206,7 @@ describe("記事フォームコンポーネント", () => {
       vi.useFakeTimers({ toFake: ["Date"] });
       vi.setSystemTime(new Date("2025-02-01"));
       const submitAction = baseSubmitAction;
+      const user = createUser();
 
       render(<ArticleForm submitAction={submitAction} />);
 
@@ -211,10 +215,10 @@ describe("記事フォームコンポーネント", () => {
       const bodyInput = bodyEditor.querySelector(
         "textarea",
       ) as HTMLTextAreaElement;
-      await userEvent.type(titleInput, "Typed Title");
-      await userEvent.type(bodyInput, "Typed Body");
+      await user.type(titleInput, "Typed Title");
+      await user.type(bodyInput, "Typed Body");
       const submitButton = screen.getByRole("button", { name: "Submit" });
-      await userEvent.click(submitButton);
+      await user.click(submitButton);
 
       expect(submitAction).toHaveBeenCalledTimes(1);
       expect(submitAction).toHaveBeenCalledWith(
@@ -238,6 +242,7 @@ describe("記事フォームコンポーネント", () => {
         status: ActionResultStatuses.ERROR,
         message: "Error Message",
       });
+      const user = createUser();
 
       render(<ArticleForm submitAction={submitAction} />);
 
@@ -246,10 +251,10 @@ describe("記事フォームコンポーネント", () => {
       const bodyInput = bodyEditor.querySelector(
         "textarea",
       ) as HTMLTextAreaElement;
-      await userEvent.type(titleInput, "Typed title");
-      await userEvent.type(bodyInput, "Typed body");
+      await user.type(titleInput, "Typed title");
+      await user.type(bodyInput, "Typed body");
       const submitButton = screen.getByRole("button", { name: "Submit" });
-      await userEvent.click(submitButton);
+      await user.click(submitButton);
 
       expect(submitAction).toHaveBeenCalledTimes(1);
       await waitFor(() => {
@@ -263,6 +268,7 @@ describe("記事フォームコンポーネント", () => {
     it("アイキャッチ画像のアップロードに失敗した場合、エラーメッセージが表示され、サブミットされない", async () => {
       mockedUploadImage.mockRejectedValueOnce(new Error("Upload failed"));
       const submitAction = baseSubmitAction;
+      const user = createUser();
 
       render(<ArticleForm submitAction={submitAction} />);
 
@@ -271,17 +277,17 @@ describe("記事フォームコンポーネント", () => {
       const bodyInput = bodyEditor.querySelector(
         "textarea",
       ) as HTMLTextAreaElement;
-      await userEvent.type(titleInput, "Typed Title");
-      await userEvent.type(bodyInput, "Typed Body");
+      await user.type(titleInput, "Typed Title");
+      await user.type(bodyInput, "Typed Body");
       const file = new File(["dummy content"], "example.png", {
         type: "image/png",
       });
       const fileInput = document.querySelector(
         'input[type="file"]',
       ) as HTMLInputElement;
-      await userEvent.upload(fileInput, file);
+      await user.upload(fileInput, file);
       const submitButton = screen.getByRole("button", { name: "Submit" });
-      await userEvent.click(submitButton);
+      await user.click(submitButton);
 
       expect(mockedUploadImage).toHaveBeenCalledTimes(1);
       expect(submitAction).not.toHaveBeenCalled();

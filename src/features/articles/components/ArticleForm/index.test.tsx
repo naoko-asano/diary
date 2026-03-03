@@ -83,6 +83,7 @@ describe("記事フォームコンポーネント", () => {
 
   it("タイトルにバリデーションエラーがある場合、エラーメッセージが表示され、サブミットは実行されない", async () => {
     const submitAction = baseSubmitAction;
+
     render(<ArticleForm submitAction={submitAction} />);
 
     const titleInput = screen.getByLabelText("Title *");
@@ -101,6 +102,7 @@ describe("記事フォームコンポーネント", () => {
 
   it("本文にバリデーションエラーがある場合、エラーメッセージが表示され、サブミットは実行されない", async () => {
     const submitAction = baseSubmitAction;
+
     render(<ArticleForm submitAction={submitAction} />);
 
     const titleInput = screen.getByLabelText("Title *");
@@ -148,7 +150,6 @@ describe("記事フォームコンポーネント", () => {
       const bodyInput = bodyEditor.querySelector(
         "textarea",
       ) as HTMLTextAreaElement;
-
       await userEvent.selectOptions(statusSelector, "Publish");
       await userEvent.click(dateInput);
       const calendar = screen.getByRole("dialog");
@@ -212,7 +213,6 @@ describe("記事フォームコンポーネント", () => {
       ) as HTMLTextAreaElement;
       await userEvent.type(titleInput, "Typed Title");
       await userEvent.type(bodyInput, "Typed Body");
-
       const submitButton = screen.getByRole("button", { name: "Submit" });
       await userEvent.click(submitButton);
 
@@ -246,7 +246,6 @@ describe("記事フォームコンポーネント", () => {
       const bodyInput = bodyEditor.querySelector(
         "textarea",
       ) as HTMLTextAreaElement;
-
       await userEvent.type(titleInput, "Typed title");
       await userEvent.type(bodyInput, "Typed body");
       const submitButton = screen.getByRole("button", { name: "Submit" });
@@ -272,10 +271,8 @@ describe("記事フォームコンポーネント", () => {
       const bodyInput = bodyEditor.querySelector(
         "textarea",
       ) as HTMLTextAreaElement;
-
       await userEvent.type(titleInput, "Typed Title");
       await userEvent.type(bodyInput, "Typed Body");
-
       const file = new File(["dummy content"], "example.png", {
         type: "image/png",
       });

@@ -17,6 +17,7 @@ import rehypeSanitize from "rehype-sanitize";
 
 import { BackButton } from "@/components/BackButton";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { useActionResultNotifier } from "@/features/actionResult/hooks/useActionResultNotifier";
 import {
   ActionResult,
   ActionResultStatuses,
@@ -27,7 +28,6 @@ import {
   articleScheme,
   STATUSES as ArticleStatuses,
 } from "@/features/articles/model";
-import { useFlashMessage } from "@/features/flashMessage/hooks/useFlashMessage";
 import { uploadImage } from "@/utils/image";
 import { toSentenceCase } from "@/utils/string";
 
@@ -62,9 +62,10 @@ export function ArticleForm(props: Props) {
   const [featuredImage, setFeaturedImage] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<UploadError>(null);
-  const [submitResult, formAction, pending] = useActionState(submitAction, {
-    status: ActionResultStatuses.IDLE,
-  });
+  const [submitResult, formAction, pending] = useActionState(
+    submitAction,
+    null,
+  );
   const submitting = uploading || pending;
 
   const form = useForm({
@@ -103,9 +104,8 @@ export function ArticleForm(props: Props) {
       formAction(values);
     });
   });
-
-  useFlashMessage(submitResult);
-  useFlashMessage(uploadError);
+  useActionResultNotifier(submitResult);
+  useActionResultNotifier(uploadError);
 
   return (
     <form onSubmit={handleSubmit}>

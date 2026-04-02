@@ -15,11 +15,11 @@ import { useState } from "react";
 import { ConfirmationModal } from "@/components/ConfirmationModal";
 import { EditButton } from "@/components/EditButton";
 import { TrashButton } from "@/components/TrashButton";
+import { useActionResultNotifier } from "@/features/actionResult/hooks/useActionResultNotifier";
 import {
   ActionResult,
   ActionResultStatuses,
 } from "@/features/actionResult/model";
-import { useFlashMessage } from "@/features/flashMessage/hooks/useFlashMessage";
 import { Article } from "@/generated/prisma";
 import { formatDate } from "@/utils/date";
 import { toSentenceCase } from "@/utils/string";
@@ -32,10 +32,8 @@ type Props = {
 };
 
 export function ArticleList({ articles, deleteAction }: Props) {
-  const [deleteResult, setDeleteResult] = useState<ActionResult>({
-    status: ActionResultStatuses.IDLE,
-  });
-  useFlashMessage(deleteResult);
+  const [deleteResult, setDeleteResult] = useState<ActionResult>(null);
+  useActionResultNotifier(deleteResult);
   const [deleteModalOpened, setDeleteModalOpened] = useState<{
     opened: boolean;
     articleId: number | null;

@@ -8,9 +8,8 @@ import { ArticleForm } from "@/features/articles/components/ArticleForm";
 import { articleRepository } from "@/features/articles/infrastructure/repository";
 import { ArticleParams } from "@/features/articles/model";
 import { findArticle, updateArticle } from "@/features/articles/usecases";
-import { createFlashMessageCookieComposed } from "@/features/flashMessage/composition/createFlashMessageCookieComposed";
+import { storeNotification } from "@/features/notifications";
 import { parseIdParam } from "@/utils/parseIdParam";
-
 type Props = {
   params: Promise<Params>;
 };
@@ -51,7 +50,7 @@ export default async function Page(props: Props) {
     }
 
     if (actionResult.status === ActionResultStatuses.SUCCESS) {
-      await createFlashMessageCookieComposed({
+      await storeNotification({
         type: actionResult.status,
         message: actionResult.message,
       });

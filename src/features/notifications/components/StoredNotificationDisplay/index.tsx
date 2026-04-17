@@ -8,9 +8,13 @@ import { showNotification } from "@/features/notifications/presenter/showNotific
 export function StoredNotificationDisplay() {
   useEffect(() => {
     (async () => {
-      const notification = await popNotification();
-      if (!notification) return;
-      showNotification(notification);
+      try {
+        const notification = await popNotification();
+        if (!notification) return;
+        showNotification(notification);
+      } catch {
+        // noop
+      }
     })();
   }, []);
   return null;

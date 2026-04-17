@@ -1,35 +1,32 @@
-import { assertNotification, Notification } from "../model";
+import {
+  assertNotification,
+  Notification,
+} from "@/features/notifications/model";
 
 import { NotificationRepository } from "./types/repository";
-
-const NAME = "notification";
 
 export function storeNotification(
   notification: Notification,
   repository: NotificationRepository,
 ) {
-  return repository.store({
-    name: NAME,
-    value: JSON.stringify(notification),
-    httpOnly: true,
-    maxAge: 30,
-  });
+  return repository.store(notification);
 }
 
 export async function popNotification(repository: NotificationRepository) {
-  const notification = await findNotification(repository);
+  const notification = await getValidNotification(repository);
   if (!notification) return null;
-  await removeNotification(repository);
+  await repository.remove();
   return notification;
 }
 
-async function findNotification(repository: NotificationRepository) {
-  const notification = await repository.find(NAME);
+async function getValidNotification(repository: NotificationRepository) {
+  const notification = await repository.find();
   if (!notification) return null;
-  assertNotification(notification);
-  return notification;
-}
-
-async function removeNotification(repository: NotificationRepository) {
-  return repository.remove(NAME);
+  try {
+    assertNotification(notification);
+    return notification;
+  } catch {
+    await repository.remove();
+    return null;
+  }
 }

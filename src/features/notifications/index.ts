@@ -1,6 +1,6 @@
 "use server";
 
-import { cookieRepository } from "@/infrastructure/cookie";
+import { notificationRepository } from "@/features/notifications/infrastructure/repository";
 
 import { Notification } from "./model";
 import {
@@ -9,9 +9,9 @@ import {
 } from "./usecases";
 
 export async function storeNotification(notification: Notification) {
-  return await sourceStoreNotification(notification, cookieRepository);
+  return await sourceStoreNotification(notification, notificationRepository);
 }
 
 export async function popNotification() {
-  return await sourcePopNotification(cookieRepository);
+  return await sourcePopNotification(notificationRepository);
 }

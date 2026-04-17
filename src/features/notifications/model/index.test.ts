@@ -1,13 +1,17 @@
 import { assertNotification, Notification, NOTIFICATION_TYPES } from "./index";
 
 describe("通知のアサーション", () => {
-  it("通知型の場合、エラーをスローしない", () => {
-    const notification: Notification = {
+  it.each([
+    {
       type: NOTIFICATION_TYPES.SUCCESS,
       message: "成功しました",
-    };
-
-    expect(() => assertNotification(notification)).not.toThrow();
+    },
+    {
+      type: NOTIFICATION_TYPES.ERROR,
+      message: "エラーが発生しました",
+    },
+  ])("有効な通知の場合、エラーをスローしない", (validValue) => {
+    expect(() => assertNotification(validValue)).not.toThrow();
   });
 
   it.each([

@@ -1,12 +1,7 @@
-export interface NotificationRepository {
-  find: (name: string) => Promise<object | null>;
-  store: (params: StoreParams) => Promise<void>;
-  remove: (name: string) => Promise<void>;
-}
+import { Notification } from "@/features/notifications/model";
 
-interface StoreParams {
-  name: string;
-  value: string;
-  httpOnly?: boolean;
-  maxAge?: number;
+export interface NotificationRepository {
+  find: () => Promise<unknown>;
+  store: (notification: Notification) => Promise<void>;
+  remove: () => Promise<void>;
 }

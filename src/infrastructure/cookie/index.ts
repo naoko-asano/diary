@@ -1,30 +1,26 @@
-import { cookies } from "next/headers";
+import { cookies as nextCookies } from "next/headers";
 
-export interface StoreParams {
+async function cookies() {
+  return await nextCookies();
+}
+
+export async function getCookie(name: string) {
+  const cookieStore = await cookies();
+  return cookieStore.get(name) ?? null;
+}
+
+export async function setCookie(params: {
   name: string;
   value: string;
   httpOnly?: boolean;
   maxAge?: number;
-}
-
-export async function find(name: string): Promise<object | null> {
+}) {
+  const { httpOnly = true, maxAge = 30, ...rest } = params;
   const cookieStore = await cookies();
-  const cookieValue = cookieStore.get(name)?.value;
-  return cookieValue ? JSON.parse(cookieValue) : null;
+  cookieStore.set({ httpOnly, maxAge, ...rest });
 }
 
-export async function store(params: StoreParams) {
-  const cookieStore = await cookies();
-  cookieStore.set(params);
-}
-
-export async function remove(name: string) {
+export async function deleteCookie(name: string) {
   const cookieStore = await cookies();
   cookieStore.delete(name);
 }
-
-export const cookieRepository = {
-  find,
-  store,
-  remove,
-};

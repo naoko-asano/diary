@@ -2,15 +2,17 @@ import { Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconX } from "@tabler/icons-react";
 
-import { Notification, NOTIFICATION_TYPES } from "../../model";
+import {
+  Notification,
+  NOTIFICATION_TYPES,
+} from "@/features/notifications/model";
 
 export function showNotification(notification: Notification) {
-  const params = buildParams({ notification });
+  const params = buildParams(notification);
   notifications.show(params);
 }
 
-function buildParams(props: { notification: Notification }) {
-  const { notification } = props;
+function buildParams(notification: Notification) {
   const { type, message } = notification;
   const success = type === NOTIFICATION_TYPES.SUCCESS;
   return {

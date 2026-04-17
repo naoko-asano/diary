@@ -3,9 +3,14 @@ import { deleteCookie, getCookie, setCookie } from "@/infrastructure/cookie";
 
 const NAME = "notification";
 
-async function find() {
+async function find(): Promise<unknown> {
   const value = (await getCookie(NAME))?.value;
-  return value ? JSON.parse(value) : null;
+  if (!value) return null;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
 }
 
 async function store(notification: Notification) {

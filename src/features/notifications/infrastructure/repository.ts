@@ -9,6 +9,7 @@ async function find(): Promise<unknown> {
   try {
     return JSON.parse(value);
   } catch {
+    await remove();
     return null;
   }
 }

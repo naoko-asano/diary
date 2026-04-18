@@ -21,7 +21,7 @@ export async function popNotification(repository: NotificationRepository) {
 
 async function getValidNotification(repository: NotificationRepository) {
   const notification = await repository.find();
-  if (!notification) return null;
+  if (notification === null) return null;
   try {
     assertNotification(notification);
     return notification;

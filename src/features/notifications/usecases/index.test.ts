@@ -77,4 +77,19 @@ describe("通知のポップ処理", () => {
     expect(repository.remove).toHaveBeenCalledTimes(1);
     expect(repository.remove).toHaveBeenCalledWith();
   });
+
+  it("通知がnull以外のfalsyな値の場合、nullを返し、通知を削除する", async () => {
+    const repository = {
+      ...baseRepository,
+      find: vi.fn().mockResolvedValue(""),
+      remove: vi.fn(),
+    };
+
+    const result = await popNotification(repository);
+    expect(result).toBeNull();
+    expect(repository.find).toHaveBeenCalledTimes(1);
+    expect(repository.find).toHaveBeenCalledWith();
+    expect(repository.remove).toHaveBeenCalledTimes(1);
+    expect(repository.remove).toHaveBeenCalledWith();
+  });
 });

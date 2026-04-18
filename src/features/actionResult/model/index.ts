@@ -1,13 +1,9 @@
-export type ActionResult =
-  | {
-      status: typeof ActionResultStatuses.IDLE;
-    }
-  | {
-      status:
-        | typeof ActionResultStatuses.SUCCESS
-        | typeof ActionResultStatuses.ERROR;
-      message: string;
-    };
+export type ActionResult = {
+  status:
+    | typeof ActionResultStatuses.SUCCESS
+    | typeof ActionResultStatuses.ERROR;
+  message: string;
+} | null;
 
 export type ActionResultStatus =
   (typeof ActionResultStatuses)[keyof typeof ActionResultStatuses];
@@ -15,5 +11,4 @@ export type ActionResultStatus =
 export const ActionResultStatuses = {
   SUCCESS: "success",
   ERROR: "error",
-  IDLE: "idle",
 } as const;

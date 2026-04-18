@@ -8,7 +8,7 @@ import { ArticleForm } from "@/features/articles/components/ArticleForm";
 import { articleRepository } from "@/features/articles/infrastructure/repository";
 import { ArticleParams } from "@/features/articles/model";
 import { createArticle } from "@/features/articles/usecases";
-import { createFlashMessageCookieComposed } from "@/features/flashMessage/composition/createFlashMessageCookieComposed";
+import { storeNotification } from "@/features/notifications";
 
 export default function Page() {
   const submit = async (_prevResult: ActionResult, values: ArticleParams) => {
@@ -30,7 +30,7 @@ export default function Page() {
     }
 
     if (actionResult.status === ActionResultStatuses.SUCCESS) {
-      await createFlashMessageCookieComposed({
+      await storeNotification({
         type: actionResult.status,
         message: actionResult.message,
       });

@@ -185,16 +185,13 @@ describe("記事フォームコンポーネント", () => {
       await user.click(submitButton);
 
       expect(submitAction).toHaveBeenCalledTimes(1);
-      expect(submitAction).toHaveBeenCalledWith(
-        { status: ActionResultStatuses.IDLE },
-        {
-          date: new Date("2025-02-02"),
-          title: "Typed title",
-          body: "Typed body",
-          featuredImageUrl: "https://example.com/example.jpg",
-          status: ArticleStatuses.PUBLISHED,
-        },
-      );
+      expect(submitAction).toHaveBeenCalledWith(null, {
+        date: new Date("2025-02-02"),
+        title: "Typed title",
+        body: "Typed body",
+        featuredImageUrl: "https://example.com/example.jpg",
+        status: ArticleStatuses.PUBLISHED,
+      });
       expect(mockedUploadImage).toHaveBeenCalledTimes(1);
       expect(mockedUploadImage).toHaveBeenCalledWith(file);
       await waitFor(() => expect(submitButton).toBeEnabled());
@@ -221,16 +218,13 @@ describe("記事フォームコンポーネント", () => {
       await user.click(submitButton);
 
       expect(submitAction).toHaveBeenCalledTimes(1);
-      expect(submitAction).toHaveBeenCalledWith(
-        { status: ActionResultStatuses.IDLE },
-        {
-          date: new Date("2025-02-01"),
-          title: "Typed Title",
-          body: "Typed Body",
-          featuredImageUrl: null,
-          status: ArticleStatuses.DRAFT,
-        },
-      );
+      expect(submitAction).toHaveBeenCalledWith(null, {
+        date: new Date("2025-02-01"),
+        title: "Typed Title",
+        body: "Typed Body",
+        featuredImageUrl: null,
+        status: ArticleStatuses.DRAFT,
+      });
       expect(mockedUploadImage).not.toHaveBeenCalled();
       await waitFor(() => expect(submitButton).toBeEnabled());
 

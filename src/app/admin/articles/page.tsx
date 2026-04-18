@@ -9,8 +9,7 @@ import {
   deleteArticle,
   findPaginatedArticles,
 } from "@/features/articles/usecases";
-import { FlashMessageNotifier } from "@/features/flashMessage/components/FlashMessageNotifier";
-import { flashMessageCookie } from "@/features/flashMessage/gateway/flashMessageCookie";
+import { StoredNotificationDisplay } from "@/features/notifications/components/StoredNotificationDisplay";
 import { computeTotalPages } from "@/utils/page";
 import { parsePageParam } from "@/utils/parsePageParam";
 
@@ -29,7 +28,6 @@ export default async function Page(props: Props) {
     { currentPage, perPage: ARTICLES_PER_PAGE },
     articleRepository,
   );
-  const hasFlashMessage = !!(await flashMessageCookie());
 
   async function remove(articleId: number) {
     "use server";
@@ -39,7 +37,7 @@ export default async function Page(props: Props) {
 
   return (
     <>
-      {hasFlashMessage && <FlashMessageNotifier />}
+      <StoredNotificationDisplay />
       <Box style={{ flex: 1 }}>
         <ArticleList articles={articles} deleteAction={remove} />
       </Box>
